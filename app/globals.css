@@ -1,0 +1,77 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    color-scheme: light;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-paper text-ink font-sans antialiased;
+    /* Subtle paper-grain texture layered over the warm paper background
+       instead of a flat fill. The SVG noise is tiny and tiles seamlessly. */
+    background-image: url("/textures/grain.svg");
+    background-repeat: repeat;
+    background-size: 180px 180px;
+  }
+
+  h1, h2, h3, h4 {
+    @apply font-slab text-ink;
+    text-wrap: balance;
+  }
+
+  ::selection {
+    background-color: rgba(255, 107, 53, 0.22);
+  }
+
+  /* Honour reduced-motion preferences across the site. */
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.001ms !important;
+      transition-duration: 0.001ms !important;
+    }
+  }
+}
+
+@layer components {
+  .container-page {
+    @apply mx-auto w-full max-w-6xl px-5 sm:px-6 lg:px-8;
+  }
+
+  .focus-ring {
+    @apply outline-none ring-amber/60 ring-offset-2 ring-offset-paper focus-visible:ring-2;
+  }
+
+  /* Long-form guide body copy. Keeps measure comfortable and rhythm even. */
+  .prose-guide {
+    @apply text-[1.0625rem] leading-relaxed text-slate;
+  }
+  .prose-guide p {
+    @apply mb-4;
+  }
+  .prose-guide strong {
+    @apply font-semibold text-ink;
+  }
+  .prose-guide a {
+    @apply font-medium text-amber underline decoration-amber/30 underline-offset-2 hover:decoration-amber;
+  }
+  .prose-guide ul {
+    @apply mb-4 list-disc space-y-1.5 pl-5 marker:text-amber;
+  }
+  .prose-guide ol {
+    @apply mb-4 list-decimal space-y-1.5 pl-5 marker:text-slate;
+  }
+  .prose-guide code {
+    @apply rounded bg-ink/5 px-1.5 py-0.5 font-mono text-[0.85em] text-ink;
+  }
+}

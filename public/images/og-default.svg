@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#1B3A4B"/>
+  <circle cx="980" cy="120" r="220" fill="#FF6B35" opacity="0.16"/>
+  <text x="80" y="300" font-family="Georgia, serif" font-size="78" font-weight="700" fill="#fff">PrinterFix Guides</text>
+  <text x="84" y="372" font-family="Arial, sans-serif" font-size="34" fill="#fff" fill-opacity="0.8">Clear, practical fixes for everyday printer problems.</text>
+  <rect x="84" y="420" width="150" height="8" rx="4" fill="#FF6B35"/>
+</svg>
