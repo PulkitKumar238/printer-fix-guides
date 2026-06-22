@@ -52,10 +52,10 @@ export function GuideTemplate({ guide }: { guide: Guide }) {
           <Faq items={guide.faqs} />
         </div>
 
-        {/* Sidebar */}
-        <aside className="lg:sticky lg:top-24 lg:h-fit">
+        {/* Sidebar — shown above intro on mobile, sticky column on desktop */}
+        <aside className="order-first lg:order-none lg:sticky lg:top-24 lg:h-fit">
           <CommonCauses causes={guide.commonCauses} />
-          <nav aria-label="On this page" className="mt-6 rounded-2xl border border-ink/10 bg-surface p-5 shadow-card">
+          <nav aria-label="On this page" className="mt-6 hidden rounded-2xl border border-ink/10 bg-surface p-5 shadow-card lg:block">
             <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-slate">
               The steps
             </h2>

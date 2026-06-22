@@ -71,7 +71,7 @@ export default function ErrorCodePage({ params }: { params: { code: string } }) 
             </section>
           </div>
 
-          <figure className="order-first w-full overflow-hidden rounded-2xl border border-ink/10 bg-surface shadow-card lg:order-none lg:sticky lg:top-24">
+          <figure className="w-full overflow-hidden rounded-2xl border border-ink/10 bg-surface shadow-card lg:sticky lg:top-24">
             <div className="relative aspect-[4/3]">
               <Image
                 src={`/images/brands/${brand.key}.jpg`}
