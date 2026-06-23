@@ -73,6 +73,9 @@ export function Footer() {
           </h2>
           <ul className="space-y-2.5 text-[0.95rem]">
             <li><Link href="/about" className="text-paper/85 transition-colors hover:text-amber">About</Link></li>
+            <li><Link href="/disclaimer" className="text-paper/85 transition-colors hover:text-amber">Disclaimer</Link></li>
+            <li><Link href="/privacy" className="text-paper/85 transition-colors hover:text-amber">Privacy Policy</Link></li>
+            <li><Link href="/terms" className="text-paper/85 transition-colors hover:text-amber">Terms &amp; Conditions</Link></li>
           </ul>
         </nav>
       </div>

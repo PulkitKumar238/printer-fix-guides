@@ -18,13 +18,13 @@ export default function AboutPage() {
   return (
     <div className="container-page py-8 sm:py-10">
       <Breadcrumbs items={[{ name: 'Home', href: '/' }, { name: 'About' }]} />
-      <article className="max-w-prose">
+      <article className="prose-guide">
         <h1 className="text-3xl font-bold sm:text-4xl lg:text-[2.75rem]">
           About {site.name}
         </h1>
 
         <figure className="my-6 overflow-hidden rounded-2xl border border-ink/10 bg-surface shadow-card">
-          <div className="relative aspect-[3/2]">
+          <div className="relative aspect-[16/6]">
             <Image
               src="/images/site/desk.jpg"
               alt="A home office with printers set up on a desk"
