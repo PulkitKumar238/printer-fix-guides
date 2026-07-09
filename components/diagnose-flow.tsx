@@ -16,6 +16,9 @@ const modelPlaceholder: Record<BrandKey, string> = {
   canon: 'e.g. PIXMA MG2570S',
   epson: 'e.g. EcoTank L3250',
   brother: 'e.g. DCP-L2540DW',
+  samsung: 'e.g. Xpress M2020W',
+  lexmark: 'e.g. MB2236adw',
+  xerox: 'e.g. Phaser 6510',
 };
 
 /** Honest, rotating status lines shown while the progress bar animates. */

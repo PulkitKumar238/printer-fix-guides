@@ -91,7 +91,7 @@ export interface ErrorCode {
   related: RelatedLink[];
 }
 
-export type BrandKey = 'hp' | 'canon' | 'epson' | 'brother';
+export type BrandKey = 'hp' | 'canon' | 'epson' | 'brother' | 'samsung' | 'lexmark' | 'xerox';
 
 export interface Brand {
   key: BrandKey;

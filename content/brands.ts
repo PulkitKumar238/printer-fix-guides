@@ -141,9 +141,94 @@ export const brands: Record<BrandKey, Brand> = {
       },
     ],
   },
+  samsung: {
+    key: 'samsung',
+    name: 'Samsung',
+    metaTitle: 'Samsung Printer Help — Fix Common Samsung Printer Problems',
+    metaDescription: 'Troubleshooting for Samsung Xpress, ProXpress, and MultiXpress printers: paper jams, toner errors, Wi-Fi connectivity, and driver issues.',
+    intro: [
+      {
+        type: 'paragraph',
+        text: 'Samsung printers (now supported by HP) are widely used for their fast, compact laser printing. Most Samsung issues involve toner cartridges not being recognized, paper feed rollers needing a clean, or the printer dropping off the wireless network. Because HP now manages Samsung’s printer division, driver and software updates are handled through HP’s support site.'
+      },
+      {
+        type: 'paragraph',
+        text: 'The guides below cover the most common issues you might run into with your Samsung laser printer.'
+      }
+    ],
+    guideSlugs: ['offline', 'drivers', 'wifi', 'paper-jam', 'not-printing'],
+    faqs: [
+      {
+        question: 'Why won’t my Samsung printer connect to Wi-Fi?',
+        answer: 'Ensure you are connecting to a 2.4 GHz network, as many older Samsung models do not support 5 GHz. If the printer keeps dropping offline, assigning it a static IP address usually resolves the problem.'
+      },
+      {
+        question: 'My Samsung printer says "Toner Empty" but I just replaced it.',
+        answer: 'This happens if the toner chip isn’t making proper contact or if you are using a third-party toner that isn’t recognized. Take the cartridge out, wipe the gold contacts on the chip, and reinstall it firmly.'
+      },
+      {
+        question: 'Where do I download drivers for my Samsung printer?',
+        answer: 'Since HP acquired Samsung’s printer division, all driver downloads and software updates (including the Samsung Easy Printer Manager) are hosted on the HP support website.'
+      }
+    ]
+  },
+  lexmark: {
+    key: 'lexmark',
+    name: 'Lexmark',
+    metaTitle: 'Lexmark Printer Help — Fix Common Lexmark Printer Problems',
+    metaDescription: 'Troubleshooting for Lexmark laser and inkjet printers: error codes, network connectivity, and driver installation guides.',
+    intro: [
+      {
+        type: 'paragraph',
+        text: 'Lexmark is known for heavy-duty office printers and enterprise solutions. While highly reliable, Lexmark printers can occasionally throw complex network error codes, or experience paper feed issues in high-volume environments.'
+      },
+      {
+        type: 'paragraph',
+        text: 'Most Lexmark troubleshooting starts with clearing the print queue, updating the Universal Print Driver, or navigating the control panel for maintenance options.'
+      }
+    ],
+    guideSlugs: ['offline', 'drivers', 'not-printing', 'paper-jam', 'scanner'],
+    faqs: [
+      {
+        question: 'How do I clear a paper jam in my Lexmark printer?',
+        answer: 'Always turn the printer off first. Pull the paper gently in the direction it normally feeds to avoid tearing it. Check behind the toner cartridge and in the rear duplexer door for hidden scraps.'
+      },
+      {
+        question: 'What is the Lexmark Universal Print Driver?',
+        answer: 'The Universal Print Driver is a single driver that supports most Lexmark models. It’s highly recommended for Windows PCs as it often resolves specific model driver conflicts.'
+      }
+    ]
+  },
+  xerox: {
+    key: 'xerox',
+    name: 'Xerox',
+    metaTitle: 'Xerox Printer Help — Fix Common Xerox Printer Problems',
+    metaDescription: 'Troubleshooting for Xerox Phaser, VersaLink, and AltaLink printers: fault codes, network setups, and driver fixes.',
+    intro: [
+      {
+        type: 'paragraph',
+        text: 'Xerox builds everything from compact Phaser laser printers to massive AltaLink office hubs. When a Xerox printer runs into trouble, it usually displays a specific Fault Code (like 016-720) on the screen. Because Xerox machines are heavily network-oriented, connectivity and driver configuration are the most common hurdles.'
+      },
+      {
+        type: 'paragraph',
+        text: 'Whether you need to get a stubborn Phaser back online or set up scan-to-email on a VersaLink, the guides below are the best place to start.'
+      }
+    ],
+    guideSlugs: ['offline', 'drivers', 'scanner', 'not-printing', 'setup'],
+    faqs: [
+      {
+        question: 'My Xerox printer is offline, how do I fix it?',
+        answer: 'First, restart the printer and your router. Then, check the printer’s IP address on its control panel. Type that IP address into your web browser to ensure it’s responding. If it is, you may need to update the port in your Windows printer settings.'
+      },
+      {
+        question: 'How do I find my Xerox Fault Code meaning?',
+        answer: 'Xerox Fault Codes are usually formatted with a dash (e.g., 077-900). You can type this code directly into the Xerox support site for your specific model to find the exact sensor or part causing the issue.'
+      }
+    ]
+  }
 };
 
-export const brandOrder: BrandKey[] = ['hp', 'canon', 'epson', 'brother'];
+export const brandOrder: BrandKey[] = ['hp', 'canon', 'epson', 'brother', 'samsung', 'lexmark', 'xerox'];
 
 export const allBrands: Brand[] = brandOrder.map((k) => brands[k]);
 
