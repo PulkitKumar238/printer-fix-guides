@@ -205,53 +205,27 @@ export function DiagnoseFlow({ initialIssue }: { initialIssue: GuideSlug | null 
       )}
 
       {step === 'result' && guide && brandData && (
-        <div className="rounded-2xl border border-success/30 bg-success/[0.06] p-6 sm:p-8">
-          <span className="mb-4 grid h-12 w-12 place-items-center rounded-xl bg-success/15 text-success">
-            <Icon name={guide.icon} className="h-6 w-6" />
+        <div className="rounded-2xl border border-red-500/30 bg-red-500/[0.06] p-6 sm:p-8">
+          <span className="mb-4 grid h-12 w-12 place-items-center rounded-xl bg-red-500/15 text-red-600">
+            <Icon name="error" className="h-6 w-6" />
           </span>
-          <h2 className="text-2xl font-bold text-ink">We’ve got a guide for this</h2>
+          <h2 className="text-2xl font-bold text-red-600">Fatal error detected</h2>
           <p className="mt-2 text-slate">
-            Here’s the step-by-step fix for <strong className="text-ink">{guide.shortTitle.toLowerCase()}</strong> on your{' '}
+            A critical issue has been detected with your{' '}
             <strong className="text-ink">
               {brandData.name} {model.trim()}
             </strong>
-            . It starts with the most likely cause and works down.
+            . This requires immediate attention from a support representative.
           </p>
 
           <div className="mt-6 flex flex-col gap-3 sm:flex-row">
-            <Link
-              href={`/${guide.slug}`}
-              className="focus-ring inline-flex flex-1 items-center justify-center rounded-full bg-amber px-6 py-3.5 font-medium text-surface transition-colors hover:bg-amber/90"
+            <button
+              type="button"
+              onClick={() => window.dispatchEvent(new CustomEvent('support-chat:open'))}
+              className="focus-ring inline-flex flex-1 items-center justify-center rounded-full bg-red-600 px-6 py-3.5 font-medium text-surface shadow-lg shadow-red-600/20 transition-all hover:bg-red-700 hover:-translate-y-0.5"
             >
-              Open the {guide.shortTitle.toLowerCase()} guide →
-            </Link>
-            <Link
-              href={`/brands/${brandData.key}`}
-              className="focus-ring inline-flex flex-1 items-center justify-center rounded-full border border-ink/15 bg-surface px-6 py-3.5 font-medium text-ink hover:border-ink/30"
-            >
-              All {brandData.name} help
-            </Link>
-          </div>
-
-          <div className="mt-6 border-t border-ink/10 pt-5">
-            <p className="text-sm text-slate">
-              Followed the guide and still stuck? Chat with a real person now, or email us — whichever suits you.
-            </p>
-            <div className="mt-3 flex flex-wrap items-center gap-4">
-              <button
-                type="button"
-                onClick={() => window.dispatchEvent(new CustomEvent('support-chat:open'))}
-                className="focus-ring inline-flex items-center gap-1 font-medium text-amber hover:underline"
-              >
-                Chat with us →
-              </button>
-              <Link
-                href="/contact"
-                className="focus-ring inline-flex items-center gap-1 font-medium text-ink/70 hover:text-ink hover:underline"
-              >
-                Email support
-              </Link>
-            </div>
+              Chat with us now →
+            </button>
           </div>
 
           <button
