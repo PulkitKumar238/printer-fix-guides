@@ -21,8 +21,8 @@ export default function TermsPage() {
         <p className="mt-2 text-sm text-slate/80">Last updated: {legalLastUpdated}</p>
 
         <p className="mt-6">
-          These terms and conditions ("Terms") govern your use of {site.name}
-          (the "site"). By accessing or using the site, you agree to these Terms.
+          These terms and conditions (“Terms”) govern your use of {site.name}
+          (the “site”). By accessing or using the site, you agree to these Terms.
           If you do not agree, please do not use the site.
         </p>
 
@@ -37,7 +37,7 @@ export default function TermsPage() {
 
         <h2 className="mt-8 text-2xl font-bold">No warranty</h2>
         <p>
-          The guides are provided "as is" and for general information only. As
+          The guides are provided “as is” and for general information only. As
           set out in our{' '}
           <Link href="/disclaimer">disclaimer</Link>, we make no warranty that
           the content is accurate, complete, or suitable for your specific
@@ -72,7 +72,7 @@ export default function TermsPage() {
         <h2 className="mt-8 text-2xl font-bold">Changes to the site and Terms</h2>
         <p>
           We may update, change, or remove content and these Terms at any time
-          without notice. The "last updated" date above shows when the Terms were
+          without notice. The “last updated” date above shows when the Terms were
           last revised. Continuing to use the site after changes means you accept
           the updated Terms.
         </p>

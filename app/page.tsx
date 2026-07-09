@@ -24,36 +24,50 @@ export default function HomePage() {
       <section className="relative overflow-hidden border-b border-ink/10">
         <div aria-hidden className="pointer-events-none absolute -right-24 -top-24 h-72 w-72 rounded-full bg-amber/10 blur-2xl" />
         <div aria-hidden className="pointer-events-none absolute -bottom-32 -left-24 h-72 w-72 rounded-full bg-ink/5 blur-2xl" />
-        <div className="container-page relative py-16 sm:py-20 lg:py-24">
-          <div className="mx-auto max-w-3xl text-center">
-            <h1 className="text-4xl font-bold leading-tight text-ink sm:text-5xl lg:text-6xl">
+        <div className="container-page relative py-16 sm:py-28 lg:py-36">
+          <div className="mx-auto max-w-4xl text-center">
+            <h1 className="text-balance text-4xl font-bold leading-[1.05] tracking-tight text-ink sm:text-6xl lg:text-7xl">
               Printer playing up?{' '}
               <span className="text-amber">Let’s fix it.</span>
             </h1>
-            <p className="mx-auto mt-5 max-w-2xl text-lg leading-relaxed text-slate">
+            <p className="mx-auto mt-6 max-w-2xl text-xl leading-relaxed text-slate">
               Plain-English, step-by-step guides for the printer problems people
               actually have — offline errors, missing drivers, dropped Wi-Fi, jams,
               and brand-specific error codes. No jargon, no upsells.
             </p>
-            <div className="mx-auto mt-8 max-w-xl">
+            <div className="mx-auto mt-10 max-w-2xl">
               <SearchBar />
-              <p className="mt-3 text-sm text-slate">
+              <p className="mt-4 text-base text-slate">
                 Try{' '}
-                <Link href="/offline" className="text-amber hover:underline">offline</Link>,{' '}
-                <Link href="/wifi" className="text-amber hover:underline">wifi drops</Link>,{' '}
-                <Link href="/paper-jam" className="text-amber hover:underline">paper jam</Link>, or an{' '}
-                <Link href="/errors/5100" className="text-amber hover:underline">error code</Link>.
+                <Link href="/offline" className="font-medium text-amber hover:underline">offline</Link>,{' '}
+                <Link href="/wifi" className="font-medium text-amber hover:underline">wifi drops</Link>,{' '}
+                <Link href="/paper-jam" className="font-medium text-amber hover:underline">paper jam</Link>, or an{' '}
+                <Link href="/errors/5100" className="font-medium text-amber hover:underline">error code</Link>.
               </p>
             </div>
+            <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
+              <Link
+                href="/diagnose"
+                className="focus-ring inline-flex w-full items-center justify-center rounded-full bg-amber px-8 py-4 text-lg font-semibold text-surface shadow-card-hover transition-all hover:-translate-y-0.5 hover:bg-amber/90 sm:w-auto"
+              >
+                Find my fix →
+              </Link>
+              <Link
+                href="#issues-heading"
+                className="focus-ring inline-flex w-full items-center justify-center rounded-full border border-ink/15 bg-surface px-8 py-4 text-lg font-semibold text-ink shadow-card transition-all hover:-translate-y-0.5 hover:border-ink/30 sm:w-auto"
+              >
+                Browse guides
+              </Link>
+            </div>
           </div>
-          <div className="mx-auto mt-12 max-w-4xl lg:mt-14">
-            <div className="relative aspect-[16/9] overflow-hidden rounded-2xl border border-ink/10 shadow-card-hover">
+          <div className="mx-auto mt-16 max-w-5xl">
+            <div className="relative aspect-[16/9] overflow-hidden rounded-3xl border border-ink/10 shadow-card-hover">
               <Image
                 src="/images/site/hero.jpg"
                 alt="A home-office desk with an all-in-one printer"
                 fill
                 priority
-                sizes="(max-width: 1024px) 100vw, 56rem"
+                sizes="(max-width: 1024px) 100vw, 64rem"
                 className="object-cover"
               />
             </div>
@@ -62,12 +76,12 @@ export default function HomePage() {
       </section>
 
       {/* Choose your issue */}
-      <section aria-labelledby="issues-heading" className="container-page py-16 sm:py-20">
+      <section aria-labelledby="issues-heading" className="container-page py-20 sm:py-24">
         <div className="mb-10 max-w-2xl">
-          <h2 id="issues-heading" className="text-3xl font-bold sm:text-4xl">
+          <h2 id="issues-heading" className="text-4xl font-bold sm:text-5xl">
             Choose your issue
           </h2>
-          <p className="mt-3 text-lg text-slate">
+          <p className="mt-4 text-xl text-slate">
             Pick the problem that matches what you’re seeing. Each guide walks you
             through the fix from the most likely cause down.
           </p>
@@ -104,12 +118,12 @@ export default function HomePage() {
 
       {/* Browse by brand */}
       <section aria-labelledby="brands-heading" className="border-y border-ink/10 bg-surface/60">
-        <div className="container-page py-16 sm:py-20">
+        <div className="container-page py-20 sm:py-24">
           <div className="mb-10 max-w-2xl">
-            <h2 id="brands-heading" className="text-3xl font-bold sm:text-4xl">
+            <h2 id="brands-heading" className="text-4xl font-bold sm:text-5xl">
               Browse by brand
             </h2>
-            <p className="mt-3 text-lg text-slate">
+            <p className="mt-4 text-xl text-slate">
               Each brand has its own quirks and error codes. Jump to a hub for
               the issues most common to your make.
             </p>
@@ -135,13 +149,13 @@ export default function HomePage() {
       </section>
 
       {/* Popular error codes */}
-      <section aria-labelledby="codes-heading" className="container-page py-16 sm:py-20">
+      <section aria-labelledby="codes-heading" className="container-page py-20 sm:py-24">
         <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
           <div className="max-w-2xl">
-            <h2 id="codes-heading" className="text-3xl font-bold sm:text-4xl">
+            <h2 id="codes-heading" className="text-4xl font-bold sm:text-5xl">
               Common error codes
             </h2>
-            <p className="mt-3 text-lg text-slate">
+            <p className="mt-4 text-xl text-slate">
               The exact code on your printer’s screen is the fastest route to a fix.
             </p>
           </div>

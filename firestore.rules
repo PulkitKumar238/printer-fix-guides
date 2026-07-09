@@ -1,0 +1,103 @@
+rules_version = '2';
+
+// Firestore security rules for the PrinterFix support chat.
+//
+// Threat model: the Firebase web config is public, so these rules — NOT the UI —
+// are the real access control. Visitors can start a chat and talk to their own
+// session, but LISTING all sessions (bulk access to visitor names and phone
+// numbers) is readable ONLY by a signed-in, allow-listed agent.
+//
+// The session id is an unguessable capability: it exists only in the creating
+// visitor's localStorage, so holding it is treated as proof of ownership.
+//
+// SETUP: keep your agent account email(s) in isAgent() below. Whenever this
+// file changes, re-publish it (console → Firestore → Rules → paste → Publish).
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ---- Edit this list to your real support-agent account email(s). ----
+    function isAgent() {
+      return request.auth != null
+        && request.auth.token.email in [
+          'test@gmail.com'
+        ];
+    }
+
+    // Fields a session-id-holding visitor may touch on their own session.
+    // Everything else (name, phone, createdAt, closing a chat) is off-limits.
+    function visitorUpdatableOnly() {
+      return request.resource.data.diff(resource.data).affectedKeys()
+        .hasOnly([
+          'lastMessageText', 'lastMessageFrom', 'lastMessageAt',
+          'unreadForAgent', 'unreadForVisitor',
+          'visitorLastSeenAt', 'visitorTyping', 'currentPage', 'status'
+        ])
+        // A visitor may (re)open a conversation but never close one.
+        && (
+          !request.resource.data.diff(resource.data).affectedKeys().hasAny(['status'])
+          || request.resource.data.status == 'open'
+        );
+    }
+
+    function isValidNewSession(data) {
+      return data.name is string && data.name.size() > 0 && data.name.size() <= 120
+        && data.phone is string && data.phone.size() > 0 && data.phone.size() <= 40
+        && data.status == 'open'
+        && data.unreadForAgent == 0
+        && data.unreadForVisitor == 0;
+    }
+
+    match /chatSessions/{sessionId} {
+      // Anyone may open a new conversation (visitors are anonymous).
+      allow create: if isValidNewSession(request.resource.data);
+
+      // Whoever holds the unguessable id may read their own session (needed
+      // for presence, typing, unread badges). Listing stays agent-only.
+      allow get: if true;
+      allow list: if isAgent();
+
+      allow update: if isAgent() || visitorUpdatableOnly();
+      allow delete: if isAgent();
+
+      match /messages/{messageId} {
+        allow read: if true;
+        allow create: if request.resource.data.text is string
+          && request.resource.data.text.size() > 0
+          && request.resource.data.text.size() <= 4000
+          && (
+            request.resource.data.from == 'visitor'
+            || (request.resource.data.from == 'agent' && isAgent())
+          );
+        allow update: if false;
+        // Agents may delete messages (used when deleting a whole conversation).
+        allow delete: if isAgent();
+      }
+    }
+
+    // Contact-form submissions: anyone may create one (with sane limits),
+    // but only agents may read or delete them.
+    match /contactMessages/{messageId} {
+      allow create: if request.resource.data.name is string
+        && request.resource.data.name.size() > 0
+        && request.resource.data.name.size() <= 120
+        && request.resource.data.email is string
+        && request.resource.data.email.size() > 0
+        && request.resource.data.email.size() <= 200
+        && request.resource.data.topic is string
+        && request.resource.data.topic.size() <= 120
+        && request.resource.data.message is string
+        && request.resource.data.message.size() > 0
+        && request.resource.data.message.size() <= 8000;
+      allow read, delete: if isAgent();
+      allow update: if false;
+    }
+
+    // Truthful "agent online" indicator: the dashboard heartbeats this doc
+    // while an agent is signed in; anyone may read it (it's just a timestamp).
+    match /presence/{docId} {
+      allow read: if true;
+      allow write: if isAgent();
+    }
+  }
+}

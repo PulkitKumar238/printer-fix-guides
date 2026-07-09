@@ -52,8 +52,8 @@ export default function AboutPage() {
             {
               type: 'list',
               items: [
-                'No phone numbers and no "call a technician now" buttons.',
-                'No live-chat pop-ups or fake "an agent is waiting" widgets.',
+                'No premium-rate "call a technician now" numbers or pressure to pay to have your printer "unlocked".',
+                'Our live chat is answered by a real person — never a bot pretending to be human, and never a fake "an agent is waiting" countdown.',
                 'No pressure to download a "driver updater" tool — we always point you to the official manufacturer software.',
                 'No affiliation with any printer brand. Brand names appear only to identify the products these guides help with.',
               ],

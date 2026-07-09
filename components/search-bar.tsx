@@ -4,7 +4,8 @@ import { useState, useRef, useEffect, useId } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { searchEntries, type SearchEntry } from '@/lib/search-index';
-import { SearchIcon } from './icons';
+import { allGuides } from '@/content/guides';
+import { SearchIcon, Icon } from './icons';
 
 /**
  * Client-side instant search over the static guide/error/brand index.
@@ -61,10 +62,15 @@ export function SearchBar({ size = 'lg' }: { size?: 'lg' | 'sm' }) {
   const inputPad = size === 'lg' ? 'py-4 text-lg' : 'py-2.5 text-base';
 
   return (
-    <div ref={containerRef} className="relative w-full">
+    <div ref={containerRef} className="group relative w-full">
+      {/* Soft amber glow to make the search feel like the primary action. */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute -inset-1 rounded-full bg-amber/20 opacity-40 blur-lg transition-opacity duration-300 group-focus-within:opacity-80"
+      />
       <div className="relative">
-        <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-slate">
-          <SearchIcon className="h-5 w-5" />
+        <span className="pointer-events-none absolute left-5 top-1/2 -translate-y-1/2 text-amber">
+          <SearchIcon className="h-6 w-6" />
         </span>
         <input
           type="search"
@@ -81,7 +87,7 @@ export function SearchBar({ size = 'lg' }: { size?: 'lg' | 'sm' }) {
           }}
           onFocus={() => setOpen(true)}
           onKeyDown={onKeyDown}
-          className={`focus-ring w-full rounded-full border border-ink/15 bg-surface pl-12 pr-4 ${inputPad} text-ink shadow-card placeholder:text-slate/70`}
+          className={`focus-ring relative w-full rounded-full border-2 border-ink/10 bg-surface pl-14 pr-4 ${inputPad} font-medium text-ink shadow-card-hover transition-colors placeholder:font-normal placeholder:text-slate/70 focus:border-amber/60`}
         />
       </div>
 
@@ -112,6 +118,40 @@ export function SearchBar({ size = 'lg' }: { size?: 'lg' | 'sm' }) {
             </li>
           ))}
         </ul>
+      )}
+
+      {open && !query && (
+        <div
+          className="absolute z-30 mt-2 w-full overflow-hidden rounded-2xl border border-ink/10 bg-surface shadow-card-hover"
+        >
+          <p className="px-4 pt-3 text-xs font-medium uppercase tracking-wide text-slate">
+            Common issues
+          </p>
+          <ul className="py-1">
+            {allGuides.map((g) => (
+              <li key={g.slug}>
+                <Link
+                  href={`/diagnose?issue=${g.slug}`}
+                  onClick={() => setOpen(false)}
+                  className="flex items-center gap-3 px-4 py-2.5 text-left hover:bg-paper"
+                >
+                  <span className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-amber/10 text-amber">
+                    <Icon name={g.icon} className="h-4 w-4" />
+                  </span>
+                  <span className="font-medium text-ink">{g.shortTitle}</span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+          <Link
+            href="/diagnose"
+            onClick={() => setOpen(false)}
+            className="flex items-center justify-between border-t border-ink/10 px-4 py-3 text-sm font-medium text-amber hover:bg-paper"
+          >
+            Not sure? Run a guided diagnosis
+            <span aria-hidden>→</span>
+          </Link>
+        </div>
       )}
 
       {open && query && results.length === 0 && (

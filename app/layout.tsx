@@ -3,6 +3,7 @@ import { Inter, Zilla_Slab, JetBrains_Mono } from 'next/font/google';
 import './globals.css';
 import { Header } from '@/components/header';
 import { Footer } from '@/components/footer';
+import { SupportChatLoader } from '@/components/support-chat-loader';
 import { JsonLd } from '@/components/json-ld';
 import { websiteSchema } from '@/lib/schema';
 import { site, absoluteUrl } from '@/lib/site';
@@ -82,6 +83,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           {children}
         </main>
         <Footer />
+        <SupportChatLoader />
       </body>
     </html>
   );

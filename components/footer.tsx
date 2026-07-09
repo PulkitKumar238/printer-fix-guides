@@ -27,8 +27,8 @@ export function Footer() {
             </span>
           </Link>
           <p className="mt-4 text-[0.95rem] leading-relaxed text-paper/70">
-            {site.tagline} Independent, ad-free troubleshooting guides — no phone
-            lines, no upsells.
+            {site.tagline} Independent, ad-free troubleshooting guides — no
+            upsells, real people when you need help.
           </p>
         </div>
 
@@ -44,6 +44,11 @@ export function Footer() {
                 </Link>
               </li>
             ))}
+            <li>
+              <Link href="/diagnose" className="text-paper/85 transition-colors hover:text-amber">
+                Find your fix (guided)
+              </Link>
+            </li>
           </ul>
         </nav>
 
@@ -73,6 +78,7 @@ export function Footer() {
           </h2>
           <ul className="space-y-2.5 text-[0.95rem]">
             <li><Link href="/about" className="text-paper/85 transition-colors hover:text-amber">About</Link></li>
+            <li><Link href="/contact" className="text-paper/85 transition-colors hover:text-amber">Contact</Link></li>
             <li><Link href="/disclaimer" className="text-paper/85 transition-colors hover:text-amber">Disclaimer</Link></li>
             <li><Link href="/privacy" className="text-paper/85 transition-colors hover:text-amber">Privacy Policy</Link></li>
             <li><Link href="/terms" className="text-paper/85 transition-colors hover:text-amber">Terms &amp; Conditions</Link></li>

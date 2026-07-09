@@ -18,7 +18,7 @@ export default function PrivacyPage() {
         <p className="mt-2 text-sm text-slate/80">Last updated: {legalLastUpdated}</p>
 
         <p className="mt-6">
-          {site.name} ("we", "us", "our") respects your privacy. This policy
+          {site.name} (“we”, “us”, “our”) respects your privacy. This policy
           explains what information we collect when you visit the site, how we
           use it, and the choices you have. We aim to collect as little personal
           data as possible.
@@ -87,7 +87,7 @@ export default function PrivacyPage() {
           and we will respond within a reasonable time.
         </p>
 
-        <h2 className="mt-8 text-2xl font-bold">Children's privacy</h2>
+        <h2 className="mt-8 text-2xl font-bold">Children’s privacy</h2>
         <p>
           This site is intended for a general audience and is not directed at
           children. We do not knowingly collect personal information from
@@ -97,7 +97,7 @@ export default function PrivacyPage() {
         <h2 className="mt-8 text-2xl font-bold">Changes to this policy</h2>
         <p>
           We may update this policy from time to time. When we do, we will revise
-          the "last updated" date at the top of this page. Significant changes
+          the “last updated” date at the top of this page. Significant changes
           will be highlighted on the site where appropriate.
         </p>
 

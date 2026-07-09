@@ -30,8 +30,8 @@ export default function DisclaimerPage() {
         <h2 className="mt-8 text-2xl font-bold">No professional advice</h2>
         <p>
           The guides are not a substitute for the official documentation or
-          support provided by your printer's manufacturer. Always check your
-          model's manual before attempting a repair, especially anything that
+          support provided by your printer’s manufacturer. Always check your
+          model’s manual before attempting a repair, especially anything that
           involves opening the printer, handling ink or toner, or work that may
           be covered by a warranty.
         </p>

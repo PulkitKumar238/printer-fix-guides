@@ -9,12 +9,12 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        ink: '#1B3A4B',
-        amber: '#FF6B35',
+        ink: '#16303E',
+        amber: '#F15A24',
         paper: '#F7F4EE',
         surface: '#FFFFFF',
-        slate: '#5A6B72',
-        success: '#2D8C5F',
+        slate: '#48575E',
+        success: '#217A52',
       },
       fontFamily: {
         slab: ['var(--font-zilla)', 'Georgia', 'serif'],

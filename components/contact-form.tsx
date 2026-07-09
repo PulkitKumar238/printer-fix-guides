@@ -2,14 +2,15 @@
 
 import { useState } from 'react';
 
-type Status = 'idle' | 'error' | 'success';
+type Status = 'idle' | 'error' | 'failed' | 'success';
 
 const topics = ['A guide helped', 'Spotted a mistake', 'Suggest a guide or error code', 'Something else'];
 
 /**
- * Contact form. There is intentionally no phone number anywhere on the site.
- * Until a backend endpoint is wired up, submit validates client-side and shows
- * a confirmation; swap the handler body for a fetch() to your form API later.
+ * Contact form for asynchronous email-style messages. For live help, the
+ * SupportChat widget (bottom-right, staffed by a real agent) is the faster path.
+ * Submissions are stored in Firestore (`contactMessages`); the module is
+ * imported on submit so Firebase stays out of the page's initial bundle.
  */
 export function ContactForm() {
   const [status, setStatus] = useState<Status>('idle');
@@ -21,6 +22,7 @@ export function ContactForm() {
     const data = new FormData(form);
     const name = String(data.get('name') ?? '').trim();
     const email = String(data.get('email') ?? '').trim();
+    const topic = String(data.get('topic') ?? '').trim();
     const message = String(data.get('message') ?? '').trim();
 
     if (!name || !email || !message || !/.+@.+\..+/.test(email)) {
@@ -29,11 +31,16 @@ export function ContactForm() {
     }
 
     setSubmitting(true);
-    // TODO: POST to a form endpoint (e.g. /api/contact or a service) here.
-    await new Promise((r) => setTimeout(r, 600));
-    setSubmitting(false);
-    setStatus('success');
-    form.reset();
+    try {
+      const { submitContactMessage } = await import('@/lib/chat');
+      await submitContactMessage(name, email, topic, message);
+      setStatus('success');
+      form.reset();
+    } catch {
+      setStatus('failed');
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   if (status === 'success') {
@@ -45,8 +52,8 @@ export function ContactForm() {
         <h2 className="text-xl font-bold text-success">Thanks — message received</h2>
         <p className="mt-2 text-slate">
           Your message has been noted. Because this is a small independent resource,
-          replies (when needed) can take a few days. There’s no phone line — email is
-          the only channel, on purpose.
+          email replies can take a few days. Need help sooner? Use the live chat in the
+          bottom-right corner and a real person will pick it up.
         </p>
         <button
           type="button"
@@ -64,6 +71,12 @@ export function ContactForm() {
       {status === 'error' && (
         <p role="alert" className="rounded-xl border border-amber/40 bg-amber/5 px-4 py-3 text-sm text-ink">
           Please fill in your name, a valid email, and a message.
+        </p>
+      )}
+      {status === 'failed' && (
+        <p role="alert" className="rounded-xl border border-amber/40 bg-amber/5 px-4 py-3 text-sm text-ink">
+          Sorry — your message couldn’t be sent just now. Please try again in a
+          moment, or use the live chat in the bottom-right corner instead.
         </p>
       )}
 
