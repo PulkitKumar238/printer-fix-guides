@@ -1,5 +1,5 @@
 import { initializeApp, getApps, getApp, type FirebaseApp } from 'firebase/app';
-import { getFirestore, type Firestore } from 'firebase/firestore';
+import { initializeFirestore, type Firestore } from 'firebase/firestore';
 import { getAuth, type Auth } from 'firebase/auth';
 
 /**
@@ -44,7 +44,10 @@ export function getDb(): Firestore | null {
   if (dbInstance) return dbInstance;
   const a = getFirebaseApp();
   if (!a) return null;
-  dbInstance = getFirestore(a);
+  // Auto-detect stalled WebChannel listen streams (proxies, ad-blockers,
+  // throttled tabs) and fall back to long polling so real-time snapshots
+  // keep flowing instead of only syncing on the next write.
+  dbInstance = initializeFirestore(a, { experimentalAutoDetectLongPolling: true });
   return dbInstance;
 }
 

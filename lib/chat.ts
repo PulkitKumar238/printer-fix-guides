@@ -161,22 +161,30 @@ export async function sendMessage(sessionId: string, from: Sender, text: string)
 export function subscribeToMessages(
   sessionId: string,
   onChange: (messages: ChatMessage[]) => void,
+  onError?: (e: Error) => void,
 ): Unsubscribe {
   const db = requireDb();
   const q = query(collection(db, SESSIONS, sessionId, 'messages'), orderBy('createdAt', 'asc'));
-  return onSnapshot(q, (snap) => {
-    onChange(
-      snap.docs.map((d) => {
-        const data = d.data();
-        return {
-          id: d.id,
-          from: data.from as Sender,
-          text: data.text as string,
-          createdAt: millis(data.createdAt),
-        };
-      }),
-    );
-  });
+  return onSnapshot(
+    q,
+    (snap) => {
+      onChange(
+        snap.docs.map((d) => {
+          const data = d.data();
+          return {
+            id: d.id,
+            from: data.from as Sender,
+            text: data.text as string,
+            createdAt: millis(data.createdAt),
+          };
+        }),
+      );
+    },
+    (e) => {
+      console.warn('[chat] messages listener failed — real-time updates stopped', e);
+      onError?.(e);
+    },
+  );
 }
 
 /**

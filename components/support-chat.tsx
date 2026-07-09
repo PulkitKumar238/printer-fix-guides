@@ -150,7 +150,9 @@ export function SupportChat() {
   useEffect(() => {
     if (phase !== 'chat' || !sessionId || !isFirebaseConfigured) return;
     try {
-      const unsub = subscribeToMessages(sessionId, setMessages);
+      const unsub = subscribeToMessages(sessionId, setMessages, () =>
+        setFatal('Chat connection lost. Please reload the page.'),
+      );
       return () => unsub();
     } catch (e) {
       setFatal(e instanceof Error ? e.message : 'Chat is unavailable right now.');
