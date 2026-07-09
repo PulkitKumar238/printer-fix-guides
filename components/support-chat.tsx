@@ -283,7 +283,7 @@ export function SupportChat() {
           role="dialog"
           aria-modal="false"
           aria-label="Support chat"
-          className="fixed inset-x-3 bottom-3 z-50 flex h-[min(42rem,calc(100dvh-1.5rem))] flex-col overflow-hidden rounded-3xl border border-ink/10 bg-surface shadow-card-hover sm:inset-x-auto sm:bottom-6 sm:right-6 sm:h-[40rem] sm:max-h-[calc(100dvh-2.5rem)] sm:w-[min(30rem,calc(100vw-3rem))]"
+          className="fixed inset-0 z-50 flex h-[100dvh] w-full flex-col overflow-hidden bg-surface sm:inset-auto sm:bottom-6 sm:right-6 sm:h-[40rem] sm:max-h-[calc(100dvh-2.5rem)] sm:w-[min(30rem,calc(100vw-3rem))] sm:rounded-3xl sm:border sm:border-ink/10 sm:shadow-card-hover"
         >
           {/* Header */}
           <div className="flex items-center justify-between gap-3 bg-ink px-5 py-4 text-paper">
