@@ -37,7 +37,8 @@ export function SearchBar({ size = 'lg' }: { size?: 'lg' | 'sm' }) {
   function go(entry: SearchEntry) {
     setOpen(false);
     setQuery('');
-    router.push(entry.href);
+    const issueParam = entry.type === 'Guide' ? entry.href.slice(1) : 'setup';
+    router.push(`/diagnose?issue=${issueParam}`);
   }
 
   function onKeyDown(e: React.KeyboardEvent) {
@@ -92,32 +93,38 @@ export function SearchBar({ size = 'lg' }: { size?: 'lg' | 'sm' }) {
       </div>
 
       {open && results.length > 0 && (
-        <ul
-          id={listId}
-          role="listbox"
-          className="absolute z-30 mt-2 w-full overflow-hidden rounded-2xl border border-ink/10 bg-surface shadow-card-hover"
-        >
-          {results.map((entry, i) => (
-            <li key={entry.href} role="option" aria-selected={i === active}>
-              <Link
-                href={entry.href}
-                onClick={() => go(entry)}
-                onMouseEnter={() => setActive(i)}
-                className={`flex items-center justify-between gap-3 px-4 py-3 text-left ${
-                  i === active ? 'bg-paper' : ''
-                }`}
-              >
-                <span>
-                  <span className="block font-medium text-ink">{entry.title}</span>
-                  <span className="line-clamp-1 text-sm text-slate">{entry.description}</span>
-                </span>
-                <span className="shrink-0 rounded-full bg-ink/5 px-2 py-0.5 font-mono text-[0.7rem] uppercase tracking-wide text-slate">
-                  {entry.type}
-                </span>
-              </Link>
-            </li>
-          ))}
-        </ul>
+        <div className="absolute z-30 mt-2 w-full overflow-hidden rounded-2xl border border-ink/10 bg-surface shadow-card-hover">
+          <ul id={listId} role="listbox">
+            {results.map((entry, i) => (
+              <li key={entry.href} role="option" aria-selected={i === active}>
+                <Link
+                  href={`/diagnose?issue=${entry.type === 'Guide' ? entry.href.slice(1) : 'setup'}`}
+                  onClick={() => go(entry)}
+                  onMouseEnter={() => setActive(i)}
+                  className={`flex items-center justify-between gap-3 px-4 py-3 text-left ${
+                    i === active ? 'bg-paper' : ''
+                  }`}
+                >
+                  <span>
+                    <span className="block font-medium text-ink">{entry.title}</span>
+                    <span className="line-clamp-1 text-sm text-slate">{entry.description}</span>
+                  </span>
+                  <span className="shrink-0 rounded-full bg-ink/5 px-2 py-0.5 font-mono text-[0.7rem] uppercase tracking-wide text-slate">
+                    {entry.type}
+                  </span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+          <Link
+            href="/diagnose"
+            onClick={() => setOpen(false)}
+            className="flex items-center justify-between border-t border-ink/10 px-4 py-3 text-sm font-medium text-amber hover:bg-paper"
+          >
+            Not sure? Run a guided diagnosis
+            <span aria-hidden>→</span>
+          </Link>
+        </div>
       )}
 
       {open && !query && (

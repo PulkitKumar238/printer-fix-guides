@@ -53,7 +53,7 @@ export default function HomePage() {
                 Find my fix →
               </Link>
               <Link
-                href="#issues-heading"
+                href="/diagnose?issue=setup"
                 className="focus-ring inline-flex w-full items-center justify-center rounded-full border border-ink/15 bg-surface px-8 py-4 text-lg font-semibold text-ink shadow-card transition-all hover:-translate-y-0.5 hover:border-ink/30 sm:w-auto"
               >
                 Browse guides
