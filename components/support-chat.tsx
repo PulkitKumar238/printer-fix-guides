@@ -109,6 +109,20 @@ export function SupportChat() {
     if (!open && unreadForVisitor > 0) setOpen(true);
   }, [open, unreadForVisitor]);
 
+  // Auto-open the chat on every page except the home screen so the visitor
+  // can reach a live agent. The diagnose flow is skipped here — it opens the
+  // widget itself once the result step is reached. The widget pops open 15
+  // seconds after landing on the page, regardless of activity. Fires once per
+  // page: a visitor who closes the widget won't have it forced back open.
+  const autoOpenedPathRef = useRef<string | null>(null);
+  useEffect(() => {
+    if (!pathname || pathname === '/' || pathname.startsWith('/diagnose')) return;
+    if (autoOpenedPathRef.current === pathname) return;
+    autoOpenedPathRef.current = pathname;
+    const t = setTimeout(() => setOpen(true), 15000);
+    return () => clearTimeout(t);
+  }, [pathname]);
+
   // Agent presence (drives the truthful online/away header + launcher dot).
   useEffect(() => {
     if (!isFirebaseConfigured) return;
@@ -151,10 +165,11 @@ export function SupportChat() {
   // 15-second nudge: after the chat opens, if the visitor hasn't replied
   // within 15 seconds, show a follow-up message.
   const hasVisitorMessage = messages.some(m => m.from === 'visitor');
-  const isOnDiagnosePage = pathname?.startsWith('/diagnose');
+  // Nudge everywhere except the home screen.
+  const isOnNudgePage = !!pathname && pathname !== '/';
   useEffect(() => {
-    // Only nudge when the chat is open on the diagnose page and visitor hasn't replied.
-    if (!open || !isOnDiagnosePage || hasVisitorMessage) return;
+    // Only nudge when the chat is open (off the home page) and visitor hasn't replied.
+    if (!open || !isOnNudgePage || hasVisitorMessage) return;
 
     // Clear any stale nudge from a previous visit so it doesn't show instantly.
     setMessages((prev) => prev.filter(m => m.id !== 'auto-followup'));
@@ -174,7 +189,7 @@ export function SupportChat() {
       });
     }, 15000);
     return () => clearTimeout(t);
-  }, [open, isOnDiagnosePage, hasVisitorMessage]);
+  }, [open, isOnNudgePage, hasVisitorMessage]);
 
   // Real-time message subscription for the active session.
   useEffect(() => {
