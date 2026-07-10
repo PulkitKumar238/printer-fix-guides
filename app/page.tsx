@@ -38,11 +38,7 @@ export default function HomePage() {
             <div className="mx-auto mt-10 max-w-2xl">
               <SearchBar />
               <p className="mt-4 text-base text-slate">
-                Try{' '}
-                <Link href="/offline" className="font-medium text-amber hover:underline">offline</Link>,{' '}
-                <Link href="/wifi" className="font-medium text-amber hover:underline">wifi drops</Link>,{' '}
-                <Link href="/paper-jam" className="font-medium text-amber hover:underline">paper jam</Link>, or an{' '}
-                <Link href="/errors/5100" className="font-medium text-amber hover:underline">error code</Link>.
+                Try offline, wifi drops, paper jam, or an error code.
               </p>
             </div>
             <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
