@@ -148,9 +148,17 @@ export function SupportChat() {
     }
   }, [sessionId]);
 
-  // 15-second nudge if they haven't started a session yet
+  // 15-second nudge: after the chat opens, if the visitor hasn't replied
+  // within 15 seconds, show a follow-up message.
+  const hasVisitorMessage = messages.some(m => m.from === 'visitor');
+  const isOnDiagnosePage = pathname?.startsWith('/diagnose');
   useEffect(() => {
-    if (!open || sessionId) return;
+    // Only nudge when the chat is open on the diagnose page and visitor hasn't replied.
+    if (!open || !isOnDiagnosePage || hasVisitorMessage) return;
+
+    // Clear any stale nudge from a previous visit so it doesn't show instantly.
+    setMessages((prev) => prev.filter(m => m.id !== 'auto-followup'));
+
     const t = setTimeout(() => {
       setMessages((prev) => {
         if (prev.some(m => m.id === 'auto-followup')) return prev;
@@ -166,7 +174,7 @@ export function SupportChat() {
       });
     }, 15000);
     return () => clearTimeout(t);
-  }, [open, sessionId]);
+  }, [open, isOnDiagnosePage, hasVisitorMessage]);
 
   // Real-time message subscription for the active session.
   useEffect(() => {
