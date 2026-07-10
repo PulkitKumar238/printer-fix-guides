@@ -40,22 +40,21 @@ const PHONE_RE = /^[+()\-\s]*(?:\d[()\-\s]*){7,}$/;
 const HEARTBEAT_MS = 45_000;
 const TYPING_THROTTLE_MS = 2_500;
 
-type Phase = 'form' | 'chat';
-
 export function SupportChat() {
   const [open, setOpen] = useState(false);
-  const [phase, setPhase] = useState<Phase>('form');
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [session, setSession] = useState<ChatSession | null>(null);
   const [agentSeenAt, setAgentSeenAt] = useState<number | null>(null);
 
-  const [name, setName] = useState('');
-  const [phone, setPhone] = useState('');
-  const [errors, setErrors] = useState<{ name?: string; phone?: string }>({});
   const [starting, setStarting] = useState(false);
   const [fatal, setFatal] = useState('');
 
-  const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [messages, setMessages] = useState<ChatMessage[]>([{
+    id: 'auto-greeting',
+    from: 'agent',
+    text: "Hi there! I see you're dealing with a critical printer issue. I'm here to help you get this fixed right away. To get started, can I get your first name so I know who I'm speaking with?",
+    createdAt: Date.now(),
+  }]);
   const [draft, setDraft] = useState('');
   // Re-render periodically so presence/typing freshness decays visibly.
   const [, setTick] = useState(0);
@@ -69,7 +68,6 @@ export function SupportChat() {
     const saved = typeof window !== 'undefined' ? localStorage.getItem(STORAGE_KEY) : null;
     if (saved) {
       setSessionId(saved);
-      setPhase('chat');
     }
   }, []);
 
@@ -133,8 +131,12 @@ export function SupportChat() {
             localStorage.removeItem(STORAGE_KEY);
             setSessionId(null);
             setSession(null);
-            setMessages([]);
-            setPhase('form');
+            setMessages([{
+              id: 'auto-greeting',
+              from: 'agent',
+              text: "Hi there! I see you're dealing with a critical printer issue. I'm here to help you get this fixed right away. To get started, can I get your first name so I know who I'm speaking with?",
+              createdAt: Date.now(),
+            }]);
             return;
           }
           setSession(s);
@@ -146,18 +148,59 @@ export function SupportChat() {
     }
   }, [sessionId]);
 
+  // 15-second nudge if they haven't started a session yet
+  useEffect(() => {
+    if (!open || sessionId) return;
+    const t = setTimeout(() => {
+      setMessages((prev) => {
+        if (prev.some(m => m.id === 'auto-followup')) return prev;
+        return [
+          ...prev,
+          {
+            id: 'auto-followup',
+            from: 'agent',
+            text: "Looks like your issue isn't resolved yet. Send us a message and a live agent will assist you immediately.",
+            createdAt: Date.now(),
+          }
+        ];
+      });
+    }, 15000);
+    return () => clearTimeout(t);
+  }, [open, sessionId]);
+
   // Real-time message subscription for the active session.
   useEffect(() => {
-    if (phase !== 'chat' || !sessionId || !isFirebaseConfigured) return;
+    if (!sessionId || !isFirebaseConfigured) return;
     try {
-      const unsub = subscribeToMessages(sessionId, setMessages, () =>
+      const unsub = subscribeToMessages(sessionId, (msgs) => {
+        setMessages((prev) => {
+          const hasNudge = prev.some((m) => m.id === 'auto-followup');
+          const baseMsgs: ChatMessage[] = [
+            {
+              id: 'auto-greeting',
+              from: 'agent',
+              text: "Hi there! I see you're dealing with a critical printer issue. I'm here to help you get this fixed right away. To get started, can I get your first name so I know who I'm speaking with?",
+              createdAt: session?.createdAt ?? Date.now(),
+            },
+          ];
+          if (hasNudge) {
+            baseMsgs.push({
+              id: 'auto-followup',
+              from: 'agent',
+              text: "Looks like your issue isn't resolved yet. Send us a message and a live agent will assist you immediately.",
+              createdAt: prev.find((m) => m.id === 'auto-followup')?.createdAt ?? Date.now(),
+            });
+          }
+          return [...baseMsgs, ...msgs];
+        });
+      }, () =>
         setFatal('Chat connection lost. Please reload the page.'),
       );
       return () => unsub();
     } catch (e) {
       setFatal(e instanceof Error ? e.message : 'Chat is unavailable right now.');
     }
-  }, [phase, sessionId]);
+  }, [sessionId, session?.createdAt]);
 
   // Presence heartbeat while the widget is open, tagged with the current page.
   useEffect(() => {
@@ -173,11 +216,11 @@ export function SupportChat() {
 
   // Clear the visitor's unread counter while they're looking at the chat.
   useEffect(() => {
-    if (!open || phase !== 'chat' || !sessionId) return;
+    if (!open || !sessionId) return;
     if ((session?.unreadForVisitor ?? 0) > 0) {
       markVisitorRead(sessionId).catch(() => {});
     }
-  }, [open, phase, sessionId, session?.unreadForVisitor, messages.length]);
+  }, [open, sessionId, session?.unreadForVisitor, messages.length]);
 
   // Freshness ticker (typing dots and online status decay without new data).
   useEffect(() => {
@@ -191,46 +234,40 @@ export function SupportChat() {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: 'smooth' });
   }, [messages, agentTypingActive]);
 
-  const startChat = useCallback(
-    async (e: React.FormEvent) => {
-      e.preventDefault();
-      const next: { name?: string; phone?: string } = {};
-      if (!name.trim()) next.name = 'Please enter your full name.';
-      if (!PHONE_RE.test(phone.trim())) next.phone = 'Please enter a valid phone number.';
-      setErrors(next);
-      if (Object.keys(next).length > 0) return;
-
-      setStarting(true);
-      setFatal('');
-      try {
-        const id = await createSession(name.trim(), phone.trim(), pathname ?? '/');
-        localStorage.setItem(STORAGE_KEY, id);
-        setSessionId(id);
-        setPhase('chat');
-      } catch (err) {
-        setFatal(err instanceof Error ? err.message : 'Could not start the chat. Please try again.');
-      } finally {
-        setStarting(false);
-      }
-    },
-    [name, phone, pathname],
-  );
-
   const send = useCallback(
     async (e: React.FormEvent) => {
       e.preventDefault();
       const text = draft.trim();
-      if (!text || !sessionId) return;
+      if (!text) return;
       setDraft('');
+      setFatal('');
+
+      let targetSessionId = sessionId;
+      if (!targetSessionId) {
+        setStarting(true);
+        try {
+          const visitorName = text.length > 30 ? text.substring(0, 30) + '...' : text;
+          targetSessionId = await createSession(visitorName, 'Unknown', pathname ?? '/');
+          localStorage.setItem(STORAGE_KEY, targetSessionId);
+          setSessionId(targetSessionId);
+        } catch (err) {
+          setDraft(text);
+          setFatal(err instanceof Error ? err.message : 'Could not start the chat. Please try again.');
+          setStarting(false);
+          return;
+        } finally {
+          setStarting(false);
+        }
+      }
+
       try {
-        await sendMessage(sessionId, 'visitor', text);
-        setFatal('');
+        await sendMessage(targetSessionId, 'visitor', text);
       } catch {
         setDraft(text); // restore so the visitor can retry
         setFatal('Message failed to send. Please try again.');
       }
     },
-    [draft, sessionId],
+    [draft, sessionId, pathname],
   );
 
   function onDraftChange(value: string) {
@@ -242,18 +279,7 @@ export function SupportChat() {
     }
   }
 
-  function endChat() {
-    // Tell the dashboard we've left so its online dot drops immediately.
-    if (sessionId) visitorLeft(sessionId).catch(() => {});
-    localStorage.removeItem(STORAGE_KEY);
-    setSessionId(null);
-    setSession(null);
-    setMessages([]);
-    setPhase('form');
-    setName('');
-    setPhone('');
-    setErrors({});
-  }
+
 
   // The visitor widget has no place on the agent dashboard.
   if (pathname?.startsWith('/agent')) return null;
@@ -263,7 +289,7 @@ export function SupportChat() {
 
   return (
     <>
-      {!open && (
+      {!open && (pathname !== '/' || sessionId) && (
         <button
           type="button"
           onClick={() => setOpen(true)}
@@ -304,10 +330,10 @@ export function SupportChat() {
               </div>
             </div>
             <div className="flex items-center gap-1">
-              {phase === 'chat' && (
+              {sessionId && (
                 <button
                   type="button"
-                  onClick={endChat}
+                  onClick={closeWidget}
                   className="focus-ring rounded-full px-2.5 py-1 text-xs text-paper/70 hover:bg-paper/10 hover:text-paper"
                 >
                   End chat
@@ -326,45 +352,6 @@ export function SupportChat() {
 
           {!isFirebaseConfigured ? (
             <Unconfigured />
-          ) : phase === 'form' ? (
-            <form onSubmit={startChat} noValidate className="flex flex-1 flex-col gap-4 overflow-y-auto p-5">
-              <p className="text-sm text-slate">
-                Tell us who you are and we&apos;ll help with your printer right here.
-                {agentOnline
-                  ? ' A real person is online now.'
-                  : ' A real person will reply here in a few minutes.'}
-              </p>
-              <Field label="Full name" error={errors.name}>
-                <input
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  autoComplete="name"
-                  className="focus-ring w-full rounded-xl border border-ink/15 bg-surface px-4 py-3 text-base text-ink"
-                  placeholder="Jane Doe"
-                />
-              </Field>
-              <Field label="Phone number" error={errors.phone}>
-                <input
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                  inputMode="tel"
-                  autoComplete="tel"
-                  className="focus-ring w-full rounded-xl border border-ink/15 bg-surface px-4 py-3 text-base text-ink"
-                  placeholder="+1 555 123 4567"
-                />
-              </Field>
-              {fatal && <p role="alert" className="text-sm text-amber">{fatal}</p>}
-              <button
-                type="submit"
-                disabled={starting}
-                className="focus-ring mt-auto inline-flex items-center justify-center rounded-full bg-amber px-6 py-3.5 font-semibold text-surface transition-colors hover:bg-amber/90 disabled:opacity-60"
-              >
-                {starting ? 'Starting…' : 'Start chat'}
-              </button>
-              <p className="text-center text-xs text-slate">
-                We use your details only to reply to this conversation.
-              </p>
-            </form>
           ) : (
             <>
               <div ref={scrollRef} className="flex-1 space-y-2.5 overflow-y-auto bg-paper px-4 py-4">
@@ -399,7 +386,7 @@ export function SupportChat() {
                 />
                 <button
                   type="submit"
-                  disabled={!draft.trim()}
+                  disabled={!draft.trim() || starting}
                   aria-label="Send message"
                   className="focus-ring grid h-11 w-11 shrink-0 place-items-center rounded-full bg-amber text-surface transition-colors hover:bg-amber/90 disabled:opacity-40"
                 >
@@ -432,15 +419,6 @@ function Bubble({ msg }: { msg: ChatMessage }) {
   );
 }
 
-function Field({ label, error, children }: { label: string; error?: string; children: React.ReactNode }) {
-  return (
-    <label className="block text-sm">
-      <span className="mb-1.5 block font-medium text-ink">{label}</span>
-      {children}
-      {error && <span className="mt-1 block text-xs text-amber">{error}</span>}
-    </label>
-  );
-}
 
 function Unconfigured() {
   return (

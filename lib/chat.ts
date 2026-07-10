@@ -148,6 +148,7 @@ export async function sendMessage(sessionId: string, from: Sender, text: string)
   if (from === 'visitor') {
     summary.unreadForAgent = increment(1);
     summary.visitorTyping = null;
+    summary.visitorLastSeenAt = serverTimestamp();
     // A visitor writing into a resolved conversation reopens it.
     summary.status = 'open';
   } else {
@@ -271,7 +272,10 @@ export function visitorLeftBeacon(sessionId: string): void {
 
 export async function setVisitorTyping(sessionId: string): Promise<void> {
   const db = requireDb();
-  await updateDoc(doc(db, SESSIONS, sessionId), { visitorTyping: serverTimestamp() });
+  await updateDoc(doc(db, SESSIONS, sessionId), {
+    visitorTyping: serverTimestamp(),
+    visitorLastSeenAt: serverTimestamp(),
+  });
 }
 
 export async function setAgentTyping(sessionId: string): Promise<void> {
