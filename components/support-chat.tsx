@@ -310,10 +310,10 @@ export function SupportChat() {
           type="button"
           onClick={() => setOpen(true)}
           aria-label={unread > 0 ? `Chat with us — ${unread} unread` : 'Chat with us'}
-          className="focus-ring fixed bottom-5 right-4 z-40 inline-flex items-center gap-2.5 rounded-full bg-amber px-6 py-4 text-base font-semibold text-surface shadow-card-hover transition-transform hover:-translate-y-0.5 sm:bottom-6 sm:right-6"
+          className="focus-ring fixed bottom-5 right-4 z-40 flex items-center gap-2.5 rounded-full bg-amber p-4 text-base font-semibold text-surface shadow-card-hover transition-transform hover:-translate-y-0.5 sm:bottom-6 sm:right-6 sm:px-6"
         >
           <ChatIcon className="h-6 w-6" />
-          Chat with us
+          <span className="hidden sm:inline">Chat with us</span>
           {unread > 0 && (
             <span className="absolute -right-1 -top-1 grid h-6 min-w-6 place-items-center rounded-full bg-ink px-1.5 text-xs font-bold text-paper shadow-card">
               {unread}
