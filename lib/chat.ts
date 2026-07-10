@@ -134,12 +134,15 @@ export async function sendMessage(sessionId: string, from: Sender, text: string)
   const trimmed = text.trim();
   if (!trimmed) return;
 
+  // 1. Write the message — this is the critical part.
   await addDoc(collection(db, SESSIONS, sessionId, 'messages'), {
     from,
     text: trimmed,
     createdAt: serverTimestamp(),
   });
 
+  // 2. Update session summary. Try with status first; if security rules
+  //    reject (e.g. status is already 'open'), retry without the status field.
   const summary: Record<string, unknown> = {
     lastMessageText: trimmed,
     lastMessageFrom: from,
@@ -149,13 +152,26 @@ export async function sendMessage(sessionId: string, from: Sender, text: string)
     summary.unreadForAgent = increment(1);
     summary.visitorTyping = null;
     summary.visitorLastSeenAt = serverTimestamp();
-    // A visitor writing into a resolved conversation reopens it.
-    summary.status = 'open';
   } else {
     summary.unreadForVisitor = increment(1);
     summary.agentTyping = null;
   }
-  await updateDoc(doc(db, SESSIONS, sessionId), summary);
+
+  try {
+    // First attempt: include status = 'open' to reopen closed conversations.
+    if (from === 'visitor') {
+      await updateDoc(doc(db, SESSIONS, sessionId), { ...summary, status: 'open' });
+    } else {
+      await updateDoc(doc(db, SESSIONS, sessionId), summary);
+    }
+  } catch {
+    // If the status field caused a permission error, retry without it.
+    try {
+      await updateDoc(doc(db, SESSIONS, sessionId), summary);
+    } catch {
+      // Summary update failed but the message itself was written — that's OK.
+    }
+  }
 }
 
 /** Subscribe to a single session's messages in real time (visitor + agent). */

@@ -262,7 +262,11 @@ export function SupportChat() {
 
       try {
         await sendMessage(targetSessionId, 'visitor', text);
-      } catch {
+        // Ensure presence is updated even if the summary update inside
+        // sendMessage was silently swallowed by Firestore rules.
+        visitorHeartbeat(targetSessionId, pathname ?? '/').catch(() => {});
+      } catch (err) {
+        console.warn('[chat] send failed', err);
         setDraft(text); // restore so the visitor can retry
         setFatal('Message failed to send. Please try again.');
       }
@@ -280,16 +284,20 @@ export function SupportChat() {
   }
 
 
+  // Auto-close the widget when navigating to the home page.
+  useEffect(() => {
+    if (pathname === '/') setOpen(false);
+  }, [pathname]);
 
-  // The visitor widget has no place on the agent dashboard.
-  if (pathname?.startsWith('/agent')) return null;
+  // The visitor widget has no place on the agent dashboard or the home page.
+  if (pathname?.startsWith('/agent') || pathname === '/') return null;
 
   const agentOnline = isFresh(agentSeenAt, ONLINE_WINDOW_MS);
   const unread = !open ? session?.unreadForVisitor ?? 0 : 0;
 
   return (
     <>
-      {!open && (pathname !== '/' || sessionId) && (
+      {!open && (
         <button
           type="button"
           onClick={() => setOpen(true)}
