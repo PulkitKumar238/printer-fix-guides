@@ -24,7 +24,7 @@ export default function HomePage() {
       <section className="relative overflow-hidden border-b border-ink/10">
         <div aria-hidden className="pointer-events-none absolute -right-24 -top-24 h-72 w-72 rounded-full bg-amber/10 blur-2xl" />
         <div aria-hidden className="pointer-events-none absolute -bottom-32 -left-24 h-72 w-72 rounded-full bg-ink/5 blur-2xl" />
-        <div className="container-page relative py-16 sm:py-28 lg:py-36">
+        <div className="container-page relative py-6 sm:py-10 lg:py-14">
           <div className="mx-auto max-w-4xl text-center">
             <h1 className="text-balance text-4xl font-bold leading-[1.05] tracking-tight text-ink sm:text-6xl lg:text-7xl">
               Printer playing up?{' '}
@@ -83,15 +83,19 @@ export default function HomePage() {
           </p>
         </div>
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {allGuides.map((guide) => (
-            <IssueCard
-              key={guide.slug}
-              href={`/${guide.slug}`}
-              icon={guide.icon}
-              title={guide.shortTitle}
-              description={guide.cardDescription}
-            />
-          ))}
+          {allGuides.map((guide) => {
+            // Setup, offline, and scanner jump straight into the diagnose flow (brand step).
+            const toDiagnose = ['setup', 'offline', 'scanner'].includes(guide.slug);
+            return (
+              <IssueCard
+                key={guide.slug}
+                href={toDiagnose ? `/diagnose?issue=${guide.slug}` : `/${guide.slug}`}
+                icon={guide.icon}
+                title={guide.shortTitle}
+                description={guide.cardDescription}
+              />
+            );
+          })}
           <Link
             href="/errors"
             className="focus-ring group flex h-full flex-col justify-between rounded-2xl border border-dashed border-amber/40 bg-amber/[0.04] p-6 transition-colors hover:bg-amber/[0.08]"

@@ -529,20 +529,36 @@ function Dot() {
   return <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-slate/60 [animation-duration:1s]" />;
 }
 
-/** Short, quiet new-message chime via WebAudio — no asset file needed. */
+/** Clear new-message chime via WebAudio — no asset file needed. */
 function beep() {
   try {
     const Ctx = window.AudioContext ?? (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
     const ctx = new Ctx();
-    const osc = ctx.createOscillator();
-    const gain = ctx.createGain();
-    osc.connect(gain);
-    gain.connect(ctx.destination);
-    osc.frequency.value = 880;
-    gain.gain.setValueAtTime(0.06, ctx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.3);
-    osc.start();
-    osc.stop(ctx.currentTime + 0.3);
+    const now = ctx.currentTime;
+    // Two-note chime, loud enough to notice across the room.
+    [
+      { freq: 880, at: 0 },
+      { freq: 1320, at: 0.16 },
+    ].forEach(({ freq, at }) => {
+      const start = now + at;
+      // Main note plus a quiet octave harmonic to add a touch more loudness.
+      [
+        { f: freq, peak: 1.6 },
+        { f: freq * 2, peak: 0.35 },
+      ].forEach(({ f, peak }) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.type = 'sine';
+        osc.frequency.value = f;
+        gain.gain.setValueAtTime(0.0001, start);
+        gain.gain.exponentialRampToValueAtTime(peak, start + 0.02);
+        gain.gain.exponentialRampToValueAtTime(0.0001, start + 0.38);
+        osc.start(start);
+        osc.stop(start + 0.4);
+      });
+    });
   } catch {
     // Audio not available (autoplay policy, etc.) — silently skip.
   }
