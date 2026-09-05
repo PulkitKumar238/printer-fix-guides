@@ -4,6 +4,8 @@ export const brands: Record<BrandKey, Brand> = {
   hp: {
     key: 'hp',
     name: 'HP',
+    lineup: ['OfficeJet', 'InkJet', 'LaserJet', 'Envy'],
+    theme: { bg: '#0096D6', ink: '#0077A8', tint: '#E6F5FB' },
     metaTitle: 'HP Printer Help — Fix Common HP Printer Problems',
     metaDescription:
       'Troubleshooting for HP OfficeJet, ENVY, DeskJet, and LaserJet printers: offline errors, driver installs, Wi-Fi drops, and common HP error codes.',
@@ -39,6 +41,8 @@ export const brands: Record<BrandKey, Brand> = {
   canon: {
     key: 'canon',
     name: 'Canon',
+    lineup: ['PIXMA', 'MAXIFY', 'imageCLASS', 'SELPHY', 'imagePROGRAF'],
+    theme: { bg: '#CC0000', ink: '#A30000', tint: '#FBEAEA' },
     metaTitle: 'Canon Printer Help — Fix Common Canon Printer Problems',
     metaDescription:
       'Troubleshooting for Canon PIXMA and imageCLASS printers: error codes like 5100, B200, and 5200, plus Wi-Fi, driver, and print-head fixes.',
@@ -74,6 +78,8 @@ export const brands: Record<BrandKey, Brand> = {
   epson: {
     key: 'epson',
     name: 'Epson',
+    lineup: ['EcoTank', 'WorkForce', 'Expression', 'SureColor'],
+    theme: { bg: '#003399', ink: '#00276F', tint: '#E7ECF7' },
     metaTitle: 'Epson Printer Help — Fix Common Epson Printer Problems',
     metaDescription:
       'Troubleshooting for Epson WorkForce, Expression, and EcoTank printers: error codes 0x97 and 0xF1, Wi-Fi drops, driver installs, and print-head clogs.',
@@ -109,6 +115,8 @@ export const brands: Record<BrandKey, Brand> = {
   brother: {
     key: 'brother',
     name: 'Brother',
+    lineup: ['HL Series', 'DCP Series', 'MFC Series', 'INKvestment'],
+    theme: { bg: '#0074B7', ink: '#005A8F', tint: '#E6F2F9' },
     metaTitle: 'Brother Printer Help — Fix Common Brother Printer Problems',
     metaDescription:
       'Troubleshooting for Brother laser and inkjet printers: "Unable to Print" codes, drum and toner messages, Wi-Fi drops, and driver installs.',
@@ -144,6 +152,8 @@ export const brands: Record<BrandKey, Brand> = {
   samsung: {
     key: 'samsung',
     name: 'Samsung',
+    lineup: ['Xpress', 'ProXpress', 'MultiXpress'],
+    theme: { bg: '#1428A0', ink: '#0E1C78', tint: '#E8EAF6' },
     metaTitle: 'Samsung Printer Help — Fix Common Samsung Printer Problems',
     metaDescription: 'Troubleshooting for Samsung Xpress, ProXpress, and MultiXpress printers: paper jams, toner errors, Wi-Fi connectivity, and driver issues.',
     intro: [
@@ -175,6 +185,8 @@ export const brands: Record<BrandKey, Brand> = {
   lexmark: {
     key: 'lexmark',
     name: 'Lexmark',
+    lineup: ['MC Series', 'MB Series', 'CX Series', 'Universal Driver'],
+    theme: { bg: '#D91F26', ink: '#B0141B', tint: '#FBEAEB' },
     metaTitle: 'Lexmark Printer Help — Fix Common Lexmark Printer Problems',
     metaDescription: 'Troubleshooting for Lexmark laser and inkjet printers: error codes, network connectivity, and driver installation guides.',
     intro: [
@@ -202,6 +214,8 @@ export const brands: Record<BrandKey, Brand> = {
   xerox: {
     key: 'xerox',
     name: 'Xerox',
+    lineup: ['Phaser', 'VersaLink', 'AltaLink', 'WorkCentre'],
+    theme: { bg: '#D6001C', ink: '#A80016', tint: '#FBE9EC' },
     metaTitle: 'Xerox Printer Help — Fix Common Xerox Printer Problems',
     metaDescription: 'Troubleshooting for Xerox Phaser, VersaLink, and AltaLink printers: fault codes, network setups, and driver fixes.',
     intro: [

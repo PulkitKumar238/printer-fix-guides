@@ -93,6 +93,27 @@ service cloud.firestore {
       allow update: if false;
     }
 
+    // Driver-download requests from the /install pages: anyone may create one
+    // (with sane limits), but only agents may read or delete them.
+    match /driverRequests/{requestId} {
+      allow create: if request.resource.data.brand is string
+        && request.resource.data.brand.size() > 0
+        && request.resource.data.brand.size() <= 40
+        && request.resource.data.model is string
+        && request.resource.data.model.size() > 0
+        && request.resource.data.model.size() <= 120
+        && request.resource.data.connection is string
+        && request.resource.data.connection.size() <= 20
+        && request.resource.data.name is string
+        && request.resource.data.name.size() <= 120
+        && request.resource.data.phone is string
+        && request.resource.data.phone.size() <= 40
+        && request.resource.data.page is string
+        && request.resource.data.page.size() <= 200;
+      allow read, delete: if isAgent();
+      allow update: if false;
+    }
+
     // Truthful "agent online" indicator: the dashboard heartbeats this doc
     // while an agent is signed in; anyone may read it (it's just a timestamp).
     match /presence/{docId} {

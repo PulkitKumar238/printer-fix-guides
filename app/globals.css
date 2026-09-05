@@ -43,6 +43,12 @@
   }
 }
 
+/* Indeterminate progress bar used by the driver setup wizard dialog. */
+@keyframes wizard-indeterminate {
+  0% { transform: translateX(-120%); }
+  100% { transform: translateX(320%); }
+}
+
 @layer components {
   .container-page {
     @apply mx-auto w-full max-w-6xl px-5 sm:px-6 lg:px-8;

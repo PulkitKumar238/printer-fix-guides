@@ -148,6 +148,45 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* Download printer drivers */}
+      <section aria-labelledby="drivers-cta-heading" className="container-page py-20 sm:py-24">
+        <div className="overflow-hidden rounded-3xl border border-ink/10 bg-[#0096D6] text-white shadow-card-hover">
+          <div className="grid gap-8 p-8 sm:p-12 lg:grid-cols-[1.3fr_1fr] lg:items-center">
+            <div>
+              <p className="text-sm font-semibold uppercase tracking-widest text-white/70">
+                Driver downloads
+              </p>
+              <h2 id="drivers-cta-heading" className="mt-3 text-3xl font-bold text-white sm:text-4xl">
+                Need the right printer driver?
+              </h2>
+              <p className="mt-4 max-w-xl text-lg leading-relaxed text-white/85">
+                Pick your brand, enter your model number, and get the correct official
+                driver for your operating system — with a real specialist checking the
+                match. Each brand page is set in that make&apos;s own colours.
+              </p>
+              <Link
+                href="/install"
+                className="focus-ring mt-8 inline-flex items-center gap-2 rounded-full bg-white px-8 py-4 text-lg font-semibold text-[#0077A8] transition-transform hover:-translate-y-0.5"
+              >
+                Select your printer model
+                <span aria-hidden>→</span>
+              </Link>
+            </div>
+            <div className="flex flex-wrap gap-2.5 lg:justify-end">
+              {allBrands.map((brand) => (
+                <Link
+                  key={brand.key}
+                  href={`/install/${brand.key}`}
+                  className="focus-ring rounded-full bg-white/12 px-4 py-2 text-sm font-semibold text-white ring-1 ring-inset ring-white/25 transition-colors hover:bg-white/20"
+                >
+                  {brand.name}
+                </Link>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Popular error codes */}
       <section aria-labelledby="codes-heading" className="container-page py-20 sm:py-24">
         <div className="mb-8 flex flex-wrap items-end justify-between gap-4">

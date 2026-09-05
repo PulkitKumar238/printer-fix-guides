@@ -13,6 +13,12 @@ export function Header() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
 
+  // The /install driver-download pages carry their own top nav, matching the
+  // standalone printer-setup layout — hide the main PrinterFix header there.
+  if (pathname === '/install' || pathname.startsWith('/install/')) {
+    return null;
+  }
+
   return (
     <header className="sticky top-0 z-40 border-b border-ink/10 bg-paper/85 backdrop-blur">
       <div className="container-page flex h-[4.5rem] items-center justify-between gap-4">
@@ -33,6 +39,7 @@ export function Header() {
           <NavLink href="/setup" pathname={pathname}>Setup</NavLink>
           <NavLink href="/offline" pathname={pathname}>Offline</NavLink>
           <NavLink href="/drivers" pathname={pathname}>Drivers</NavLink>
+          <NavLink href="/install" pathname={pathname}>Download drivers</NavLink>
           <NavLink href="/wifi" pathname={pathname}>Wi-Fi</NavLink>
           <NavLink href="/not-printing" pathname={pathname}>Not printing</NavLink>
           <NavLink href="/paper-jam" pathname={pathname}>Paper jam</NavLink>
@@ -66,6 +73,13 @@ export function Header() {
                 {g.shortTitle}
               </Link>
             ))}
+            <Link
+              href="/install"
+              onClick={() => setOpen(false)}
+              className="rounded-lg px-3 py-2 font-medium text-ink hover:bg-ink/5"
+            >
+              Download drivers
+            </Link>
             <div className="my-2 border-t border-ink/10" />
             <p className="px-3 pb-1 text-xs font-semibold uppercase tracking-wide text-slate">Brands</p>
             {allBrands.map((b) => (

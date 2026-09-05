@@ -347,6 +347,31 @@ export async function submitContactMessage(
   });
 }
 
+/**
+ * Persist a driver-download request from the /install pages. Stored write-only
+ * for visitors (agents read it in the Firebase console) in its own collection.
+ * Best-effort: callers catch failures and still open the live chat.
+ */
+export async function submitDriverRequest(input: {
+  brand: string;
+  model: string;
+  connection: string;
+  name?: string;
+  phone?: string;
+  page: string;
+}): Promise<void> {
+  const db = requireDb();
+  await addDoc(collection(db, 'driverRequests'), {
+    brand: input.brand,
+    model: input.model,
+    connection: input.connection,
+    name: input.name ?? '',
+    phone: input.phone ?? '',
+    page: input.page,
+    createdAt: serverTimestamp(),
+  });
+}
+
 /** Agent-online heartbeat, written by the dashboard every ~30s. */
 export async function agentHeartbeat(): Promise<void> {
   const db = requireDb();

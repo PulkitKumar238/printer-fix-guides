@@ -93,9 +93,26 @@ export interface ErrorCode {
 
 export type BrandKey = 'hp' | 'canon' | 'epson' | 'brother' | 'samsung' | 'lexmark' | 'xerox';
 
+/**
+ * Per-brand accent palette used to skin the driver-download pages so each one
+ * reads in that manufacturer's house colour (HP blue, Canon red, and so on).
+ * Applied as CSS custom properties, never as hard-coded Tailwind classes.
+ */
+export interface BrandTheme {
+  /** Solid hero / button background. */
+  bg: string;
+  /** Darker shade for text on light backgrounds and button hover. */
+  ink: string;
+  /** Very light wash for section backgrounds and chips. */
+  tint: string;
+}
+
 export interface Brand {
   key: BrandKey;
   name: string;
+  /** Product lines shown as the sub-nav on the driver-download page. */
+  lineup: string[];
+  theme: BrandTheme;
   metaTitle: string;
   metaDescription: string;
   /** Intro paragraphs about common issues for this brand. */
