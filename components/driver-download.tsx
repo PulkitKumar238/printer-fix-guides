@@ -324,13 +324,15 @@ export function DriverDownload({
                     <PrinterErrorArt />
                   </div>
                   <p className="mt-3 text-lg font-bold text-[#222]">
-                    Error Code <span className="underline decoration-1 underline-offset-2">0x00000709</span>
+                    Error Code <span className="underline decoration-1 underline-offset-2">C00022</span>
                   </p>
                   <p className="mx-auto mt-2 max-w-[24rem] text-[#666]">
                     Printer driver installation has been failed due to fatal error C00022
                     preventing product driver installation.
                     <br />
-                    Please contact the live chat agent to fix it.
+                    <span className="font-bold text-[#333]">
+                      Please contact the live chat agent to fix it.
+                    </span>
                   </p>
                 </div>
               )}
