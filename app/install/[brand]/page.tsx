@@ -18,6 +18,14 @@ export const dynamicParams = false;
 /** Brands with a real product photo under /public/images/brands. */
 const withPhoto = new Set(['hp', 'canon', 'epson', 'brother']);
 
+/** Real logo files under /public/images/brands/logos, with intrinsic size. */
+const brandLogos: Partial<Record<string, { w: number; h: number }>> = {
+  hp: { w: 124, h: 102 },
+  brother: { w: 178, h: 50 },
+  epson: { w: 218, h: 88 },
+  canon: { w: 240, h: 74 },
+};
+
 export function generateMetadata({ params }: { params: { brand: string } }): Metadata {
   const brand = getBrand(params.brand);
   if (!brand) return {};
@@ -48,22 +56,35 @@ export default function InstallBrandPage({ params }: { params: { brand: string }
       <nav aria-label={`${brand.name} setup`} className="border-b border-black/10 bg-white">
         <div className="mx-auto flex w-full max-w-6xl flex-wrap items-center gap-x-6 gap-y-2 px-5 py-4 sm:px-8">
           <Link href="/install" aria-label={`${brand.name} home`} className="focus-ring flex shrink-0 items-center gap-2 rounded">
-            <span
-              className="grid h-9 w-9 place-items-center rounded-lg text-white"
-              style={{ background: brand.theme.bg } as CSSProperties}
-            >
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-                <rect x="4" y="9" width="16" height="8" rx="1.5" />
-                <path d="M7 9V5h10v4M7 17v2h10v-2" />
-                <circle cx="16.5" cy="12.5" r="0.9" fill="currentColor" stroke="none" />
-              </svg>
-            </span>
-            <span
-              className="text-2xl font-extrabold tracking-tight"
-              style={{ color: brand.theme.ink } as CSSProperties}
-            >
-              {brand.name}
-            </span>
+            {brandLogos[brand.key] ? (
+              <Image
+                src={`/images/brands/logos/${brand.key}.png`}
+                alt={`${brand.name} logo`}
+                width={brandLogos[brand.key]!.w}
+                height={brandLogos[brand.key]!.h}
+                className="h-9 w-auto max-w-[160px] object-contain"
+                priority
+              />
+            ) : (
+              <>
+                <span
+                  className="grid h-9 w-9 place-items-center rounded-lg text-white"
+                  style={{ background: brand.theme.bg } as CSSProperties}
+                >
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                    <rect x="4" y="9" width="16" height="8" rx="1.5" />
+                    <path d="M7 9V5h10v4M7 17v2h10v-2" />
+                    <circle cx="16.5" cy="12.5" r="0.9" fill="currentColor" stroke="none" />
+                  </svg>
+                </span>
+                <span
+                  className="text-2xl font-extrabold tracking-tight"
+                  style={{ color: brand.theme.ink } as CSSProperties}
+                >
+                  {brand.name}
+                </span>
+              </>
+            )}
           </Link>
           <ul className="flex flex-1 flex-wrap items-center justify-center gap-x-8 gap-y-2 text-[1.05rem]">
             {subNav.map((label, i) => (
