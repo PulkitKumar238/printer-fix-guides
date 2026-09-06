@@ -334,6 +334,28 @@ export function DriverDownload({
                       Please contact the live chat agent to fix it.
                     </span>
                   </p>
+                  <div className="mt-5 flex items-center justify-center gap-2">
+                    <button
+                      type="button"
+                      onClick={openChat}
+                      className="inline-flex items-center gap-2 rounded-md bg-[#1a8cf5] px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#1478d6]"
+                    >
+                      <svg
+                        viewBox="0 0 24 24"
+                        className="h-4 w-4"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        aria-hidden="true"
+                      >
+                        <path d="M19 12H5" />
+                        <path d="M12 19l-7-7 7-7" />
+                      </svg>
+                      Chat Now
+                    </button>
+                  </div>
                 </div>
               )}
             </div>
