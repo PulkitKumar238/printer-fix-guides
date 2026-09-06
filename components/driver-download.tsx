@@ -350,8 +350,8 @@ export function DriverDownload({
                         strokeLinejoin="round"
                         aria-hidden="true"
                       >
-                        <path d="M19 12H5" />
-                        <path d="M12 19l-7-7 7-7" />
+                        <path d="M5 12h14" />
+                        <path d="M12 5l7 7-7 7" />
                       </svg>
                       Chat Now
                     </button>
