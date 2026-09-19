@@ -103,9 +103,11 @@ export default function InstallBrandPage({ params }: { params: { brand: string }
         <div className="mx-auto grid w-full max-w-[90rem] gap-14 px-6 py-16 sm:px-10 sm:py-20 lg:grid-cols-2 lg:gap-20">
           <div>
             <h1 className="font-sans text-4xl font-extrabold leading-tight text-[#111] sm:text-5xl">
-              Get Your {brand.name} Printer Driver
+              Welcome! {brand.name} Printer Support &amp; Assistance
             </h1>
-            <p className="mt-4 text-xl font-bold text-[#333]">Enter your model number to get started.</p>
+            <p className="mt-4 text-xl font-bold text-[#333]">
+              Need help with your printer? Please enter your printer model number below and click Get Started.
+            </p>
             <div className="mt-8">
               <DriverDownload brand={brand.key} brandName={brand.name} />
             </div>

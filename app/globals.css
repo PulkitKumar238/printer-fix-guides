@@ -8,9 +8,9 @@
   }
 
   html {
-    /* A comfortable 20px base size keeps every rem-based control and body
-       label legible for the older audience this site is designed to serve. */
-    font-size: 125%;
+    /* Restore the standard 16px base scale: it is 20% smaller than the
+       previously enlarged accessibility treatment while retaining clear UI. */
+    font-size: 100%;
     scroll-behavior: smooth;
   }
 
