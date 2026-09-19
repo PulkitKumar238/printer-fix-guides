@@ -71,9 +71,9 @@ export default function InstallHubPage() {
       {/* Issue picker — each choice brings visitors directly to the model selector. */}
       <section
         aria-labelledby="issues-heading"
-        className="bg-paper bg-[url('/textures/grain.svg')] bg-repeat"
+        className="bg-white"
       >
-        <div className={`${wrap} py-16 sm:py-20 lg:py-24`}>
+        <div className={`${wrap} py-12 sm:py-16 lg:py-[4.5rem]`}>
           <div className="max-w-2xl">
             <h1 id="issues-heading" className="text-4xl font-bold sm:text-5xl">
               Choose your issue
@@ -84,7 +84,7 @@ export default function InstallHubPage() {
             </p>
           </div>
 
-          <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {allGuides.map((guide) => (
               <IssueCard
                 key={guide.slug}
@@ -92,23 +92,26 @@ export default function InstallHubPage() {
                 icon={guide.icon}
                 title={guide.shortTitle}
                 description={guide.cardDescription}
-                accentClassName="text-[#0096D6]"
-                iconClassName="bg-[#0096D6]/10 text-[#0096D6] group-hover:bg-[#0096D6] group-hover:text-white"
+                accentClassName="text-black"
+                iconClassName="bg-white/85 text-[#0f7fd6] group-hover:bg-white group-hover:text-[#0f7fd6]"
+                cardClassName="min-h-[14rem] rounded-xl border-[#0f7fd6] bg-[#0f7fd6] p-5 shadow-[0_6px_18px_rgba(15,127,214,0.2)] hover:bg-[#198be3]"
+                descriptionClassName="text-black/85"
+                titleClassName="text-black"
               />
             ))}
             <Link
               href="#printer-models"
-              className="focus-ring group flex min-h-[17rem] flex-col justify-between rounded-2xl border border-dashed border-[#0096D6]/40 bg-[#0096D6]/[0.04] p-6 transition-all hover:-translate-y-0.5 hover:bg-[#0096D6]/[0.08]"
+              className="focus-ring group flex min-h-[14rem] flex-col justify-between rounded-xl border border-[#0f7fd6] bg-[#0f7fd6] p-5 shadow-[0_6px_18px_rgba(15,127,214,0.2)] transition-all hover:-translate-y-0.5 hover:bg-[#198be3]"
             >
-              <span className="grid h-12 w-12 place-items-center rounded-xl bg-[#0096D6]/10 text-[#0096D6]">
+              <span className="grid h-12 w-12 place-items-center rounded-xl bg-white/85 text-[#0f7fd6]">
                 <Icon name="error" className="h-6 w-6" />
               </span>
               <span>
-                <span className="block font-slab text-xl font-bold text-ink">Look up an error code</span>
-                <span className="mt-1.5 block text-[0.95rem] leading-relaxed text-slate">
+                <span className="block font-slab text-xl font-bold text-black">Look up an error code</span>
+                <span className="mt-1.5 block text-[0.95rem] leading-relaxed text-black/85">
                   Got a code on the screen like 5100, 0x97, or B200? Find what it means.
                 </span>
-                <span className="mt-4 inline-flex items-center gap-1 font-medium text-[#0096D6]">
+                <span className="mt-4 inline-flex items-center gap-1 font-medium text-black">
                   Browse codes <span aria-hidden className="transition-transform group-hover:translate-x-0.5">→</span>
                 </span>
               </span>
