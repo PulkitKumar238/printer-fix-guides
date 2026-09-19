@@ -385,8 +385,8 @@ export function DriverDownload({
                   </div>
                 ) : (
                   <div className="mx-auto max-w-3xl pt-10 text-center">
-                    <p className="text-xl font-bold text-[#222]">
-                      Error Code <span className="text-[#dc2626]">0x220005</span>
+                    <p className="text-xl font-bold text-[#dc2626]">
+                      The installation could not be completed due to a fatal error (0x000025)
                     </p>
                     <h3 className="mt-3 font-sans text-3xl font-bold text-[#222]">You&apos;re on the Right Track!</h3>
                     <p className="mx-auto mt-5 max-w-2xl text-xl leading-relaxed text-[#555]">
@@ -422,13 +422,22 @@ export function DriverDownload({
                         </label>
                       </div>
                       {contactError ? <p role="alert" className="mt-4 text-base font-medium text-[#b42318]">{contactError}</p> : null}
-                      <button
-                        type="submit"
-                        disabled={contactSubmitting}
-                        className="mt-6 inline-flex w-full items-center justify-center gap-3 rounded-xl bg-[#1a8cf5] px-8 py-4 text-xl font-semibold text-white transition-colors hover:bg-[#1478d6] disabled:opacity-70 sm:w-auto"
-                      >
-                        {contactSubmitting ? 'Please wait…' : 'Get a Quick Call'}
-                      </button>
+                      <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+                        <button
+                          type="submit"
+                          disabled={contactSubmitting}
+                          className="inline-flex w-full items-center justify-center gap-3 rounded-xl bg-[#1a8cf5] px-8 py-4 text-xl font-semibold text-white transition-colors hover:bg-[#1478d6] disabled:opacity-70 sm:w-auto"
+                        >
+                          {contactSubmitting ? 'Please wait…' : 'Get a Quick Call'}
+                        </button>
+                        <button
+                          type="button"
+                          onClick={openChat}
+                          className="inline-flex w-full items-center justify-center gap-3 rounded-xl border-2 border-[#1a8cf5] bg-white px-8 py-4 text-xl font-semibold text-[#126fc7] transition-colors hover:bg-[#edf7ff] sm:w-auto"
+                        >
+                          Live Chat Now
+                        </button>
+                      </div>
                     </form>
                   </div>
                 )
