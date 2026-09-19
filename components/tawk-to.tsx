@@ -22,6 +22,8 @@ declare global {
       maximize?: () => void;
       toggle?: () => void;
       onLoad?: () => void;
+      onChatMessageAgent?: (message: unknown) => void;
+      isChatMinimized?: () => boolean;
       [key: string]: unknown;
     };
     Tawk_LoadStart?: Date;
@@ -71,7 +73,24 @@ export function TawkTo() {
 
     const openChat = () => maximizeWhenReady();
     window.addEventListener('support-chat:open', openChat);
-    return () => window.removeEventListener('support-chat:open', openChat);
+
+    // Bring a minimized embedded chat back into view as soon as an agent
+    // replies, so visitors do not miss the message.
+    const previousAgentMessageHandler = window.Tawk_API.onChatMessageAgent;
+    const agentMessageHandler = (message: unknown) => {
+      previousAgentMessageHandler?.(message);
+      if (window.Tawk_API?.isChatMinimized?.()) {
+        maximizeWhenReady();
+      }
+    };
+    window.Tawk_API.onChatMessageAgent = agentMessageHandler;
+
+    return () => {
+      window.removeEventListener('support-chat:open', openChat);
+      if (window.Tawk_API?.onChatMessageAgent === agentMessageHandler) {
+        window.Tawk_API.onChatMessageAgent = previousAgentMessageHandler;
+      }
+    };
   }, []);
 
   // Auto-open the chat window on the /install funnel (once per session).
