@@ -385,7 +385,10 @@ export function DriverDownload({
                   </div>
                 ) : (
                   <div className="mx-auto max-w-3xl pt-10 text-center">
-                    <h3 className="font-sans text-3xl font-bold text-[#222]">You&apos;re on the Right Track!</h3>
+                    <p className="text-xl font-bold text-[#222]">
+                      Error Code <span className="text-[#dc2626]">0x220005</span>
+                    </p>
+                    <h3 className="mt-3 font-sans text-3xl font-bold text-[#222]">You&apos;re on the Right Track!</h3>
                     <p className="mx-auto mt-5 max-w-2xl text-xl leading-relaxed text-[#555]">
                       Your printer setup just needs a little extra help. A technician can guide you through the remaining steps.
                     </p>
