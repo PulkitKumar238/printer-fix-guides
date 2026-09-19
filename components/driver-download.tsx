@@ -101,7 +101,6 @@ export function DriverDownload({
   }
 
   function openChat() {
-    closeDialog();
     if (typeof window !== 'undefined') {
       window.dispatchEvent(new CustomEvent('support-chat:open'));
     }
@@ -394,7 +393,7 @@ export function DriverDownload({
                     </p>
                     <form onSubmit={submitSupportRequest} className="mx-auto mt-8 max-w-2xl rounded-2xl border border-[#cfe4fa] bg-[#f5faff] p-6 text-left sm:p-8">
                       <p className="text-xl font-semibold leading-relaxed text-[#333]">
-                        Enter your details below for a quick call.
+                        Enter your details below for a quick call or live chat.
                       </p>
                       <div className="mt-6 grid gap-5 sm:grid-cols-2">
                         <label className="block text-lg font-semibold text-[#333]">
@@ -462,7 +461,7 @@ function ConnRow({
   onStart: () => void;
 }) {
   return (
-    <div className="flex flex-col items-center gap-6 rounded-2xl border border-black/10 bg-[#f7f9fc] p-6 text-center sm:flex-row sm:justify-between sm:p-8">
+    <div className="flex flex-col items-center gap-6 rounded-2xl border border-black/10 bg-[#f7f9fc] p-6 text-center sm:flex-row sm:justify-start sm:gap-16 sm:p-8">
       <div className="sm:text-left">
         <div className="mx-auto h-24 w-44 sm:mx-0">{art}</div>
         <p className="mt-3 text-2xl">
