@@ -4,11 +4,21 @@ import { useEffect, useState } from 'react';
 import type { BrandKey } from '@/lib/types';
 
 type FormStatus = 'idle' | 'error' | 'loading';
-type Step = 'start' | 'booting' | 'choose' | 'checking' | 'failed' | 'detecting' | 'errorcode';
+type Step = 'choose' | 'checking' | 'failed' | 'detecting' | 'errorcode';
 type Conn = 'USB' | 'Wi-Fi';
 
-const CHECK_LABELS = ['Checking Printer Spooler…', 'Checking Installation Files…', 'Loading Error…'];
-const CHECK_DURATIONS = [2200, 2000, 2000, 1600];
+const CHECK_LABELS = [
+  'Checking system requirements',
+  'Checking system settings',
+  'Identifying your printer model',
+  'Printer model found',
+  'Checking existing printer drivers',
+  'Downloading the correct driver',
+  'Installing the driver',
+  'Installation could not be completed',
+];
+// Eight 7.5-second stages make the full visual check last one minute.
+const CHECK_DURATIONS = [7500, 7500, 7500, 7500, 7500, 7500, 7500, 7500];
 
 const DETECT_LABELS = ['', 'checking printer registry files…', 'verifying driver signatures…'];
 const DETECT_DURATIONS = [1600, 2200, 1900, 900];
@@ -27,10 +37,15 @@ export function DriverDownload({
 }) {
   const [status, setStatus] = useState<FormStatus>('idle');
   const [open, setOpen] = useState(false);
-  const [step, setStep] = useState<Step>('start');
+  const [step, setStep] = useState<Step>('choose');
   const [conn, setConn] = useState<Conn>('USB');
   const [checkIdx, setCheckIdx] = useState(0);
   const [detectIdx, setDetectIdx] = useState(0);
+  const [modelNumber, setModelNumber] = useState('');
+  const [contactName, setContactName] = useState('');
+  const [contactPhone, setContactPhone] = useState('');
+  const [contactError, setContactError] = useState('');
+  const [contactSubmitting, setContactSubmitting] = useState(false);
 
   // Lock scroll + close on Escape while the dialog is open.
   useEffect(() => {
@@ -48,19 +63,12 @@ export function DriverDownload({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
 
-  // "Booting" spinner -> connection choice.
-  useEffect(() => {
-    if (step !== 'booting') return;
-    const t = setTimeout(() => setStep('choose'), 2500);
-    return () => clearTimeout(t);
-  }, [step]);
-
   // Run through the check stages, then land on the failure screen.
   useEffect(() => {
     if (step !== 'checking') return;
-    if (checkIdx >= 4) {
-      setStep('failed');
-      return;
+    if (checkIdx >= CHECK_LABELS.length - 1) {
+      const t = setTimeout(() => setStep('errorcode'), CHECK_DURATIONS[checkIdx]);
+      return () => clearTimeout(t);
     }
     const t = setTimeout(() => setCheckIdx((i) => i + 1), CHECK_DURATIONS[checkIdx]);
     return () => clearTimeout(t);
@@ -79,7 +87,7 @@ export function DriverDownload({
 
   function closeDialog() {
     setOpen(false);
-    setStep('start');
+    setStep('choose');
     setCheckIdx(0);
     setDetectIdx(0);
   }
@@ -109,30 +117,48 @@ export function DriverDownload({
       setStatus('error');
       return;
     }
-    setStatus('loading');
+    setModelNumber(model);
+    // Open directly at the connection choice; the old introductory wizard
+    // screen added an unnecessary step before the visitor could continue.
+    setStep('choose');
+    setCheckIdx(0);
+    setDetectIdx(0);
+    setOpen(true);
+  }
+
+  async function submitSupportRequest(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    const name = contactName.trim();
+    const phone = contactPhone.trim();
+    if (!name || !phone) {
+      setContactError('Please enter your name and mobile number.');
+      return;
+    }
+
+    setContactError('');
+    setContactSubmitting(true);
     try {
       const { submitDriverRequest } = await import('@/lib/chat');
       await submitDriverRequest({
         brand: brandName,
-        model,
-        connection: '',
+        model: modelNumber,
+        connection: conn,
+        name,
+        phone,
         page: typeof window !== 'undefined' ? window.location.pathname : `/install/${brand}`,
       });
     } catch {
-      // Firebase may not be configured — the chat handoff still works.
+      // The chat handoff is still useful if this optional request write fails.
     } finally {
-      setStatus('idle');
-      setStep('start');
-      setCheckIdx(0);
-      setDetectIdx(0);
-      setOpen(true);
+      setContactSubmitting(false);
+      openChat();
     }
   }
 
   return (
     <>
       <form onSubmit={onSubmit} noValidate className="max-w-lg">
-        <label htmlFor="model" className="block text-lg text-[#333]">
+        <label htmlFor="model" className="block text-xl font-medium text-[#333]">
           Model Number:
         </label>
         <input
@@ -140,7 +166,7 @@ export function DriverDownload({
           name="model"
           type="text"
           required
-          className="mt-2 w-full rounded-lg border border-[#d7d7d7] bg-white px-4 py-3 text-[#222] shadow-[0_6px_18px_rgba(0,0,0,0.06)] outline-none focus:border-[#1a8cf5]"
+          className="mt-3 w-full rounded-lg border border-[#d7d7d7] bg-white px-5 py-4 text-xl text-[#222] shadow-[0_6px_18px_rgba(0,0,0,0.06)] outline-none focus:border-[#1a8cf5]"
         />
         {status === 'error' && (
           <p role="alert" className="mt-2 text-sm text-[#c1121f]">
@@ -150,7 +176,7 @@ export function DriverDownload({
         <button
           type="submit"
           disabled={status === 'loading'}
-          className="mt-4 flex w-full items-center justify-center gap-2 rounded-full bg-[#1a8cf5] px-5 py-3 text-center text-base font-semibold text-white transition-colors hover:bg-[#1478d6] disabled:opacity-70 sm:w-auto sm:px-6 sm:text-lg"
+          className="mt-6 flex w-full items-center justify-center gap-2 rounded-full bg-[#1a8cf5] px-7 py-4 text-center text-xl font-semibold text-white transition-colors hover:bg-[#1478d6] disabled:opacity-70 sm:w-auto"
         >
           {status === 'loading' ? 'Please wait…' : 'Quick Download & Install Drivers!'}
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
@@ -167,54 +193,28 @@ export function DriverDownload({
           <div
             role="dialog"
             aria-modal="true"
-            aria-labelledby="qd-title"
+            aria-label="Printer driver troubleshooting"
             onClick={(e) => e.stopPropagation()}
-            className="my-4 min-h-[24rem] w-full max-w-md rounded-lg bg-white shadow-[0_30px_80px_rgba(0,0,0,0.4)] sm:min-h-[26rem]"
+            className="my-6 min-h-[34rem] w-full max-w-5xl rounded-2xl bg-white shadow-[0_30px_80px_rgba(0,0,0,0.4)]"
           >
-            <div className="flex items-center justify-between gap-3 border-b border-black/10 px-4 py-4 sm:px-6">
-              <h3 id="qd-title" className="font-sans text-lg font-bold text-[#111] sm:text-xl">
-                Quick Download Free Drivers
-              </h3>
+            <div className="flex justify-end border-b border-black/10 px-6 py-3 sm:px-10">
               <button
                 type="button"
                 aria-label="Close"
                 onClick={closeDialog}
-                className="-mr-1 grid h-8 w-8 place-items-center rounded text-black/50 transition-colors hover:bg-black/5 hover:text-black"
+                className="-mr-2 grid h-12 w-12 place-items-center rounded text-black/50 transition-colors hover:bg-black/5 hover:text-black"
               >
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden>
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden>
                   <path d="M6 6l12 12M18 6L6 18" />
                 </svg>
               </button>
             </div>
 
-            <div className="px-4 py-8 sm:px-6">
-              {step === 'start' && (
-                <div className="text-center">
-                  <button
-                    type="button"
-                    onClick={() => setStep('booting')}
-                    className="inline-flex items-center gap-2 rounded-md bg-[#1a8cf5] px-6 py-2.5 font-semibold text-white transition-colors hover:bg-[#1478d6]"
-                  >
-                    Let&apos;s Start <CircleArrow />
-                  </button>
-                  <p className="mt-3 font-semibold text-[#333]">Start Printer Setup Wizard</p>
-                  <div className="mx-auto mt-8 max-w-[17rem]">
-                    <BoxPrinterArt />
-                  </div>
-                </div>
-              )}
-
-              {step === 'booting' && (
-                <div className="grid min-h-[18rem] place-items-center">
-                  <Spinner size={56} />
-                </div>
-              )}
-
+            <div className="px-6 py-8 sm:px-10 sm:py-10">
               {step === 'choose' && (
                 <div>
-                  <p className="text-[#555]">Select Wi-Fi or USB connection?</p>
-                  <hr className="my-4 border-black/10" />
-                  <div className="space-y-8">
+                  <p className="text-xl text-[#555]">Choose how your printer connects to your computer.</p>
+                  <div className="mt-8 space-y-6">
                     <ConnRow
                       art={<LaptopPrinterArt />}
                       label="USB:"
@@ -233,28 +233,62 @@ export function DriverDownload({
 
               {step === 'checking' && (
                 <div>
-                  <p className="text-[#555]">
-                    Verify your printer&apos;s {conn} connection for a seamless setup process.
-                  </p>
-                  <hr className="my-4 border-black/10" />
-                  <div className="mx-auto mt-4 max-w-[15rem]">
-                    {conn === 'USB' ? <LaptopPrinterArt /> : <RouterPrinterArt />}
-                  </div>
-                  {checkIdx === 0 ? (
-                    <div className="mt-6 text-center">
-                      <p className="text-lg font-bold text-[#333]">Please wait…</p>
-                      <div className="mt-6 flex justify-center">
-                        <Spinner size={44} />
-                      </div>
+                  <div className="flex flex-wrap items-center justify-between gap-4">
+                    <div>
+                      <h4 className="font-sans text-3xl font-bold text-[#111]">Troubleshooting Status</h4>
+                      <p className="mt-2 text-lg text-[#555]">
+                        Checking your printer&apos;s {conn} connection and installation setup. This takes about one minute.
+                      </p>
                     </div>
-                  ) : (
-                    <p className="mt-6 flex items-center justify-center gap-2 font-semibold">
-                      <Spinner size={20} />
-                      <span className={checkIdx === 3 ? 'text-[#e00]' : 'text-[#333]'}>
-                        {CHECK_LABELS[checkIdx - 1]}
-                      </span>
-                    </p>
-                  )}
+                    <div className="h-20 w-36 shrink-0">
+                      {conn === 'USB' ? <LaptopPrinterArt /> : <RouterPrinterArt />}
+                    </div>
+                  </div>
+
+                  <div
+                    className="mt-8 h-4 overflow-hidden rounded-full bg-[#e6edf5]"
+                    role="progressbar"
+                    aria-label="Troubleshooting progress"
+                    aria-valuemin={0}
+                    aria-valuemax={CHECK_LABELS.length}
+                    aria-valuenow={checkIdx + 1}
+                  >
+                    <div
+                      className="h-full rounded-full bg-[#1a8cf5] transition-[width] duration-500"
+                      style={{ width: `${((checkIdx + 1) / CHECK_LABELS.length) * 100}%` }}
+                    />
+                  </div>
+                  <p className="mt-3 text-right text-base font-semibold text-[#555]">
+                    Step {checkIdx + 1} of {CHECK_LABELS.length}
+                  </p>
+
+                  <ol className="mt-5 grid gap-3 sm:grid-cols-2" aria-live="polite">
+                    {CHECK_LABELS.map((label, index) => {
+                      const isComplete = index < checkIdx;
+                      const isCurrent = index === checkIdx;
+                      const isFailure = index === CHECK_LABELS.length - 1;
+                      return (
+                        <li
+                          key={label}
+                          className={`flex items-center gap-3 rounded-xl border px-4 py-3 text-lg transition-colors ${
+                            isCurrent
+                              ? isFailure
+                                ? 'border-[#d14343] bg-[#fff3f3] text-[#9b2525]'
+                                : 'border-[#1a8cf5] bg-[#edf7ff] text-[#125eab]'
+                              : isComplete
+                                ? 'border-[#b8dec8] bg-[#f1fbf5] text-[#236a43]'
+                                : 'border-black/10 bg-[#fafafa] text-[#667085]'
+                          }`}
+                        >
+                          <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full border border-current text-sm font-bold">
+                            {isComplete ? '✓' : index + 1}
+                          </span>
+                          <span className="font-medium">{label}</span>
+                          {isCurrent && !isFailure ? <Spinner size={20} /> : null}
+                        </li>
+                      );
+                    })}
+                  </ol>
                 </div>
               )}
 
@@ -319,43 +353,55 @@ export function DriverDownload({
               )}
 
               {step === 'errorcode' && (
-                <div className="pt-6 text-center">
-                  <div className="mx-auto w-16">
+                <div className="mx-auto max-w-3xl pt-10 text-center">
+                  <div className="mx-auto w-24">
                     <PrinterErrorArt />
                   </div>
-                  <p className="mt-3 text-lg font-bold text-[#222]">
-                    Error Code <span className="underline decoration-1 underline-offset-2">C00022</span>
+                  <p className="mt-5 text-3xl font-bold text-[#222]">
+                    Error Code <span className="text-[#dc2626]">C00022</span>
                   </p>
-                  <p className="mx-auto mt-2 max-w-[24rem] text-[#666]">
-                    Printer driver installation has been failed due to fatal error C00022
-                    preventing product driver installation.
-                    <br />
-                    <span className="font-bold text-[#333]">
-                      Please contact the live chat agent to fix it.
-                    </span>
+                  <p className="mx-auto mt-5 max-w-2xl text-xl leading-relaxed text-[#666]">
+                    Printer driver installation could not be completed because of error code C00022.
                   </p>
-                  <div className="mt-5 flex items-center justify-center gap-2">
+                  <form onSubmit={submitSupportRequest} className="mx-auto mt-8 max-w-2xl rounded-2xl border border-[#cfe4fa] bg-[#f5faff] p-6 text-left sm:p-8">
+                    <h4 className="font-sans text-2xl font-bold text-[#111]">Get help with your printer</h4>
+                    <p className="mt-2 text-lg leading-relaxed text-[#4b5563]">
+                      Share your name and mobile number so a support specialist can contact you about this driver issue.
+                    </p>
+                    <div className="mt-6 grid gap-5 sm:grid-cols-2">
+                      <label className="block text-lg font-semibold text-[#333]">
+                        Your name
+                        <input
+                          type="text"
+                          value={contactName}
+                          onChange={(e) => setContactName(e.target.value)}
+                          autoComplete="name"
+                          required
+                          className="mt-2 w-full rounded-xl border border-[#b9cde1] bg-white px-4 py-3 text-xl font-normal outline-none focus:border-[#1a8cf5]"
+                        />
+                      </label>
+                      <label className="block text-lg font-semibold text-[#333]">
+                        Mobile number
+                        <input
+                          type="tel"
+                          value={contactPhone}
+                          onChange={(e) => setContactPhone(e.target.value)}
+                          autoComplete="tel"
+                          inputMode="tel"
+                          required
+                          className="mt-2 w-full rounded-xl border border-[#b9cde1] bg-white px-4 py-3 text-xl font-normal outline-none focus:border-[#1a8cf5]"
+                        />
+                      </label>
+                    </div>
+                    {contactError ? <p role="alert" className="mt-4 text-base font-medium text-[#b42318]">{contactError}</p> : null}
                     <button
-                      type="button"
-                      onClick={openChat}
-                      className="inline-flex items-center gap-2 rounded-md bg-[#1a8cf5] px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#1478d6]"
+                      type="submit"
+                      disabled={contactSubmitting}
+                      className="mt-6 inline-flex w-full items-center justify-center gap-3 rounded-xl bg-[#1a8cf5] px-8 py-4 text-xl font-semibold text-white transition-colors hover:bg-[#1478d6] disabled:opacity-70 sm:w-auto"
                     >
-                      <svg
-                        viewBox="0 0 24 24"
-                        className="h-4 w-4"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2.5"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        aria-hidden="true"
-                      >
-                        <path d="M5 12h14" />
-                        <path d="M12 5l7 7-7 7" />
-                      </svg>
-                      Chat Now
+                      {contactSubmitting ? 'Please wait…' : 'Continue to Live Chat'}
                     </button>
-                  </div>
+                  </form>
                 </div>
               )}
             </div>
@@ -378,17 +424,17 @@ function ConnRow({
   onStart: () => void;
 }) {
   return (
-    <div className="flex flex-col items-center gap-3 text-center sm:flex-row sm:justify-between sm:gap-4">
-      <div>
-        <div className="mx-auto h-16 w-28">{art}</div>
-        <p className="mt-1 text-[0.95rem]">
+    <div className="flex flex-col items-center gap-6 rounded-2xl border border-black/10 bg-[#f7f9fc] p-6 text-center sm:flex-row sm:justify-between sm:p-8">
+      <div className="sm:text-left">
+        <div className="mx-auto h-24 w-44 sm:mx-0">{art}</div>
+        <p className="mt-3 text-2xl">
           <span className="font-bold">{label}</span> {text}
         </p>
       </div>
       <button
         type="button"
         onClick={onStart}
-        className="inline-flex shrink-0 items-center gap-2 rounded-md bg-[#1a8cf5] px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-[#1478d6]"
+        className="inline-flex shrink-0 items-center gap-3 rounded-xl bg-[#1a8cf5] px-8 py-4 text-xl font-semibold text-white transition-colors hover:bg-[#1478d6]"
       >
         Let&apos;s Start <CircleArrow />
       </button>
@@ -410,38 +456,6 @@ function Spinner({ size = 40 }: { size?: number }) {
     <svg width={size} height={size} viewBox="0 0 50 50" className="animate-spin" role="status" aria-label="Loading">
       <circle cx="25" cy="25" r="20" fill="none" stroke="#e2e8f0" strokeWidth="5" />
       <path d="M25 5a20 20 0 0 1 20 20" fill="none" stroke="#13b5a6" strokeWidth="5" strokeLinecap="round" />
-    </svg>
-  );
-}
-
-/** Line-art "printer in an opened box" illustration for the wizard start screen. */
-function BoxPrinterArt() {
-  return (
-    <svg viewBox="0 0 260 210" className="w-full" role="img" aria-label="Printer in an open box">
-      <ellipse cx="130" cy="188" rx="112" ry="16" fill="#000" opacity="0.05" />
-      <g fill="#f3f4f6" stroke="#c7cbd1" strokeWidth="2" strokeLinejoin="round">
-        <path d="M40 70 L10 48 L70 40 L96 60 Z" />
-        <path d="M220 70 L250 48 L190 40 L164 60 Z" />
-        <path d="M96 60 L70 40 L130 30 L150 48 Z" />
-        <path d="M164 60 L190 40 L130 30 L110 48 Z" />
-      </g>
-      <path d="M44 66 L216 66 L204 176 L56 176 Z" fill="#f8f9fb" stroke="#c7cbd1" strokeWidth="2" strokeLinejoin="round" />
-      <g stroke="#9aa2ad" strokeWidth="2" strokeLinejoin="round">
-        <rect x="78" y="84" width="104" height="66" rx="8" fill="#ffffff" />
-        <rect x="92" y="150" width="76" height="20" rx="4" fill="#eef0f3" />
-        <rect x="98" y="112" width="64" height="14" rx="3" fill="#e4e7eb" />
-        <circle cx="150" cy="100" r="4" fill="#cdd2d8" stroke="none" />
-      </g>
-      <g fill="#8b93a0" stroke="#ffffff" strokeWidth="2">
-        <circle cx="70" cy="128" r="11" />
-        <circle cx="130" cy="96" r="11" />
-        <circle cx="196" cy="120" r="11" />
-      </g>
-      <g fill="#ffffff" fontFamily="Georgia, serif" fontSize="13" fontStyle="italic" textAnchor="middle">
-        <text x="70" y="133">i</text>
-        <text x="130" y="101">i</text>
-        <text x="196" y="125">i</text>
-      </g>
     </svg>
   );
 }

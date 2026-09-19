@@ -15,9 +15,6 @@ export function generateStaticParams() {
 
 export const dynamicParams = false;
 
-/** Brands with a real product photo under /public/images/brands. */
-const withPhoto = new Set(['hp', 'canon', 'epson', 'brother']);
-
 /** Real logo files under /public/images/brands/logos, with intrinsic size. */
 const brandLogos: Partial<Record<string, { w: number; h: number }>> = {
   hp: { w: 124, h: 102 },
@@ -54,7 +51,7 @@ export default function InstallBrandPage({ params }: { params: { brand: string }
 
       {/* Brand sub-nav */}
       <nav aria-label={`${brand.name} setup`} className="border-b border-black/10 bg-white">
-        <div className="mx-auto flex w-full max-w-6xl flex-wrap items-center gap-x-6 gap-y-2 px-5 py-4 sm:px-8">
+        <div className="mx-auto flex w-full max-w-[90rem] flex-wrap items-center gap-x-8 gap-y-3 px-6 py-5 sm:px-10">
           <Link href="/install" aria-label={`${brand.name} home`} className="focus-ring flex shrink-0 items-center gap-2 rounded">
             {brandLogos[brand.key] ? (
               <Image
@@ -62,13 +59,13 @@ export default function InstallBrandPage({ params }: { params: { brand: string }
                 alt={`${brand.name} logo`}
                 width={brandLogos[brand.key]!.w}
                 height={brandLogos[brand.key]!.h}
-                className="h-9 w-auto max-w-[160px] object-contain"
+                className="h-20 w-auto max-w-[320px] object-contain"
                 priority
               />
             ) : (
               <>
                 <span
-                  className="grid h-9 w-9 place-items-center rounded-lg text-white"
+                  className="grid h-20 w-20 place-items-center rounded-lg text-white"
                   style={{ background: brand.theme.bg } as CSSProperties}
                 >
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
@@ -78,7 +75,7 @@ export default function InstallBrandPage({ params }: { params: { brand: string }
                   </svg>
                 </span>
                 <span
-                  className="text-2xl font-extrabold tracking-tight"
+                  className="text-4xl font-extrabold tracking-tight"
                   style={{ color: brand.theme.ink } as CSSProperties}
                 >
                   {brand.name}
@@ -86,7 +83,7 @@ export default function InstallBrandPage({ params }: { params: { brand: string }
               </>
             )}
           </Link>
-          <ul className="flex flex-1 flex-wrap items-center justify-center gap-x-8 gap-y-2 text-[1.05rem]">
+          <ul className="flex flex-1 flex-wrap items-center justify-center gap-x-10 gap-y-3 text-xl">
             {subNav.map((label, i) => (
               <li key={label}>
                 <Link
@@ -101,73 +98,24 @@ export default function InstallBrandPage({ params }: { params: { brand: string }
         </div>
       </nav>
 
-      {/* Hero */}
-      <section
-        className="relative overflow-hidden"
-        style={{ backgroundImage: `linear-gradient(160deg, ${brand.theme.bg}, ${brand.theme.ink})` } as CSSProperties}
-      >
-        <div className="mx-auto grid w-full max-w-6xl items-center gap-8 px-5 py-12 sm:px-8 sm:py-16 lg:grid-cols-[1.05fr_1fr] lg:py-20">
-          <div>
-            <h1 className="font-sans text-4xl font-bold leading-tight text-white sm:text-5xl">
-              Download Free Printer Drivers
-            </h1>
-            <ul className="mt-6 space-y-2 text-lg text-white">
-              <li className="flex gap-3">
-                <span aria-hidden className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-white" />
-                <span className="font-semibold">Make sure your printer is powered on</span>
-              </li>
-              <li className="flex gap-3">
-                <span aria-hidden className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-white" />
-                <span className="font-semibold">Click on Download to install the drivers</span>
-              </li>
-            </ul>
-            <a
-              href="#get"
-              className="focus-ring mt-8 inline-flex items-center gap-2 rounded-full bg-[#1a8cf5] px-7 py-3.5 text-lg font-semibold text-white shadow-[0_10px_30px_rgba(0,0,0,0.3)] ring-1 ring-white/25 transition-colors hover:bg-[#1478d6]"
-            >
-              Download Now
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-                <path d="M12 3v12m0 0 4-4m-4 4-4-4M4 21h16" />
-              </svg>
-            </a>
-          </div>
-          {withPhoto.has(brand.key) ? (
-            <div className="relative h-56 w-[26rem] max-w-full justify-self-center overflow-hidden rounded-2xl bg-white shadow-[0_25px_60px_rgba(0,0,0,0.35)] sm:h-72 sm:-rotate-2 lg:justify-self-end">
-              <Image
-                src={`/images/brands/${brand.key}.jpg`}
-                alt={`${brand.name} printers`}
-                fill
-                sizes="(max-width: 1024px) 90vw, 26rem"
-                className="object-cover"
-                priority
-              />
-            </div>
-          ) : (
-            <div className="justify-self-center lg:justify-self-end">
-              <PrinterArt />
-            </div>
-          )}
-        </div>
-      </section>
-
       {/* Quick download */}
       <section id="get" className="scroll-mt-24 bg-[#f2f2f2]">
-        <div className="mx-auto grid w-full max-w-6xl gap-10 px-5 py-12 sm:px-8 sm:py-16 lg:grid-cols-2">
+        <div className="mx-auto grid w-full max-w-[90rem] gap-14 px-6 py-16 sm:px-10 sm:py-20 lg:grid-cols-2 lg:gap-20">
           <div>
-            <h2 className="font-sans text-[1.65rem] font-extrabold leading-tight text-[#111] sm:text-4xl">
-              Quick Download Free Drivers
-            </h2>
-            <p className="mt-3 font-bold text-[#333]">Fill the form and download your printer driver</p>
-            <div className="mt-6">
+            <h1 className="font-sans text-4xl font-extrabold leading-tight text-[#111] sm:text-5xl">
+              Get Your {brand.name} Printer Driver
+            </h1>
+            <p className="mt-4 text-xl font-bold text-[#333]">Enter your model number to get started.</p>
+            <div className="mt-8">
               <DriverDownload brand={brand.key} brandName={brand.name} />
             </div>
           </div>
           <div>
-            <h2 className="font-sans text-2xl font-bold text-[#111] sm:text-3xl">
+            <h2 className="font-sans text-3xl font-bold text-[#111] sm:text-4xl">
               How to find printer model number?
             </h2>
-            <p className="mt-2 text-lg text-[#444]">The product name is on the front of your device.</p>
-            <div className="mt-6 max-w-md">
+            <p className="mt-3 text-xl text-[#444]">The product name is on the front of your device.</p>
+            <div className="mt-8 max-w-xl">
               <ModelLabelArt brandName={brand.name} />
             </div>
           </div>
@@ -183,21 +131,6 @@ export default function InstallBrandPage({ params }: { params: { brand: string }
         </p>
       </div>
     </div>
-  );
-}
-
-/** Simple printer illustration for brands without a product photo. */
-function PrinterArt() {
-  return (
-    <svg viewBox="0 0 320 260" className="w-full max-w-md drop-shadow-2xl" role="img" aria-label="Printer illustration">
-      <rect x="40" y="150" width="240" height="80" rx="10" fill="#ffffff" />
-      <rect x="64" y="70" width="192" height="90" rx="8" fill="#ffffff" />
-      <rect x="88" y="44" width="144" height="34" rx="6" fill="#ffffff" opacity="0.85" />
-      <rect x="150" y="120" width="120" height="10" rx="5" fill="#0d0d0d" opacity="0.25" />
-      <rect x="64" y="182" width="150" height="30" rx="6" fill="#0d0d0d" opacity="0.2" />
-      <circle cx="244" cy="197" r="9" fill="#0d0d0d" opacity="0.35" />
-      <rect x="112" y="16" width="96" height="20" rx="4" fill="#ffffff" opacity="0.7" />
-    </svg>
   );
 }
 

@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { Inter, Zilla_Slab, JetBrains_Mono } from 'next/font/google';
 import './globals.css';
 import { Header } from '@/components/header';
-import { Footer } from '@/components/footer';
+import { HomeFooter } from '@/components/home-footer';
 // Firebase-backed chat widget — replaced by tawk.to (kept for reference).
 // import { SupportChatLoader } from '@/components/support-chat-loader';
 import { TawkTo } from '@/components/tawk-to';
@@ -84,7 +84,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <main id="main" className="flex-1">
           {children}
         </main>
-        <Footer />
+        <HomeFooter />
         {/* <SupportChatLoader /> */}
         <TawkTo />
       </body>

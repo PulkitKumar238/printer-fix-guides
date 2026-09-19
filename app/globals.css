@@ -8,6 +8,9 @@
   }
 
   html {
+    /* A comfortable 20px base size keeps every rem-based control and body
+       label legible for the older audience this site is designed to serve. */
+    font-size: 125%;
     scroll-behavior: smooth;
   }
 
