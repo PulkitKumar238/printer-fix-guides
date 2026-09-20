@@ -58,9 +58,19 @@ export async function POST(request: Request) {
 
   const visitor = visitorDetails();
   const brand = text(payload.brand) || 'Printer';
+  // FormSubmit normally learns this from the browser's referrer. This route
+  // forwards requests server-to-server, so include the originating page
+  // explicitly to keep FormSubmit from rejecting a valid submission.
+  const formUrl = request.headers.get('referer') ?? request.headers.get('origin') ?? new URL(request.url).origin;
+  const formOrigin = request.headers.get('origin') ?? new URL(formUrl).origin;
   const formSubmitResponse = await fetch(FORMSUBMIT_ENDPOINT, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+    headers: {
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+      Origin: formOrigin,
+      Referer: formUrl,
+    },
     body: JSON.stringify({
       name,
       phone,
@@ -71,12 +81,14 @@ export async function POST(request: Request) {
       model: text(payload.model),
       connection: text(payload.connection),
       error_code: text(payload.errorCode),
+      _url: formUrl,
       _subject: `New ${brand} printer support lead`,
       _template: 'table',
     }),
   });
 
-  if (!formSubmitResponse.ok) {
+  const formSubmitBody = (await formSubmitResponse.json().catch(() => null)) as { success?: boolean | string } | null;
+  if (!formSubmitResponse.ok || formSubmitBody?.success !== true && formSubmitBody?.success !== 'true') {
     return NextResponse.json({ error: 'Could not submit lead.' }, { status: 502 });
   }
 
