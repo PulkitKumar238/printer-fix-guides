@@ -422,7 +422,7 @@ export function DriverDownload({
                           />
                         </label>
                         <label className="block text-lg font-semibold text-[#333]">
-                          Country / calling code
+                          Choose Country
                           <select
                             value={phoneCountry}
                             onChange={(e) => setPhoneCountry(e.target.value as (typeof PHONE_COUNTRIES)[number]['value'])}
@@ -437,7 +437,7 @@ export function DriverDownload({
                           </select>
                         </label>
                         <label className="block text-lg font-semibold text-[#333]">
-                          Mobile number
+                          Home or Mobile Number
                           <input
                             type="tel"
                             value={contactPhone}
