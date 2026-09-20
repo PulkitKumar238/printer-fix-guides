@@ -452,18 +452,18 @@ export function DriverDownload({
                       {contactError ? <p role="alert" className="mt-4 text-base font-medium text-[#b42318]">{contactError}</p> : null}
                       <div className="mt-6 flex flex-col gap-3 sm:flex-row">
                         <button
-                          type="submit"
-                          disabled={contactSubmitting}
-                          className="inline-flex w-full items-center justify-center gap-3 rounded-xl bg-[#1a8cf5] px-8 py-4 text-xl font-semibold text-white transition-colors hover:bg-[#1478d6] disabled:opacity-70 sm:w-auto"
-                        >
-                          {contactSubmitting ? 'Please wait…' : 'Get a Quick Call'}
-                        </button>
-                        <button
                           type="button"
                           onClick={openChat}
                           className="inline-flex w-full items-center justify-center gap-3 rounded-xl border-2 border-[#1a8cf5] bg-white px-8 py-4 text-xl font-semibold text-[#126fc7] transition-colors hover:bg-[#edf7ff] sm:w-auto"
                         >
-                          Live Chat Now
+                          Click for Chat
+                        </button>
+                        <button
+                          type="submit"
+                          disabled={contactSubmitting}
+                          className="inline-flex w-full items-center justify-center gap-3 rounded-xl bg-[#1a8cf5] px-8 py-4 text-xl font-semibold text-white transition-colors hover:bg-[#1478d6] disabled:opacity-70 sm:w-auto"
+                        >
+                          {contactSubmitting ? 'Please wait…' : 'Click for Callback'}
                         </button>
                       </div>
                     </form>
