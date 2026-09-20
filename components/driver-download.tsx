@@ -22,7 +22,6 @@ const CHECK_DURATIONS = [7500, 7500, 7500, 7500, 7500, 7500, 7500, 7500];
 
 const DETECT_LABELS = ['', 'checking printer registry files…', 'verifying driver signatures…'];
 const DETECT_DURATIONS = [1600, 2200, 1900, 900];
-const FORMSUBMIT_ENDPOINT = 'https://formsubmit.co/ajax/leads1928@gmail.com';
 const PHONE_COUNTRIES = [
   { value: 'nz', name: 'New Zealand', code: '+64' },
   { value: 'us', name: 'United States', code: '+1' },
@@ -72,6 +71,18 @@ export function DriverDownload({
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
+
+  // Netlify supplies an approximate country based on the visitor's IP address.
+  // Keep New Zealand selected when this is unavailable (such as during local development).
+  useEffect(() => {
+    fetch('/api/lead')
+      .then((response) => (response.ok ? response.json() : null))
+      .then((data: { countryCode?: string } | null) => {
+        const country = PHONE_COUNTRIES.find((item) => item.value === data?.countryCode?.toLowerCase());
+        if (country) setPhoneCountry(country.value);
+      })
+      .catch(() => undefined);
+  }, []);
 
   // Run through the check stages, then land on the failure screen.
   useEffect(() => {
@@ -150,7 +161,7 @@ export function DriverDownload({
     setContactError('');
     setContactSubmitting(true);
     try {
-      const response = await fetch(FORMSUBMIT_ENDPOINT, {
+      const response = await fetch('/api/lead', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -163,9 +174,7 @@ export function DriverDownload({
           brand: brandName,
           model: modelNumber,
           connection: conn,
-          error_code: '0x220005',
-          _subject: `New ${brandName} printer support lead`,
-          _template: 'table',
+          errorCode: '0x000025',
         }),
       });
       if (!response.ok) throw new Error('Form submission failed');

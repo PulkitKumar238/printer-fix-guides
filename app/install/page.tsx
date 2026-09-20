@@ -92,26 +92,27 @@ export default function InstallHubPage() {
                 icon={guide.icon}
                 title={guide.shortTitle}
                 description={guide.cardDescription}
-                accentClassName="text-black"
-                iconClassName="bg-white/85 text-[#0f7fd6] group-hover:bg-white group-hover:text-[#0f7fd6]"
-                cardClassName="min-h-[14rem] rounded-xl border-[#0f7fd6] bg-[#0f7fd6] p-5 shadow-[0_6px_18px_rgba(15,127,214,0.2)] hover:bg-[#198be3]"
-                descriptionClassName="text-black/85"
-                titleClassName="text-black"
+                accentClassName="text-white"
+                iconClassName="bg-[#eaf4ff] text-[#114dbf] group-hover:bg-[#dcecff]"
+                cardClassName="min-h-[14rem] rounded-2xl border-2 border-[#273d5b] bg-white p-6 shadow-[0_5px_14px_rgba(17,40,75,0.16)] hover:border-[#114dbf] hover:bg-[#fbfdff]"
+                descriptionClassName="text-[#38485d]"
+                titleClassName="text-[#163e7d]"
+                ctaClassName="rounded-lg bg-[#114dbf] px-5 py-3 text-sm font-bold uppercase tracking-wide transition-colors group-hover:bg-[#0b3a94]"
               />
             ))}
             <Link
               href="#printer-models"
-              className="focus-ring group flex min-h-[14rem] flex-col justify-between rounded-xl border border-[#0f7fd6] bg-[#0f7fd6] p-5 shadow-[0_6px_18px_rgba(15,127,214,0.2)] transition-all hover:-translate-y-0.5 hover:bg-[#198be3]"
+              className="focus-ring group flex min-h-[14rem] flex-col justify-between rounded-2xl border-2 border-[#273d5b] bg-white p-6 shadow-[0_5px_14px_rgba(17,40,75,0.16)] transition-all hover:-translate-y-0.5 hover:border-[#114dbf] hover:bg-[#fbfdff]"
             >
-              <span className="grid h-12 w-12 place-items-center rounded-xl bg-white/85 text-[#0f7fd6]">
+              <span className="grid h-12 w-12 place-items-center rounded-xl bg-[#eaf4ff] text-[#114dbf]">
                 <Icon name="error" className="h-6 w-6" />
               </span>
               <span>
-                <span className="block font-slab text-xl font-bold text-black">Look up an error code</span>
-                <span className="mt-1.5 block text-[0.95rem] leading-relaxed text-black/85">
+                <span className="block font-slab text-xl font-bold text-[#163e7d]">Look up an error code</span>
+                <span className="mt-1.5 block text-[0.95rem] leading-relaxed text-[#38485d]">
                   Got a code on the screen like 5100, 0x97, or B200? Find what it means.
                 </span>
-                <span className="mt-4 inline-flex items-center gap-1 font-medium text-black">
+                <span className="mt-4 inline-flex items-center gap-1 rounded-lg bg-[#114dbf] px-5 py-3 text-sm font-bold uppercase tracking-wide text-white transition-colors group-hover:bg-[#0b3a94]">
                   Browse codes <span aria-hidden className="transition-transform group-hover:translate-x-0.5">→</span>
                 </span>
               </span>

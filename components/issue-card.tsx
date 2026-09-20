@@ -14,6 +14,7 @@ export function IssueCard({
   cardClassName = '',
   descriptionClassName = 'text-slate',
   titleClassName = 'text-ink',
+  ctaClassName = '',
 }: {
   href: string;
   icon: IconKey;
@@ -26,6 +27,7 @@ export function IssueCard({
   cardClassName?: string;
   descriptionClassName?: string;
   titleClassName?: string;
+  ctaClassName?: string;
 }) {
   return (
     <Link
@@ -37,7 +39,7 @@ export function IssueCard({
       </span>
       <h3 className={`text-xl font-bold ${titleClassName}`}>{title}</h3>
       <p className={`mt-1.5 flex-1 text-[0.95rem] leading-relaxed ${descriptionClassName}`}>{description}</p>
-      <span className={`mt-4 inline-flex items-center gap-1 font-medium ${accentClassName}`}>
+      <span className={`mt-4 inline-flex items-center gap-1 font-medium ${accentClassName} ${ctaClassName}`}>
         {cta}
         <span aria-hidden className="transition-transform group-hover:translate-x-0.5">→</span>
       </span>
