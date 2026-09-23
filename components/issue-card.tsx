@@ -8,7 +8,7 @@ export function IssueCard({
   icon,
   title,
   description,
-  cta = 'Fix this',
+  cta = 'Choose',
   accentClassName = 'text-amber',
   iconClassName = 'bg-amber/10 text-amber group-hover:bg-amber group-hover:text-surface',
   cardClassName = '',

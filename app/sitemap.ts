@@ -41,6 +41,22 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.6,
   }));
 
+  const brandCodes = ['one', 'two', 'three', 'four', 'five'];
+  const selectionPages: MetadataRoute.Sitemap = allGuides.map((guide) => ({
+    url: url(`/guide/select/${guide.slug}`),
+    lastModified: now,
+    changeFrequency: 'monthly',
+    priority: 0.7,
+  }));
+  const topicBrandPages: MetadataRoute.Sitemap = brandCodes.flatMap((brandCode) =>
+    allGuides.map((guide) => ({
+      url: url(`/guide/${brandCode}/${guide.slug}`),
+      lastModified: now,
+      changeFrequency: 'monthly' as const,
+      priority: 0.6,
+    })),
+  );
+
   const errorPages: MetadataRoute.Sitemap = errorCodes.map((e) => ({
     url: url(`/errors/${e.code.toLowerCase()}`),
     lastModified: now,
@@ -48,5 +64,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.6,
   }));
 
-  return [...staticPages, ...guidePages, ...brandPages, ...installPages, ...errorPages];
+  return [
+    ...staticPages,
+    ...guidePages,
+    ...brandPages,
+    ...installPages,
+    ...selectionPages,
+    ...topicBrandPages,
+    ...errorPages,
+  ];
 }

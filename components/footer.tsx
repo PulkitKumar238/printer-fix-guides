@@ -37,7 +37,7 @@ export function Footer() {
             Problem guides
           </h2>
           <ul className="space-y-2.5 text-[0.95rem]">
-            {allGuides.map((g) => (
+            {allGuides.filter((guide) => guide.slug !== 'drivers').map((g) => (
               <li key={g.slug}>
                 <Link href={`/${g.slug}`} className="text-paper/85 transition-colors hover:text-amber">
                   {g.shortTitle}

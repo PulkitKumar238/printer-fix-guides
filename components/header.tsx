@@ -7,15 +7,15 @@ import { allGuides } from '@/content/guides';
 import { allBrands } from '@/content/brands';
 import { site } from '@/lib/site';
 
-const navGuides = allGuides.slice(0, 7);
+const navGuides = allGuides.filter((guide) => guide.slug !== 'drivers');
 
 export function Header() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
 
-  // The /install printer-setup pages carry their own top nav, matching the
-  // standalone printer-setup layout — hide the main PrinterFix header there.
-  if (pathname === '/install' || pathname.startsWith('/install/')) {
+  // Final printer-support pages carry their own standalone navigation.
+  const isFinalGuidePage = /^\/guide\/(one|two|three|four|five)\//.test(pathname);
+  if (pathname === '/install' || pathname.startsWith('/install/') || isFinalGuidePage) {
     return null;
   }
 
@@ -38,7 +38,6 @@ export function Header() {
         <nav aria-label="Primary" className="hidden items-center gap-1 lg:flex">
           <NavLink href="/setup" pathname={pathname}>Setup</NavLink>
           <NavLink href="/offline" pathname={pathname}>Offline</NavLink>
-          <NavLink href="/drivers" pathname={pathname}>Drivers</NavLink>
           <NavLink href="/install" pathname={pathname}>Printer setup</NavLink>
           <NavLink href="/wifi" pathname={pathname}>Wi-Fi</NavLink>
           <NavLink href="/not-printing" pathname={pathname}>Not printing</NavLink>

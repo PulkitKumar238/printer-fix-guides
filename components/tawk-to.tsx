@@ -4,11 +4,11 @@ import { useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 
 /**
- * Loads the tawk.to live-chat widget on every page and bridges the site's
+ * Loads the tawk.to live-chat widget after the first two funnel steps and bridges the site's
  * existing `support-chat:open` event to it, so every "Chat Now" / "Fix Issue" /
  * "Need Assistance?" trigger opens the tawk.to widget.
  *
- * On the /install printer-setup funnel the chat window is auto-opened
+ * On a final printer-support page the chat window is auto-opened
  * (maximised) once per session instead of sitting collapsed as a bubble.
  *
  * This is the active visitor-facing support widget.
@@ -24,6 +24,8 @@ declare global {
       onLoad?: () => void;
       onChatMessageAgent?: (message: unknown) => void;
       isChatMinimized?: () => boolean;
+      hideWidget?: () => void;
+      showWidget?: () => void;
       [key: string]: unknown;
     };
     Tawk_LoadStart?: Date;
@@ -54,9 +56,16 @@ function maximizeWhenReady() {
 
 export function TawkTo() {
   const pathname = usePathname();
+  const hideOnCurrentPage = pathname === '/' || pathname.startsWith('/guide/select/');
 
-  // One-time: inject the embed + bridge in-app triggers to the widget.
+  // Keep chat completely off the front page and brand-selection step.
+  // If a visitor navigates back after the widget has loaded, hide it again.
   useEffect(() => {
+    if (hideOnCurrentPage) {
+      window.Tawk_API?.hideWidget?.();
+      return;
+    }
+
     window.Tawk_API = window.Tawk_API || {};
     window.Tawk_LoadStart = new Date();
 
@@ -69,6 +78,8 @@ export function TawkTo() {
       s1.setAttribute('crossorigin', '*');
       const s0 = document.getElementsByTagName('script')[0];
       s0?.parentNode?.insertBefore(s1, s0);
+    } else {
+      window.Tawk_API.showWidget?.();
     }
 
     const openChat = () => maximizeWhenReady();
@@ -91,11 +102,11 @@ export function TawkTo() {
         window.Tawk_API.onChatMessageAgent = previousAgentMessageHandler;
       }
     };
-  }, []);
+  }, [hideOnCurrentPage]);
 
-  // Auto-open the chat window on the /install funnel (once per session).
+  // Auto-open chat on the final support screen (once per session).
   useEffect(() => {
-    const onFunnel = pathname === '/install' || pathname.startsWith('/install/');
+    const onFunnel = pathname.startsWith('/install/') || /^\/guide\/(one|two|three|four|five)\//.test(pathname);
     if (!onFunnel) return;
 
     let opened = false;
