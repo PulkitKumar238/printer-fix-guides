@@ -16,11 +16,7 @@
 
   body {
     @apply bg-paper text-ink font-sans antialiased;
-    /* Subtle paper-grain texture layered over the warm paper background
-       instead of a flat fill. The SVG noise is tiny and tiles seamlessly. */
-    background-image: url("/textures/grain.svg");
-    background-repeat: repeat;
-    background-size: 180px 180px;
+    background-image: none;
   }
 
   h1, h2, h3, h4 {
@@ -29,7 +25,7 @@
   }
 
   ::selection {
-    background-color: rgba(255, 107, 53, 0.22);
+    background-color: rgba(20, 111, 209, 0.2);
   }
 
   /* Honour reduced-motion preferences across the site. */

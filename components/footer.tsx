@@ -26,9 +26,9 @@ export function Footer() {
               Printer<span className="text-amber">Fix</span>
             </span>
           </Link>
-          <p className="mt-4 text-[0.95rem] leading-relaxed text-paper/70">
-            {site.tagline} Independent troubleshooting guides — no
-            upsells, real people when you need help.
+          <p className="mt-4 text-xs leading-relaxed text-paper/65">
+            Our guides can help you understand common printer problems and find the
+            appropriate solution.
           </p>
         </div>
 
@@ -36,7 +36,7 @@ export function Footer() {
           <h2 className="mb-4 text-xs font-semibold uppercase tracking-widest text-paper/50">
             Problem guides
           </h2>
-          <ul className="space-y-2.5 text-[0.95rem]">
+          <ul className="space-y-2 text-xs">
             {allGuides.filter((guide) => guide.slug !== 'drivers').map((g) => (
               <li key={g.slug}>
                 <Link href={`/${g.slug}`} className="text-paper/85 transition-colors hover:text-amber">
@@ -56,7 +56,7 @@ export function Footer() {
           <h2 className="mb-4 text-xs font-semibold uppercase tracking-widest text-paper/50">
             By brand
           </h2>
-          <ul className="space-y-2.5 text-[0.95rem]">
+          <ul className="space-y-2 text-xs">
             {allBrands.map((b) => (
               <li key={b.key}>
                 <Link href={`/brands/${b.key}`} className="text-paper/85 transition-colors hover:text-amber">
@@ -76,7 +76,7 @@ export function Footer() {
           <h2 className="mb-4 text-xs font-semibold uppercase tracking-widest text-paper/50">
             Site
           </h2>
-          <ul className="space-y-2.5 text-[0.95rem]">
+          <ul className="space-y-2 text-xs">
             <li><Link href="/about" className="text-paper/85 transition-colors hover:text-amber">About</Link></li>
             <li><Link href="/contact" className="text-paper/85 transition-colors hover:text-amber">Contact</Link></li>
             <li><Link href="/disclaimer" className="text-paper/85 transition-colors hover:text-amber">Disclaimer</Link></li>
@@ -87,7 +87,7 @@ export function Footer() {
       </div>
 
       <div className="border-t border-paper/10">
-        <div className={`${wrap} flex flex-col gap-3 py-6 text-xs text-paper/60 lg:flex-row lg:items-center lg:justify-between`}>
+        <div className={`${wrap} flex flex-col gap-3 py-5 text-[0.6875rem] text-paper/55 lg:flex-row lg:items-center lg:justify-between`}>
           <p>© {year} {site.name}. An independent help resource.</p>
           <p className="lg:max-w-2xl lg:text-right">
             Not affiliated with HP, Canon, Epson, Brother, or any printer

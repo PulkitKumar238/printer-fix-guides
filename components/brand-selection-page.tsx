@@ -10,9 +10,9 @@ const brands = [
 ] as const;
 
 const moreGuides = [
-  { title: 'Printer Offline Guide', href: '/offline' },
-  { title: 'Common Issue Guide', href: '/not-printing' },
-  { title: 'Hardware Problem Guide', href: '/paper-jam' },
+  { title: 'Printer Offline Guide', href: '/guide/select/offline' },
+  { title: 'Common Issue Guide', href: '/guide/select/not-printing' },
+  { title: 'Hardware Problem Guide', href: '/guide/select/paper-jam' },
 ];
 
 export function BrandSelectionPage({ guide }: { guide: Guide }) {

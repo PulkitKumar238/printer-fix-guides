@@ -1,7 +1,6 @@
 import type { Metadata } from 'next';
 import { Inter, Zilla_Slab, JetBrains_Mono } from 'next/font/google';
 import './globals.css';
-import { Header } from '@/components/header';
 import { HomeFooter } from '@/components/home-footer';
 import { TawkTo } from '@/components/tawk-to';
 import { JsonLd } from '@/components/json-ld';
@@ -78,7 +77,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         >
           Skip to content
         </a>
-        <Header />
         <main id="main" className="flex-1">
           {children}
         </main>

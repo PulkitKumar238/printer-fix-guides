@@ -9,11 +9,11 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        ink: '#16303E',
-        amber: '#F15A24',
-        paper: '#F7F4EE',
+        ink: '#123B63',
+        amber: '#146FD1',
+        paper: '#FFFFFF',
         surface: '#FFFFFF',
-        slate: '#48575E',
+        slate: '#48637A',
         success: '#217A52',
       },
       fontFamily: {
