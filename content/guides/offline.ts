@@ -152,7 +152,7 @@ export const offlineGuide: Guide = {
           ordered: true,
           items: [
             'Remove the printer: Settings > Bluetooth & devices > Printers & scanners > your printer > Remove.',
-            'Download the current driver or app for your exact model from the manufacturer (HP Smart, Canon, Epson, or Brother).',
+            'Get the current driver or app for your exact model from the manufacturer (HP Smart, Canon, Epson, or Brother).',
             'Run the installer and add the printer fresh, choosing it by name when possible.',
             'Print a test page to confirm it comes back online.',
           ],
@@ -160,7 +160,7 @@ export const offlineGuide: Guide = {
       ],
       image: {
         src: '/images/guides/offline/step-5.svg',
-        alt: 'A Printers & Scanners settings screen mid-reinstall with a fresh driver download.',
+        alt: 'A Printers & Scanners settings screen during a fresh driver setup.',
         caption: 'Remove the printer and re-add it with the latest driver as a last resort.',
       },
     },
@@ -217,7 +217,7 @@ export const offlineGuide: Guide = {
     },
     {
       href: '/drivers',
-      title: 'Install printer drivers',
+      title: 'Printer driver help',
       description: 'Clear corrupt drivers and the print spooler folder for a clean install.',
     },
     {

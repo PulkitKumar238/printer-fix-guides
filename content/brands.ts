@@ -8,7 +8,7 @@ export const brands: Record<BrandKey, Brand> = {
     theme: { bg: '#0096D6', ink: '#0077A8', tint: '#E6F5FB' },
     metaTitle: 'HP Printer Help — Fix Common HP Printer Problems',
     metaDescription:
-      'Troubleshooting for HP OfficeJet, ENVY, DeskJet, and LaserJet printers: offline errors, driver installs, Wi-Fi drops, and common HP error codes.',
+      'Troubleshooting for HP OfficeJet, ENVY, DeskJet, and LaserJet printers: offline errors, driver setup, Wi-Fi drops, and common HP error codes.',
     intro: [
       {
         type: 'paragraph',
@@ -16,7 +16,7 @@ export const brands: Record<BrandKey, Brand> = {
       },
       {
         type: 'paragraph',
-        text: 'For most HP setup and scanning tasks, the HP Smart app is the most reliable tool — it handles driver installation, Wi-Fi setup, and scanning in one place. The guides below cover the issues HP owners hit most often.',
+        text: 'For most HP setup and scanning tasks, the HP Smart app is the most reliable tool — it handles printer software, Wi-Fi setup, and scanning in one place. The guides below cover the issues HP owners hit most often.',
       },
     ],
     guideSlugs: ['offline', 'drivers', 'wifi', 'not-printing', 'setup', 'scanner'],
@@ -82,7 +82,7 @@ export const brands: Record<BrandKey, Brand> = {
     theme: { bg: '#003399', ink: '#00276F', tint: '#E7ECF7' },
     metaTitle: 'Epson Printer Help — Fix Common Epson Printer Problems',
     metaDescription:
-      'Troubleshooting for Epson WorkForce, Expression, and EcoTank printers: error codes 0x97 and 0xF1, Wi-Fi drops, driver installs, and print-head clogs.',
+      'Troubleshooting for Epson WorkForce, Expression, and EcoTank printers: error codes 0x97 and 0xF1, Wi-Fi drops, driver setup, and print-head clogs.',
     intro: [
       {
         type: 'paragraph',
@@ -119,7 +119,7 @@ export const brands: Record<BrandKey, Brand> = {
     theme: { bg: '#0074B7', ink: '#005A8F', tint: '#E6F2F9' },
     metaTitle: 'Brother Printer Help — Fix Common Brother Printer Problems',
     metaDescription:
-      'Troubleshooting for Brother laser and inkjet printers: "Unable to Print" codes, drum and toner messages, Wi-Fi drops, and driver installs.',
+      'Troubleshooting for Brother laser and inkjet printers: "Unable to Print" codes, drum and toner messages, Wi-Fi drops, and driver setup.',
     intro: [
       {
         type: 'paragraph',
@@ -177,8 +177,8 @@ export const brands: Record<BrandKey, Brand> = {
         answer: 'This happens if the toner chip isn’t making proper contact or if you are using a third-party toner that isn’t recognized. Take the cartridge out, wipe the gold contacts on the chip, and reinstall it firmly.'
       },
       {
-        question: 'Where do I download drivers for my Samsung printer?',
-        answer: 'Since HP acquired Samsung’s printer division, all driver downloads and software updates (including the Samsung Easy Printer Manager) are hosted on the HP support website.'
+        question: 'Where do I get drivers for my Samsung printer?',
+        answer: 'Since HP acquired Samsung’s printer division, its printer software and updates (including the Samsung Easy Printer Manager) are hosted on the HP support website.'
       }
     ]
   },
@@ -188,7 +188,7 @@ export const brands: Record<BrandKey, Brand> = {
     lineup: ['MC Series', 'MB Series', 'CX Series', 'Universal Driver'],
     theme: { bg: '#D91F26', ink: '#B0141B', tint: '#FBEAEB' },
     metaTitle: 'Lexmark Printer Help — Fix Common Lexmark Printer Problems',
-    metaDescription: 'Troubleshooting for Lexmark laser and inkjet printers: error codes, network connectivity, and driver installation guides.',
+    metaDescription: 'Troubleshooting for Lexmark laser and inkjet printers: error codes, network connectivity, and driver setup guides.',
     intro: [
       {
         type: 'paragraph',

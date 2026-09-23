@@ -430,7 +430,7 @@ export const errorCodes: ErrorCode[] = [
           {
             type: 'list',
             items: [
-              'Download the latest firmware for your exact LaserJet model from hp.com.',
+              'Get the latest firmware for your exact LaserJet model from hp.com.',
               'Install it over USB or network following HP’s instructions, keeping the printer powered throughout.',
             ],
           },

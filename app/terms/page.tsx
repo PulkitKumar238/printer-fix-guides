@@ -64,7 +64,7 @@ export default function TermsPage() {
         <h2 className="mt-8 text-2xl font-bold">Third-party links</h2>
         <p>
           The site may link to third-party websites, such as manufacturer support
-          and driver download pages. We provide these links for convenience only
+          and printer-software pages. We provide these links for convenience only
           and are not responsible for the content, products, or practices of any
           third-party site.
         </p>

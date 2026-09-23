@@ -8,7 +8,7 @@ const topics = ['A guide helped', 'Spotted a mistake', 'Suggest a guide or error
 
 /**
  * Contact form for asynchronous email-style messages. For live help, the
- * SupportChat widget (bottom-right, staffed by a real agent) is the faster path.
+ * The active Tawk widget, staffed by a real agent, is the faster path.
  * Submissions are stored in Firestore (`contactMessages`); the module is
  * imported on submit so Firebase stays out of the page's initial bundle.
  */

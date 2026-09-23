@@ -2,11 +2,11 @@ import type { Guide } from '@/lib/types';
 
 export const driversGuide: Guide = {
   slug: 'drivers',
-  title: 'How to Install Printer Drivers (Windows & Mac)',
-  shortTitle: 'Install drivers',
-  metaTitle: 'Install Printer Drivers the Right Way (Windows & macOS)',
+  title: 'Printer Driver Setup for Windows & Mac',
+  shortTitle: 'Driver help',
+  metaTitle: 'Printer Driver Setup Help for Windows & macOS',
   metaDescription:
-    'Find, download, and install the correct printer driver for your exact model on Windows or Mac — plus how to remove a bad driver and clear the print spooler.',
+    'Find and configure the correct printer driver for your exact model on Windows or Mac — plus how to remove a bad driver and clear the print spooler.',
   cardDescription:
     'Find and install the right driver so your computer can actually use the printer.',
   icon: 'drivers',
@@ -22,13 +22,13 @@ export const driversGuide: Guide = {
     },
     {
       type: 'warning',
-      text: 'Only download drivers from the manufacturer’s official site (hp.com, canon.com, epson.com, brother.com). Third-party "driver updater" tools and random download sites are a common source of malware and broken installs.',
+      text: 'Only obtain drivers from the manufacturer’s official site (hp.com, canon.com, epson.com, brother.com). Third-party "driver updater" tools and random software sites are a common source of malware and broken setups.',
     },
   ],
   steps: [
     {
       title: 'Find your exact printer model',
-      summary: 'Get the full model number so you download the matching driver.',
+      summary: 'Get the full model number so you choose the matching driver.',
       body: [
         {
           type: 'paragraph',
@@ -50,18 +50,18 @@ export const driversGuide: Guide = {
       },
     },
     {
-      title: 'Download the official driver or app',
+      title: 'Get the official driver or app',
       summary: 'Go to the manufacturer’s support page and get the package for your OS.',
       body: [
         {
           type: 'paragraph',
-          text: 'Each brand offers a single "all-in-one" download that includes the driver and a helper app. These are the easiest path because they handle the connection setup for you.',
+          text: 'Each brand offers a single "all-in-one" package that includes the driver and a helper app. These are the easiest path because they handle the connection setup for you.',
         },
         {
           type: 'list',
           items: [
             'HP: install HP Smart from hp.com/smart (or the Microsoft Store / App Store).',
-            'Canon: download the IJ/Printer driver and Canon PRINT app from the support page for your model.',
+            'Canon: get the IJ/Printer driver and Canon PRINT app from the support page for your model.',
             'Epson: use Epson Connect / the model-specific driver from epson.com support.',
             'Brother: install the "Full Driver & Software Package" or Brother iPrint&Scan from support.brother.com.',
             'Choose the version that matches your operating system — Windows 11/10 (64-bit for almost all modern PCs) or your macOS version.',
@@ -69,13 +69,13 @@ export const driversGuide: Guide = {
         },
         {
           type: 'note',
-          text: 'On recent Macs with Apple silicon, the built-in AirPrint driver handles most printing without any download. Install the full app only if you need scanning or advanced settings.',
+          text: 'On recent Macs with Apple silicon, the built-in AirPrint driver handles most printing without additional software. Use the full app only if you need scanning or advanced settings.',
         },
       ],
       image: {
         src: '/images/guides/drivers/step-2.svg',
-        alt: 'A manufacturer support website showing a driver download button for a specific printer model.',
-        caption: 'Download only from the official manufacturer support site.',
+        alt: 'A manufacturer support website showing printer software for a specific model.',
+        caption: 'Use only the official manufacturer support site.',
       },
     },
     {
@@ -86,7 +86,7 @@ export const driversGuide: Guide = {
           type: 'list',
           ordered: true,
           items: [
-            'Open the downloaded file and follow the prompts. Accept the licence and let it install fully.',
+            'Open the file you obtained and follow the prompts. Accept the licence and let setup finish.',
             'When asked how the printer connects, choose Wireless if it is on your Wi-Fi, or USB if it is plugged in.',
             'The installer will search and list your printer — select it and continue.',
             'On Windows you can confirm it landed correctly in Settings > Bluetooth & devices > Printers & scanners; on Mac, in System Settings > Printers & Scanners.',
@@ -99,7 +99,7 @@ export const driversGuide: Guide = {
       ],
       image: {
         src: '/images/guides/drivers/step-3.svg',
-        alt: 'A driver installation wizard discovering a printer over a wireless connection.',
+        alt: 'A printer setup wizard discovering a printer over a wireless connection.',
         caption: 'Let the installer discover the printer over Wi-Fi or USB.',
       },
     },
@@ -138,7 +138,7 @@ export const driversGuide: Guide = {
             'Remove the printer in Printers & scanners.',
             'Open the Print Spooler service (Windows + R, type services.msc) and Stop it.',
             'Delete everything inside C:\\Windows\\System32\\spool\\PRINTERS to clear stuck jobs.',
-            'Start the Print Spooler service again, then reinstall the driver fresh.',
+            'Start the Print Spooler service again, then set up the driver fresh.',
             'On Mac, removing and re-adding the printer in System Settings achieves the same clean state.',
           ],
         },
@@ -150,7 +150,7 @@ export const driversGuide: Guide = {
       image: {
         src: '/images/guides/drivers/step-5.svg',
         alt: 'The Windows Services window with Print Spooler stopped and the spool PRINTERS folder open.',
-        caption: 'Stop the spooler, clear stuck jobs, then reinstall the driver cleanly.',
+        caption: 'Stop the spooler, clear stuck jobs, then set up the driver cleanly.',
       },
     },
   ],
@@ -190,7 +190,7 @@ export const driversGuide: Guide = {
     {
       question: 'Is it safe to use a "driver updater" program?',
       answer:
-        'It is best avoided. These programs often install outdated or incorrect drivers and some bundle unwanted software. Download drivers only from the official manufacturer site for your exact model.',
+        'It is best avoided. These programs often use outdated or incorrect drivers and some bundle unwanted software. Get drivers only from the official manufacturer site for your exact model.',
     },
     {
       question: 'My new driver still prints garbled pages. What’s wrong?',

@@ -129,7 +129,7 @@ export const scannerGuide: Guide = {
   ],
   commonCauses: [
     {
-      title: 'Print-only driver installed',
+      title: 'Print-only driver active',
       detail:
         'A basic or IP-only install gives you printing without the scan component. The full package restores scanning.',
     },
@@ -161,7 +161,7 @@ export const scannerGuide: Guide = {
         'The printer has lost its registered scan destination. Open the manufacturer software on your computer, enable "Scan to Computer", and set it to start automatically. If you use a VPN, disconnect it — a VPN routes traffic off your local network and hides the computer from the printer.',
     },
     {
-      question: 'I reinstalled the driver and scanning still fails. What next?',
+      question: 'I set up the driver again and scanning still fails. What next?',
       answer:
         'Make sure you installed the full driver-and-software package, not just a print driver — an IP-only install often skips scanning. Then confirm the Windows Image Acquisition (WIA) service is running. Re-adding the printer via its WSD/network entry rather than a raw IP port also restores scan support.',
     },
@@ -174,7 +174,7 @@ export const scannerGuide: Guide = {
   related: [
     {
       href: '/drivers',
-      title: 'Install printer drivers',
+      title: 'Printer driver help',
       description: 'Reinstall the full package that includes the scan component.',
     },
     {

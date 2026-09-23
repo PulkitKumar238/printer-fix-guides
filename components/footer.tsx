@@ -27,7 +27,7 @@ export function Footer() {
             </span>
           </Link>
           <p className="mt-4 text-[0.95rem] leading-relaxed text-paper/70">
-            {site.tagline} Independent, ad-free troubleshooting guides — no
+            {site.tagline} Independent troubleshooting guides — no
             upsells, real people when you need help.
           </p>
         </div>

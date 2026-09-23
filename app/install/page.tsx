@@ -7,9 +7,9 @@ import { IssueCard } from '@/components/issue-card';
 import { Icon } from '@/components/icons';
 
 export const metadata = pageMetadata({
-  title: 'Select Your Printer Brand — Download Printer Drivers',
+  title: 'Select Your Printer Brand — Printer Setup Help',
   description:
-    'Choose your printer brand and model to download the correct driver. Free help from a real support specialist for HP, Brother, Epson and Canon printers.',
+    'Choose your printer brand and model to continue with printer setup help for HP, Brother, Epson and Canon printers.',
   path: '/install',
 });
 
@@ -85,7 +85,7 @@ export default function InstallHubPage() {
           </div>
 
           <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {allGuides.map((guide) => (
+            {allGuides.filter((guide) => !['drivers', 'paper-jam'].includes(guide.slug)).map((guide) => (
               <IssueCard
                 key={guide.slug}
                 href="#printer-models"
@@ -187,7 +187,7 @@ export default function InstallHubPage() {
 
       {/* Footer strip */}
       <div className="bg-[#1a1a1a] py-6 text-center text-sm text-white/70">
-        <p className="font-medium text-white">Fill the form and download your printer driver.</p>
+        <p className="font-medium text-white">Choose your printer brand to continue setup.</p>
         <p className="mt-1">
           Printer Support · Independent service, not affiliated with any printer manufacturer.
         </p>

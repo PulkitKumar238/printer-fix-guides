@@ -8,10 +8,10 @@ import { usePathname } from 'next/navigation';
  * existing `support-chat:open` event to it, so every "Chat Now" / "Fix Issue" /
  * "Need Assistance?" trigger opens the tawk.to widget.
  *
- * On the /install driver-download funnel the chat window is auto-opened
+ * On the /install printer-setup funnel the chat window is auto-opened
  * (maximised) once per session instead of sitting collapsed as a bubble.
  *
- * This replaces the previous Firebase-backed <SupportChatLoader />.
+ * This is the active visitor-facing support widget.
  */
 const TAWK_SRC = 'https://embed.tawk.to/6a9c539cd01cf0344798af34/1k1pad7r2';
 const AUTO_OPEN_KEY = 'pf-tawk-auto-opened';

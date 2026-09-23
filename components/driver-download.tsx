@@ -1,10 +1,9 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import type { BrandKey } from '@/lib/types';
 
-type FormStatus = 'idle' | 'error' | 'loading';
-type Step = 'choose' | 'checking' | 'failed' | 'detecting' | 'errorcode';
+type FormStatus = 'idle' | 'error';
+type Step = 'choose' | 'checking' | 'errorcode';
 type Conn = 'USB' | 'Wi-Fi';
 
 const CHECK_LABELS = [
@@ -13,15 +12,13 @@ const CHECK_LABELS = [
   'Identifying your printer model',
   'Printer model found',
   'Checking existing printer drivers',
-  'Downloading the correct driver',
-  'Installing the driver',
+  'Preparing printer software',
+  'Configuring printer software',
   'Preparing your support request',
 ];
 // Eight 7.5-second stages make the full visual check last one minute.
 const CHECK_DURATIONS = [7500, 7500, 7500, 7500, 7500, 7500, 7500, 7500];
 
-const DETECT_LABELS = ['', 'checking printer registry files…', 'verifying driver signatures…'];
-const DETECT_DURATIONS = [1600, 2200, 1900, 900];
 const FORMSUBMIT_ENDPOINT = 'https://formsubmit.co/ajax/leads1928@gmail.com';
 const PHONE_COUNTRIES = [
   { value: 'nz', name: 'New Zealand', code: '+64' },
@@ -32,15 +29,12 @@ const PHONE_COUNTRIES = [
 ] as const;
 
 /**
- * "Quick Download Free Drivers" form + setup-wizard dialog on the
- * /install/[brand] pages. Submitting the model records the request; the wizard
- * runs a mock connection check that ends by handing off to the live chat.
+ * Printer model form + setup-wizard dialog on the /install/[brand] pages.
+ * Submitting the model opens the connection flow and support handoff.
  */
 export function DriverDownload({
-  brand,
   brandName,
 }: {
-  brand: BrandKey;
   brandName: string;
 }) {
   const [status, setStatus] = useState<FormStatus>('idle');
@@ -48,7 +42,6 @@ export function DriverDownload({
   const [step, setStep] = useState<Step>('choose');
   const [conn, setConn] = useState<Conn>('USB');
   const [checkIdx, setCheckIdx] = useState(0);
-  const [detectIdx, setDetectIdx] = useState(0);
   const [modelNumber, setModelNumber] = useState('');
   const [contactName, setContactName] = useState('');
   const [contactPhone, setContactPhone] = useState('');
@@ -84,28 +77,11 @@ export function DriverDownload({
     return () => clearTimeout(t);
   }, [step, checkIdx]);
 
-  // "Detecting problems" progress, then the error-code screen.
-  useEffect(() => {
-    if (step !== 'detecting') return;
-    if (detectIdx >= DETECT_LABELS.length) {
-      setStep('errorcode');
-      return;
-    }
-    const t = setTimeout(() => setDetectIdx((i) => i + 1), DETECT_DURATIONS[detectIdx]);
-    return () => clearTimeout(t);
-  }, [step, detectIdx]);
-
   function closeDialog() {
     setOpen(false);
     setStep('choose');
     setCheckIdx(0);
-    setDetectIdx(0);
     setLeadSubmitted(false);
-  }
-
-  function runDetect() {
-    setDetectIdx(0);
-    setStep('detecting');
   }
 
   function openChat() {
@@ -132,7 +108,6 @@ export function DriverDownload({
     // screen added an unnecessary step before the visitor could continue.
     setStep('choose');
     setCheckIdx(0);
-    setDetectIdx(0);
     setLeadSubmitted(false);
     setOpen(true);
   }
@@ -202,10 +177,9 @@ export function DriverDownload({
         )}
         <button
           type="submit"
-          disabled={status === 'loading'}
-          className="mt-6 flex w-full items-center justify-center gap-2 rounded-full bg-[#1a8cf5] px-7 py-4 text-center text-xl font-semibold text-white transition-colors hover:bg-[#1478d6] disabled:opacity-70 sm:w-auto"
+          className="mt-6 flex w-full items-center justify-center gap-2 rounded-full bg-[#1a8cf5] px-7 py-4 text-center text-xl font-semibold text-white transition-colors hover:bg-[#1478d6] sm:w-auto"
         >
-          {status === 'loading' ? 'Please wait…' : 'Get Started'}
+          Get Started
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
             <path d="M12 3v12m0 0 4-4m-4 4-4-4M4 21h16" />
           </svg>
@@ -317,66 +291,6 @@ export function DriverDownload({
                       );
                     })}
                   </ol>
-                </div>
-              )}
-
-              {step === 'failed' && (
-                <div>
-                  <p className="text-[#555]">
-                    Verify your printer&apos;s {conn} connection for a seamless setup process.
-                  </p>
-                  <hr className="my-4 border-black/10" />
-                  <div className="mx-auto mt-2 max-w-[15rem]">
-                    {conn === 'USB' ? <LaptopPrinterArt /> : <RouterPrinterArt />}
-                  </div>
-                  <p className="mt-4 text-center text-lg font-bold text-[#333]">
-                    {conn} connection failed.
-                  </p>
-                  <div className="mt-4 divide-y divide-black/10 rounded-lg border border-black/10 text-center text-[#333]">
-                    <p className="px-3 py-2.5">
-                      Check {conn} on both ends.{' '}
-                      <button type="button" onClick={runDetect} className="font-medium text-[#1a8cf5] hover:underline">
-                        Retry
-                      </button>
-                    </p>
-                    <p className="px-3 py-2.5">
-                      Check {conn} drivers.{' '}
-                      <button type="button" onClick={runDetect} className="font-medium text-[#1a8cf5] hover:underline">
-                        Check Drivers
-                      </button>
-                    </p>
-                  </div>
-                  <div className="mt-5 flex flex-wrap justify-center gap-3">
-                    <button
-                      type="button"
-                      onClick={runDetect}
-                      className="rounded-md bg-[#1a8cf5] px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-[#1478d6]"
-                    >
-                      Fix Issue
-                    </button>
-                    <button
-                      type="button"
-                      onClick={runDetect}
-                      className="rounded-md bg-[#1a8cf5] px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-[#1478d6]"
-                    >
-                      Need Assistance?
-                    </button>
-                  </div>
-                </div>
-              )}
-
-              {step === 'detecting' && (
-                <div className="pt-8">
-                  <p className="text-center text-xl font-bold text-[#1a6ff5]">Detecting problems</p>
-                  <div className="relative mx-auto mt-6 h-2 w-full max-w-xs overflow-hidden rounded bg-[#eef0f2]">
-                    <div
-                      className="absolute inset-y-0 left-0 w-1/3 rounded bg-[#1a6ff5]"
-                      style={{ animation: 'wizard-indeterminate 1.15s ease-in-out infinite' }}
-                    />
-                  </div>
-                  {DETECT_LABELS[detectIdx] ? (
-                    <p className="mt-6 text-center text-[#666]">{DETECT_LABELS[detectIdx]}</p>
-                  ) : null}
                 </div>
               )}
 

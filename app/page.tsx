@@ -83,7 +83,7 @@ export default function HomePage() {
           </p>
         </div>
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {allGuides.map((guide) => {
+          {allGuides.filter((guide) => !['drivers', 'paper-jam'].includes(guide.slug)).map((guide) => {
             // Setup, offline, and scanner jump straight into the diagnose flow (brand step).
             const toDiagnose = ['setup', 'offline', 'scanner'].includes(guide.slug);
             return (
@@ -148,21 +148,21 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Download printer drivers */}
+      {/* Printer setup help */}
       <section aria-labelledby="drivers-cta-heading" className="container-page py-20 sm:py-24">
         <div className="overflow-hidden rounded-3xl border border-ink/10 bg-[#0096D6] text-white shadow-card-hover">
           <div className="grid gap-8 p-8 sm:p-12 lg:grid-cols-[1.3fr_1fr] lg:items-center">
             <div>
               <p className="text-sm font-semibold uppercase tracking-widest text-white/70">
-                Driver downloads
+                Printer setup
               </p>
               <h2 id="drivers-cta-heading" className="mt-3 text-3xl font-bold text-white sm:text-4xl">
-                Need the right printer driver?
+                Need help with your printer software?
               </h2>
               <p className="mt-4 max-w-xl text-lg leading-relaxed text-white/85">
-                Pick your brand, enter your model number, and get the correct official
-                driver for your operating system — with a real specialist checking the
-                match. Each brand page is set in that make&apos;s own colours.
+                Pick your brand, enter your model number, and continue with guided
+                printer setup assistance. Each brand page is set in that make&apos;s own
+                colours.
               </p>
               <Link
                 href="/install"

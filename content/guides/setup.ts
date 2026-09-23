@@ -6,7 +6,7 @@ export const setupGuide: Guide = {
   shortTitle: 'New printer setup',
   metaTitle: 'New Printer Setup Guide — Get Printing in 15 Minutes',
   metaDescription:
-    'A plain-English walkthrough for setting up a new printer: unboxing, ink and paper, connecting over Wi-Fi or USB, installing drivers, and printing your first test page.',
+    'A plain-English walkthrough for setting up a new printer: unboxing, ink and paper, connecting over Wi-Fi or USB, configuring printer software, and printing your first test page.',
   cardDescription:
     'Unbox, connect, and print your first page — without the guesswork.',
   icon: 'setup',
@@ -120,7 +120,7 @@ export const setupGuide: Guide = {
       ],
     },
     {
-      title: 'Install drivers and print a test page',
+      title: 'Set up printer software and print a test page',
       summary: 'Add the printer on your computer or phone, then confirm it prints.',
       body: [
         {
@@ -133,7 +133,7 @@ export const setupGuide: Guide = {
           items: [
             'On Windows, go to Settings > Bluetooth & devices > Printers & scanners > Add device and pick your printer when it appears.',
             'On a Mac, go to System Settings > Printers & Scanners > Add Printer and select it from the list.',
-            'For full features, download the official software for your exact model: HP Smart, Canon IJ Setup, Epson Connect, or Brother iPrint&Scan.',
+            'For full features, get the official software for your exact model: HP Smart, Canon IJ Setup, Epson Connect, or Brother iPrint&Scan.',
             'Open any document, choose File > Print, select your new printer, and print a test page.',
           ],
         },
@@ -180,7 +180,7 @@ export const setupGuide: Guide = {
     {
       question: 'My computer cannot find the printer after setup. What now?',
       answer:
-        'First confirm the printer and computer are on the same Wi-Fi network. Then reinstall the official driver software for your model. If it still does not appear, our "Install printer drivers" and "Printer shows offline" guides walk through the remaining fixes.',
+        'First confirm the printer and computer are on the same Wi-Fi network. Then set up the official driver software for your model again. If it still does not appear, our "Printer driver help" and "Printer shows offline" guides walk through the remaining fixes.',
     },
     {
       question: 'How do I know the print head is working correctly?',
@@ -191,7 +191,7 @@ export const setupGuide: Guide = {
   related: [
     {
       href: '/drivers',
-      title: 'Install printer drivers',
+      title: 'Printer driver help',
       description: 'Get the right software so your computer can find and control the printer.',
     },
     {

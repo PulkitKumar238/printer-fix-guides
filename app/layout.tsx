@@ -3,8 +3,6 @@ import { Inter, Zilla_Slab, JetBrains_Mono } from 'next/font/google';
 import './globals.css';
 import { Header } from '@/components/header';
 import { HomeFooter } from '@/components/home-footer';
-// Firebase-backed chat widget — replaced by tawk.to (kept for reference).
-// import { SupportChatLoader } from '@/components/support-chat-loader';
 import { TawkTo } from '@/components/tawk-to';
 import { JsonLd } from '@/components/json-ld';
 import { websiteSchema } from '@/lib/schema';
@@ -42,7 +40,7 @@ export const metadata: Metadata = {
   keywords: [
     'printer troubleshooting',
     'printer offline',
-    'install printer drivers',
+    'printer driver help',
     'printer wifi',
     'paper jam',
     'printer error codes',
@@ -85,7 +83,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           {children}
         </main>
         <HomeFooter />
-        {/* <SupportChatLoader /> */}
         <TawkTo />
       </body>
     </html>

@@ -59,9 +59,9 @@ export default function DisclaimerPage() {
         <p>
           Some guides link to official manufacturer pages or other third-party
           websites. We do not control those sites and are not responsible for
-          their content, accuracy, or any software you download from them. When
-          we suggest downloading drivers or software, always use the official
-          manufacturer source.
+          their content, accuracy, or any software you obtain from them. When
+          we suggest printer software, always use the official manufacturer
+          source.
         </p>
 
       </article>

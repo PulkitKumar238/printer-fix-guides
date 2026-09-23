@@ -131,7 +131,7 @@ export const notPrintingGuide: Guide = {
     },
     {
       title: 'Restart and reinstall as a last resort',
-      summary: 'Power-cycle everything, then reinstall the driver if needed.',
+      summary: 'Power-cycle everything, then set up the driver again if needed.',
       body: [
         {
           type: 'list',
@@ -207,7 +207,7 @@ export const notPrintingGuide: Guide = {
     },
     {
       href: '/drivers',
-      title: 'Install printer drivers',
+      title: 'Printer driver help',
       description: 'Reinstall a clean driver to rule out software corruption.',
     },
   ],

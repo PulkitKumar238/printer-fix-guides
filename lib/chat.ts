@@ -348,7 +348,7 @@ export async function submitContactMessage(
 }
 
 /**
- * Persist a driver-download request from the /install pages. Stored write-only
+ * Persist a printer-setup request from the /install pages. Stored write-only
  * for visitors (agents read it in the Firebase console) in its own collection.
  * Best-effort: callers catch failures and still open the live chat.
  */
