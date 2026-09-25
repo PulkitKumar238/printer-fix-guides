@@ -43,12 +43,12 @@ export function DriverDownload({
   const [conn, setConn] = useState<Conn>('USB');
   const [checkIdx, setCheckIdx] = useState(0);
   const [modelNumber, setModelNumber] = useState('');
-  const [contactName, setContactName] = useState('');
   const [contactPhone, setContactPhone] = useState('');
   const [phoneCountry, setPhoneCountry] = useState<(typeof PHONE_COUNTRIES)[number]['value']>('nz');
   const [contactError, setContactError] = useState('');
   const [contactSubmitting, setContactSubmitting] = useState(false);
   const [leadSubmitted, setLeadSubmitted] = useState(false);
+  const [callbackRequested, setCallbackRequested] = useState(false);
 
   // Lock scroll + close on Escape while the dialog is open.
   useEffect(() => {
@@ -82,6 +82,7 @@ export function DriverDownload({
     setStep('choose');
     setCheckIdx(0);
     setLeadSubmitted(false);
+    setCallbackRequested(false);
   }
 
   function openChat() {
@@ -109,16 +110,17 @@ export function DriverDownload({
     setStep('choose');
     setCheckIdx(0);
     setLeadSubmitted(false);
+    setCallbackRequested(false);
     setOpen(true);
   }
 
   async function submitSupportRequest(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    const name = contactName.trim();
     const phone = contactPhone.trim();
     const selectedPhoneCountry = PHONE_COUNTRIES.find((country) => country.value === phoneCountry) ?? PHONE_COUNTRIES[0];
-    if (!name || !phone) {
-      setContactError('Please enter your name and mobile number.');
+    const digitCount = phone.replace(/\D/g, '').length;
+    if (!/^[+\d\s().-]+$/.test(phone) || digitCount < 6 || digitCount > 15) {
+      setContactError('Please enter a valid phone number.');
       return;
     }
 
@@ -132,7 +134,6 @@ export function DriverDownload({
           Accept: 'application/json',
         },
         body: JSON.stringify({
-          name,
           phone: `${selectedPhoneCountry.code} ${phone}`,
           selected_country: selectedPhoneCountry.name,
           brand: brandName,
@@ -168,7 +169,7 @@ export function DriverDownload({
           name="model"
           type="text"
           required
-          className="mt-3 w-full rounded-lg border border-[#d7d7d7] bg-white px-5 py-4 text-xl text-[#222] shadow-[0_6px_18px_rgba(0,0,0,0.06)] outline-none focus:border-[#1a8cf5]"
+          className="mt-3 w-full rounded-lg border border-[#d7d7d7] bg-white px-5 py-4 text-xl text-[#222] shadow-[0_6px_18px_rgba(0,0,0,0.06)] outline-none focus:border-[var(--brand-accent)]"
         />
         {status === 'error' && (
           <p role="alert" className="mt-2 text-sm text-[#c1121f]">
@@ -177,7 +178,7 @@ export function DriverDownload({
         )}
         <button
           type="submit"
-          className="mt-6 flex w-full items-center justify-center gap-2 rounded-full bg-[#1a8cf5] px-7 py-4 text-center text-xl font-semibold text-white transition-colors hover:bg-[#1478d6] sm:w-auto"
+          className="mt-6 flex w-full items-center justify-center gap-2 rounded-full bg-[var(--brand-accent)] px-7 py-4 text-center text-xl font-semibold text-white transition-opacity hover:opacity-90 sm:w-auto"
         >
           Get Started
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
@@ -256,7 +257,7 @@ export function DriverDownload({
                     aria-valuenow={checkIdx + 1}
                   >
                     <div
-                      className="h-full rounded-full bg-[#1a8cf5] transition-[width] duration-500"
+                      className="h-full rounded-full bg-[var(--brand-accent)] transition-[width] duration-500"
                       style={{ width: `${((checkIdx + 1) / CHECK_LABELS.length) * 100}%` }}
                     />
                   </div>
@@ -276,7 +277,7 @@ export function DriverDownload({
                             isCurrent
                               ? isFailure
                                 ? 'border-[#d14343] bg-[#fff3f3] text-[#9b2525]'
-                                : 'border-[#1a8cf5] bg-[#edf7ff] text-[#125eab]'
+                                : 'border-[var(--brand-accent)] bg-[#edf7ff] text-[var(--brand-accent)]'
                               : isComplete
                                 ? 'border-[#b8dec8] bg-[#f1fbf5] text-[#236a43]'
                                 : 'border-black/10 bg-[#fafafa] text-[#667085]'
@@ -299,59 +300,38 @@ export function DriverDownload({
                   <div className="mx-auto max-w-2xl py-16 text-center">
                     <span className="mx-auto grid h-20 w-20 place-items-center rounded-full bg-[#eaf8ef] text-4xl font-bold text-[#20834c]">✓</span>
                     <h3 className="mt-6 font-sans text-3xl font-bold text-[#222]">Thank you — we received your request!</h3>
-                    <p className="mx-auto mt-4 max-w-xl text-xl leading-relaxed text-[#555]">
-                      A support technician will contact you shortly to help complete your printer setup.
-                    </p>
+                    <p className="mx-auto mt-4 max-w-xl text-xl leading-relaxed text-[#555]">A technician will call you shortly.</p>
                     <button
                       type="button"
                       onClick={closeDialog}
-                      className="mt-8 rounded-xl bg-[#1a8cf5] px-8 py-4 text-xl font-semibold text-white transition-colors hover:bg-[#1478d6]"
+                      className="mt-8 rounded-xl bg-[var(--brand-accent)] px-8 py-4 text-xl font-semibold text-white transition-opacity hover:opacity-90"
                     >
                       Done
                     </button>
                   </div>
                 ) : (
-                  <div className="mx-auto max-w-4xl pt-4 text-center sm:pt-6">
-                    <p className="text-xl font-bold text-[#dc2626]">
+                  <div className="mx-auto max-w-4xl pt-2 text-center sm:pt-4">
+                    <PrinterErrorArt />
+                    <p className="mx-auto mt-6 max-w-3xl text-2xl font-bold leading-snug text-[#dc2626] sm:text-3xl">
                       The installation could not be completed due to a fatal error (0x000025)
                     </p>
-                    <h3 className="mt-3 font-sans text-3xl font-bold text-[#222]">You&apos;re on the Right Track!</h3>
-                    <p className="mx-auto mt-5 max-w-2xl text-xl leading-relaxed text-[#555]">
-                      Your printer setup just needs a little extra help. A technician can guide you through the remaining steps.
-                    </p>
-                    <form onSubmit={submitSupportRequest} className="mx-auto mt-6 max-w-4xl rounded-2xl border border-[#cfe4fa] bg-[#f5faff] p-5 text-left sm:p-6">
-                      <p className="text-xl font-semibold leading-relaxed text-[#333]">
-                        Enter your details below for a quick call or live chat.
-                      </p>
-                      <div className="mt-5 grid gap-4 md:grid-cols-[1.1fr_0.9fr_1fr] md:items-end">
-                        <label className="block text-lg font-semibold text-[#333]">
-                          Your name
-                          <input
-                            type="text"
-                            value={contactName}
-                            onChange={(e) => setContactName(e.target.value)}
-                            autoComplete="name"
-                            required
-                            className="mt-2 w-full rounded-xl border border-[#b9cde1] bg-white px-4 py-3 text-xl font-normal outline-none focus:border-[#1a8cf5]"
-                          />
-                        </label>
-                        <label className="block text-lg font-semibold text-[#333]">
+                    {callbackRequested ? (
+                      <form onSubmit={submitSupportRequest} className="mx-auto mt-7 max-w-xl rounded-2xl border border-[#cfe4fa] bg-[#f5faff] p-6 text-left sm:p-8">
+                        <h3 className="font-sans text-2xl font-bold text-[#222] sm:text-3xl">Get an instant Callback</h3>
+                        <label className="mt-6 block text-lg font-semibold text-[#333]">
                           Choose Country
                           <select
                             value={phoneCountry}
                             onChange={(e) => setPhoneCountry(e.target.value as (typeof PHONE_COUNTRIES)[number]['value'])}
-                            aria-label="Country calling code"
-                            className="mt-2 w-full rounded-xl border border-[#b9cde1] bg-[#edf7ff] px-3 py-3 text-base font-semibold text-[#1a5e9e] outline-none focus:border-[#1a8cf5]"
+                            className="mt-2 w-full rounded-xl border border-[#b9cde1] bg-white px-4 py-3 text-lg font-medium text-[#1a5e9e] outline-none focus:border-[var(--brand-accent)]"
                           >
                             {PHONE_COUNTRIES.map((country) => (
-                              <option key={country.value} value={country.value}>
-                                {country.name} {country.code}
-                              </option>
+                              <option key={country.value} value={country.value}>{country.name} {country.code}</option>
                             ))}
                           </select>
                         </label>
-                        <label className="block text-lg font-semibold text-[#333]">
-                          Home or Mobile Number
+                        <label className="mt-5 block text-lg font-semibold text-[#333]">
+                          Phone Number
                           <input
                             type="tel"
                             value={contactPhone}
@@ -359,28 +339,34 @@ export function DriverDownload({
                             autoComplete="tel"
                             inputMode="tel"
                             required
-                            className="mt-2 w-full rounded-xl border border-[#b9cde1] bg-white px-4 py-3 text-xl font-normal outline-none focus:border-[#1a8cf5]"
+                            className="mt-2 w-full rounded-xl border border-[#b9cde1] bg-white px-4 py-3 text-xl font-normal outline-none focus:border-[var(--brand-accent)]"
                           />
                         </label>
-                      </div>
-                      {contactError ? <p role="alert" className="mt-4 text-base font-medium text-[#b42318]">{contactError}</p> : null}
-                      <div className="mt-6 flex flex-col gap-3 sm:flex-row">
-                        <button
-                          type="button"
-                          onClick={openChat}
-                          className="inline-flex w-full items-center justify-center gap-3 rounded-xl border-2 border-[#1a8cf5] bg-white px-8 py-4 text-xl font-semibold text-[#126fc7] transition-colors hover:bg-[#edf7ff] sm:w-auto"
-                        >
-                          Click for Chat
+                        {contactError ? <p role="alert" className="mt-4 text-base font-medium text-[#b42318]">{contactError}</p> : null}
+                        <button type="submit" disabled={contactSubmitting} className="mt-6 w-full rounded-xl bg-[var(--brand-accent)] px-8 py-4 text-xl font-semibold text-white transition-opacity hover:opacity-90 disabled:opacity-70">
+                          {contactSubmitting ? 'Please wait…' : '📞 CALL ME NOW'}
                         </button>
-                        <button
-                          type="submit"
-                          disabled={contactSubmitting}
-                          className="inline-flex w-full items-center justify-center gap-3 rounded-xl bg-[#1a8cf5] px-8 py-4 text-xl font-semibold text-white transition-colors hover:bg-[#1478d6] disabled:opacity-70 sm:w-auto"
-                        >
-                          {contactSubmitting ? 'Please wait…' : 'Click for Callback'}
-                        </button>
-                      </div>
-                    </form>
+                        <p className="mt-4 text-center text-base text-[#555]">A technician will call you shortly.</p>
+                      </form>
+                    ) : (
+                      <>
+                        <h3 className="mt-4 font-sans text-3xl font-bold text-[#222] sm:text-4xl">You&apos;re Almost There!</h3>
+                        <p className="mt-4 text-xl text-[#555]">Just one more step — choose an option</p>
+                        <div className="mx-auto mt-8 grid max-w-2xl gap-4 sm:grid-cols-2">
+                          <button type="button" onClick={openChat} className="rounded-2xl border-2 border-[var(--brand-accent)] bg-[#f5faff] p-6 text-left transition-colors hover:bg-[#e9f4ff]">
+                            <span className="block text-2xl font-bold text-[var(--brand-accent)]">💬 Live Chat</span>
+                            <span className="mt-2 block text-base text-[#4b5563]">Continue help through chat</span>
+                          </button>
+                          <button type="button" onClick={(event) => {
+                            setCallbackRequested(true);
+                            event.currentTarget.closest('[role="dialog"]')?.scrollTo({ top: 0 });
+                          }} className="rounded-2xl border-2 border-[var(--brand-accent)] bg-white p-6 text-left transition-colors hover:bg-[#f5faff]">
+                            <span className="block text-2xl font-bold text-[var(--brand-accent)]">📞 Get instant Callback</span>
+                            <span className="mt-2 block text-base text-[#4b5563]">Prefer to talk? Have someone call you.</span>
+                          </button>
+                        </div>
+                      </>
+                    )}
                   </div>
                 )
               )}
@@ -414,7 +400,7 @@ function ConnRow({
       <button
         type="button"
         onClick={onStart}
-        className="inline-flex shrink-0 items-center gap-2 rounded-xl bg-[#1a8cf5] px-6 py-3 text-lg font-semibold text-white transition-colors hover:bg-[#1478d6]"
+        className="inline-flex shrink-0 items-center gap-2 rounded-xl bg-[var(--brand-accent)] px-6 py-3 text-lg font-semibold text-white transition-opacity hover:opacity-90"
       >
         Let&apos;s Start <CircleArrow />
       </button>
@@ -427,6 +413,22 @@ function CircleArrow() {
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden>
       <circle cx="12" cy="12" r="10" fill="rgba(255,255,255,0.25)" />
       <path d="m10 8 4 4-4 4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+function PrinterErrorArt() {
+  return (
+    <svg viewBox="0 0 140 120" className="mx-auto h-28 w-32" role="img" aria-label="Printer error">
+      <g fill="none" stroke="#253243" strokeWidth="5" strokeLinejoin="round" strokeLinecap="round">
+        <path d="M43 36V12h54v24" />
+        <path d="M37 85H27a9 9 0 0 1-9-9V47a11 11 0 0 1 11-11h82a11 11 0 0 1 11 11v29a9 9 0 0 1-9 9h-9" />
+        <path d="M40 70h60v38H40z" />
+        <path d="M51 84h38M51 94h25" />
+      </g>
+      <circle cx="110" cy="84" r="24" fill="#dc2626" stroke="white" strokeWidth="5" />
+      <path d="M110 72v15" stroke="white" strokeWidth="5" strokeLinecap="round" />
+      <circle cx="110" cy="95" r="3" fill="white" />
     </svg>
   );
 }

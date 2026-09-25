@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { usePathname } from 'next/navigation';
 
 /**
@@ -8,18 +8,17 @@ import { usePathname } from 'next/navigation';
  * existing `support-chat:open` event to it, so every "Chat Now" / "Fix Issue" /
  * "Need Assistance?" trigger opens the tawk.to widget.
  *
- * On a final printer-support page the chat window is auto-opened
- * (maximised) once per session instead of sitting collapsed as a bubble.
+ * The widget stays minimized until the visitor selects Live Chat.
  *
  * This is the active visitor-facing support widget.
  */
 const TAWK_SRC = 'https://embed.tawk.to/6a9c539cd01cf0344798af34/1k1pad7r2';
-const AUTO_OPEN_KEY = 'pf-tawk-auto-opened';
 
 declare global {
   interface Window {
     Tawk_API?: {
       maximize?: () => void;
+      minimize?: () => void;
       toggle?: () => void;
       onLoad?: () => void;
       onChatMessageAgent?: (message: unknown) => void;
@@ -35,6 +34,7 @@ declare global {
 function maximizeWhenReady() {
   const api = window.Tawk_API;
   if (!api) return;
+  api.showWidget?.();
   if (typeof api.maximize === 'function') {
     try {
       api.maximize();
@@ -57,6 +57,8 @@ function maximizeWhenReady() {
 export function TawkTo() {
   const pathname = usePathname();
   const hideOnCurrentPage = pathname === '/' || pathname.startsWith('/guide/select/');
+  const isSupportPage = pathname.startsWith('/install/') || /^\/guide\/(one|two|three|four|five)\//.test(pathname);
+  const chatRequested = useRef(false);
 
   // Keep chat completely off the front page and brand-selection step.
   // If a visitor navigates back after the widget has loaded, hide it again.
@@ -68,6 +70,16 @@ export function TawkTo() {
 
     window.Tawk_API = window.Tawk_API || {};
     window.Tawk_LoadStart = new Date();
+    const api = window.Tawk_API;
+    const previousLoadHandler = api.onLoad;
+    const onLoad = () => {
+      previousLoadHandler?.();
+      if (isSupportPage && !chatRequested.current) {
+        window.Tawk_API?.minimize?.();
+        window.Tawk_API?.hideWidget?.();
+      }
+    };
+    api.onLoad = onLoad;
 
     if (!document.getElementById('tawkto-script')) {
       const s1 = document.createElement('script');
@@ -79,10 +91,18 @@ export function TawkTo() {
       const s0 = document.getElementsByTagName('script')[0];
       s0?.parentNode?.insertBefore(s1, s0);
     } else {
-      window.Tawk_API.showWidget?.();
+      if (isSupportPage && !chatRequested.current) {
+        api.minimize?.();
+        api.hideWidget?.();
+      } else {
+        api.showWidget?.();
+      }
     }
 
-    const openChat = () => maximizeWhenReady();
+    const openChat = () => {
+      chatRequested.current = true;
+      maximizeWhenReady();
+    };
     window.addEventListener('support-chat:open', openChat);
 
     // Bring a minimized embedded chat back into view as soon as an agent
@@ -90,7 +110,7 @@ export function TawkTo() {
     const previousAgentMessageHandler = window.Tawk_API.onChatMessageAgent;
     const agentMessageHandler = (message: unknown) => {
       previousAgentMessageHandler?.(message);
-      if (window.Tawk_API?.isChatMinimized?.()) {
+      if (chatRequested.current && window.Tawk_API?.isChatMinimized?.()) {
         maximizeWhenReady();
       }
     };
@@ -98,32 +118,14 @@ export function TawkTo() {
 
     return () => {
       window.removeEventListener('support-chat:open', openChat);
+      if (window.Tawk_API?.onLoad === onLoad) {
+        window.Tawk_API.onLoad = previousLoadHandler;
+      }
       if (window.Tawk_API?.onChatMessageAgent === agentMessageHandler) {
         window.Tawk_API.onChatMessageAgent = previousAgentMessageHandler;
       }
     };
-  }, [hideOnCurrentPage]);
-
-  // Auto-open chat on the final support screen (once per session).
-  useEffect(() => {
-    const onFunnel = pathname.startsWith('/install/') || /^\/guide\/(one|two|three|four|five)\//.test(pathname);
-    if (!onFunnel) return;
-
-    let opened = false;
-    try {
-      opened = sessionStorage.getItem(AUTO_OPEN_KEY) === '1';
-    } catch {
-      /* private mode */
-    }
-    if (opened) return;
-
-    try {
-      sessionStorage.setItem(AUTO_OPEN_KEY, '1');
-    } catch {
-      /* ignore */
-    }
-    maximizeWhenReady();
-  }, [pathname]);
+  }, [hideOnCurrentPage, isSupportPage]);
 
   return null;
 }
