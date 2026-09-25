@@ -9,12 +9,6 @@ const brands = [
   { name: 'Other', code: 'five' },
 ] as const;
 
-const moreGuides = [
-  { title: 'Printer Offline Guide', href: '/guide/select/offline' },
-  { title: 'Common Issue Guide', href: '/guide/select/not-printing' },
-  { title: 'Hardware Problem Guide', href: '/guide/select/paper-jam' },
-];
-
 export function BrandSelectionPage({ guide }: { guide: Guide }) {
   return (
     <main className="bg-white text-[#1a1a1a]">
@@ -39,25 +33,6 @@ export function BrandSelectionPage({ guide }: { guide: Guide }) {
               </span>
             </Link>
           ))}
-        </div>
-      </section>
-      <section className="border-t border-black/10 bg-[#f4f7fa]">
-        <div className="mx-auto w-full max-w-6xl px-5 py-14 sm:px-8 sm:py-16">
-          <h2 className="text-center text-3xl font-extrabold text-[#111] sm:text-4xl">
-            More Guide for this
-          </h2>
-          <div className="mt-9 grid gap-5 md:grid-cols-3">
-            {moreGuides.map((item) => (
-              <Link
-                key={item.title}
-                href={item.href}
-                className="focus-ring group flex min-h-40 items-center justify-between rounded-2xl border border-[#cad5e1] bg-white p-7 text-[#174a8b] shadow-card transition-all hover:-translate-y-0.5 hover:border-[#1769c2] hover:shadow-card-hover"
-              >
-                <span className="text-xl font-bold">{item.title}</span>
-                <span aria-hidden className="text-2xl transition-transform group-hover:translate-x-1">→</span>
-              </Link>
-            ))}
-          </div>
         </div>
       </section>
     </main>
