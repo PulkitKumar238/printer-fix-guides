@@ -203,9 +203,9 @@ export function DriverDownload({
             aria-modal="true"
             aria-label="Printer driver troubleshooting"
             onClick={(e) => e.stopPropagation()}
-            className="my-2 max-h-[calc(100vh-1rem)] min-h-0 w-full max-w-5xl overflow-y-auto rounded-2xl bg-white shadow-[0_30px_80px_rgba(0,0,0,0.4)] sm:my-4 sm:max-h-[calc(100vh-2rem)]"
+            className={`my-2 max-h-[calc(100vh-1rem)] min-h-0 w-full overflow-y-auto rounded-2xl bg-white shadow-[0_30px_80px_rgba(0,0,0,0.4)] sm:my-4 sm:max-h-[calc(100vh-2rem)] ${step === 'checking' ? 'max-w-[870px]' : 'max-w-5xl'}`}
           >
-            <div className="flex justify-end border-b border-black/10 px-6 py-3 sm:px-10">
+            <div className={`flex justify-end border-b border-black/10 px-6 sm:px-10 ${step === 'checking' ? 'py-2' : 'py-3'}`}>
               <button
                 type="button"
                 aria-label="Close"
@@ -218,7 +218,7 @@ export function DriverDownload({
               </button>
             </div>
 
-            <div className="px-5 py-5 sm:px-10 sm:py-8">
+            <div className={`px-5 sm:px-10 ${step === 'checking' ? 'py-4 sm:py-5' : 'py-5 sm:py-8'}`}>
               {step === 'choose' && (
                 <div>
                   <h3 className="font-sans text-3xl font-bold text-[#111]">Select Your Connection Type</h3>
@@ -249,13 +249,13 @@ export function DriverDownload({
                         Checking your printer&apos;s {conn} connection and installation setup. This takes about one minute.
                       </p>
                     </div>
-                    <div className="h-20 w-36 shrink-0">
+                    <div className="h-14 w-28 shrink-0">
                       {conn === 'USB' ? <LaptopPrinterArt /> : <RouterPrinterArt />}
                     </div>
                   </div>
 
                   <div
-                    className="mt-8 h-4 overflow-hidden rounded-full bg-[#e6edf5]"
+                    className="mt-5 h-3 overflow-hidden rounded-full bg-[#e6edf5]"
                     role="progressbar"
                     aria-label="Troubleshooting progress"
                     aria-valuemin={0}
@@ -267,11 +267,11 @@ export function DriverDownload({
                       style={{ width: `${((checkIdx + 1) / CHECK_LABELS.length) * 100}%` }}
                     />
                   </div>
-                  <p className="mt-3 text-right text-base font-semibold text-[#555]">
+                  <p className="mt-2 text-right text-base font-semibold text-[#555]">
                     Step {checkIdx + 1} of {CHECK_LABELS.length}
                   </p>
 
-                  <ol className="mt-5 grid gap-3 sm:grid-cols-2" aria-live="polite">
+                  <ol className="mt-3 grid gap-2 sm:grid-cols-2" aria-live="polite">
                     {CHECK_LABELS.map((label, index) => {
                       const isComplete = index < checkIdx;
                       const isCurrent = index === checkIdx;
@@ -279,7 +279,7 @@ export function DriverDownload({
                       return (
                         <li
                           key={label}
-                          className={`flex items-center gap-3 rounded-xl border px-4 py-3 text-lg transition-colors ${
+                          className={`flex items-center gap-3 rounded-xl border px-4 py-2 text-base transition-colors ${
                             isCurrent
                               ? isFailure
                                 ? 'border-[#d14343] bg-[#fff3f3] text-[#9b2525]'
@@ -317,10 +317,19 @@ export function DriverDownload({
                   </div>
                 ) : (
                   <div className="mx-auto max-w-4xl text-center">
-                    <PrinterErrorArt />
-                    <p className="mx-auto mt-3 max-w-3xl text-lg font-bold leading-snug text-[#dc2626] sm:mt-4 sm:text-2xl">
-                      The installation could not be completed due to a fatal error (0x000025)
-                    </p>
+                    {callbackRequested ? (
+                      <div>
+                        <h3 className="font-sans text-2xl font-bold text-[#222] sm:text-3xl">Enter your phone number</h3>
+                        <p className="mt-2 text-base text-[#555] sm:text-lg">We’ll connect you with a technician shortly.</p>
+                      </div>
+                    ) : (
+                      <>
+                        <PrinterErrorArt />
+                        <p className="mx-auto mt-3 max-w-3xl text-lg font-bold leading-snug text-[#dc2626] sm:mt-4 sm:text-2xl">
+                          The installation could not be completed due to a fatal error (0x000025)
+                        </p>
+                      </>
+                    )}
                     {callbackRequested ? (
                       <form onSubmit={submitSupportRequest} className="mx-auto mt-5 max-w-xl rounded-2xl border border-[#cfe4fa] bg-[#f5faff] p-4 text-left sm:mt-6 sm:p-6">
                         <h3 className="font-sans text-xl font-bold text-[#222] sm:text-2xl">Get an instant Callback</h3>
@@ -352,7 +361,6 @@ export function DriverDownload({
                         <button type="submit" disabled={contactSubmitting} className="mt-5 w-full rounded-xl bg-[var(--brand-accent)] px-8 py-3 text-lg font-semibold text-white transition-opacity hover:opacity-90 disabled:opacity-70 sm:py-4">
                           {contactSubmitting ? 'Please wait…' : '📞 CALL ME NOW'}
                         </button>
-                        <p className="mt-3 text-center text-sm text-[#555] sm:text-base">A technician will call you shortly.</p>
                       </form>
                     ) : (
                       <>
