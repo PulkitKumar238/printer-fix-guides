@@ -14,7 +14,7 @@ const CHECK_LABELS = [
   'Checking existing printer drivers',
   'Preparing printer software',
   'Configuring printer software',
-  'Preparing your support request',
+  'Installing Printer…',
 ];
 // Eight 7.5-second stages make the full visual check last one minute.
 const CHECK_DURATIONS = [7500, 7500, 7500, 7500, 7500, 7500, 7500, 7500];
@@ -244,7 +244,7 @@ export function DriverDownload({
                 <div>
                   <div className="flex flex-wrap items-center justify-between gap-4">
                     <div>
-                      <h4 className="font-sans text-3xl font-bold text-[#111]">Troubleshooting Status</h4>
+                      <h4 className="font-sans text-3xl font-bold text-[#111]">Printer Check &amp; Setup in Progress</h4>
                       <p className="mt-2 text-lg text-[#555]">
                         Checking your printer&apos;s {conn} connection and installation setup. This takes about one minute.
                       </p>
@@ -356,8 +356,8 @@ export function DriverDownload({
                       </form>
                     ) : (
                       <>
-                        <h3 className="mt-3 font-sans text-2xl font-bold text-[#222] sm:text-3xl">You&apos;re Almost There!</h3>
-                        <p className="mt-2 text-base text-[#555] sm:text-lg">Just one more step — choose an option</p>
+                        <h3 className="mt-3 font-sans text-2xl font-bold text-[#222] sm:text-3xl">Connect with an Expert</h3>
+                        <p className="mt-2 text-base text-[#555] sm:text-lg">Choose an option below</p>
                         <div className="mx-auto mt-5 grid max-w-2xl gap-3 sm:grid-cols-2">
                           <button type="button" onClick={openChat} className="rounded-2xl border-2 border-[var(--brand-accent)] bg-[#f5faff] p-4 text-left transition-colors hover:bg-[#e9f4ff] sm:p-5">
                             <span className="block text-xl font-bold text-[var(--brand-accent)] sm:text-2xl">💬 Live Chat</span>
@@ -367,7 +367,7 @@ export function DriverDownload({
                             setCallbackRequested(true);
                             event.currentTarget.closest('[role="dialog"]')?.scrollTo({ top: 0 });
                           }} className="rounded-2xl border-2 border-[var(--brand-accent)] bg-white p-4 text-left transition-colors hover:bg-[#f5faff] sm:p-5">
-                            <span className="block text-xl font-bold text-[var(--brand-accent)] sm:text-2xl">📞 Get instant Callback</span>
+                            <span className="block text-xl font-bold text-[var(--brand-accent)] sm:text-2xl">📞 Get a Callback</span>
                             <span className="mt-1 block text-sm text-[#4b5563] sm:text-base">Prefer to talk? Have someone call you.</span>
                           </button>
                         </div>
