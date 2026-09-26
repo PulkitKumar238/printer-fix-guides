@@ -34,9 +34,16 @@ export default function BrandPage({ params }: { params: { brand: string } }) {
   if (!brand) notFound();
 
   const brandCodes = errorCodes.filter((e) => e.brand === brand.key);
+  const footerBgColors: Record<string, string> = {
+    hp: '#000000',
+    canon: '#000000',
+    brother: '#0d2ea1',
+    epson: '#f3f7f8',
+  };
 
   return (
-    <div className="container-page py-8 sm:py-10">
+    <>
+      <div className="container-page py-8 sm:py-10">
       <JsonLd
         data={[
           faqSchema(brand.faqs),
@@ -125,5 +132,24 @@ export default function BrandPage({ params }: { params: { brand: string } }) {
 
       <Faq items={brand.faqs} heading={`${brand.name} printer FAQ`} />
     </div>
+    {footerBgColors[brand.key] && (
+      <footer
+        className="w-full select-none pointer-events-none mt-12"
+        style={{ backgroundColor: footerBgColors[brand.key] }}
+        aria-hidden="true"
+      >
+        <div className="mx-auto w-full max-w-[90rem]">
+          <Image
+            src={`/images/${brand.key}-footer.png`}
+            alt={`${brand.name} Footer`}
+            width={1440}
+            height={300}
+            className="w-full h-auto object-contain pointer-events-none select-none block"
+            priority
+          />
+        </div>
+      </footer>
+    )}
+    </>
   );
 }

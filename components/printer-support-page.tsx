@@ -6,6 +6,12 @@ import { getBrand } from '@/content/brands';
 
 export function PrinterSupportPage({ brandName }: { brandName: string }) {
   const brand = brandName.toLowerCase();
+  const footerBgColors: Record<string, string> = {
+    hp: '#000000',
+    canon: '#000000',
+    brother: '#0d2ea1',
+    epson: '#f3f7f8',
+  };
   const logos: Record<string, string> = {
     hp: '/images/brands/logos/hp.png',
     canon: '/images/brands/logos/canon.png',
@@ -57,6 +63,24 @@ export function PrinterSupportPage({ brandName }: { brandName: string }) {
           </div>
         </div>
       </section>
+      {footerBgColors[brand] && (
+        <footer
+          className="w-full select-none pointer-events-none"
+          style={{ backgroundColor: footerBgColors[brand] }}
+          aria-hidden="true"
+        >
+          <div className="mx-auto w-full max-w-[90rem]">
+            <Image
+              src={`/images/${brand}-footer.png`}
+              alt={`${brandName} Footer`}
+              width={1440}
+              height={300}
+              className="w-full h-auto object-contain pointer-events-none select-none block"
+              priority
+            />
+          </div>
+        </footer>
+      )}
     </main>
   );
 }
