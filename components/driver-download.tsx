@@ -332,7 +332,6 @@ export function DriverDownload({
                     )}
                     {callbackRequested ? (
                       <form onSubmit={submitSupportRequest} className="mx-auto mt-5 max-w-xl rounded-2xl border border-[#cfe4fa] bg-[#f5faff] p-4 text-left sm:mt-6 sm:p-6">
-                        <h3 className="font-sans text-xl font-bold text-[#222] sm:text-2xl">Get an instant Callback</h3>
                         <label className="mt-4 block text-base font-semibold text-[#333] sm:text-lg">
                           Choose Country
                           <select
