@@ -57,10 +57,6 @@ export function PrinterSupportPage({ brandName }: { brandName: string }) {
           </div>
         </div>
       </section>
-      <div className="bg-[#1a1a1a] py-6 text-center text-sm text-white/70">
-        <p className="font-medium text-white">Enter your model number to continue printer setup.</p>
-        <p className="mt-1">PrinterFix · Independent service, not affiliated with any printer manufacturer.</p>
-      </div>
     </main>
   );
 }
