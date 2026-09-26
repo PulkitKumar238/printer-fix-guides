@@ -8,7 +8,7 @@ import { usePathname } from 'next/navigation';
  * existing `support-chat:open` event to it, so every "Chat Now" / "Fix Issue" /
  * "Need Assistance?" trigger opens the tawk.to widget.
  *
- * The widget stays minimized until the visitor selects Live Chat.
+ * Brand support pages open chat automatically. The Live Chat option can reopen it.
  *
  * This is the active visitor-facing support widget.
  */
@@ -74,9 +74,9 @@ export function TawkTo() {
     const previousLoadHandler = api.onLoad;
     const onLoad = () => {
       previousLoadHandler?.();
-      if (isSupportPage && !chatRequested.current) {
-        window.Tawk_API?.minimize?.();
-        window.Tawk_API?.hideWidget?.();
+      if (isSupportPage) {
+        chatRequested.current = true;
+        maximizeWhenReady();
       }
     };
     api.onLoad = onLoad;
@@ -91,11 +91,10 @@ export function TawkTo() {
       const s0 = document.getElementsByTagName('script')[0];
       s0?.parentNode?.insertBefore(s1, s0);
     } else {
-      if (isSupportPage && !chatRequested.current) {
-        api.minimize?.();
-        api.hideWidget?.();
-      } else {
-        api.showWidget?.();
+      api.showWidget?.();
+      if (isSupportPage) {
+        chatRequested.current = true;
+        maximizeWhenReady();
       }
     }
 

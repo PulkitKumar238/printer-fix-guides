@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 type FormStatus = 'idle' | 'error';
 type Step = 'choose' | 'checking' | 'errorcode';
@@ -49,6 +49,11 @@ export function DriverDownload({
   const [contactSubmitting, setContactSubmitting] = useState(false);
   const [leadSubmitted, setLeadSubmitted] = useState(false);
   const [callbackRequested, setCallbackRequested] = useState(false);
+  const dialogRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (open && step === 'errorcode') dialogRef.current?.scrollTo({ top: 0 });
+  }, [open, step, callbackRequested]);
 
   // Lock scroll + close on Escape while the dialog is open.
   useEffect(() => {
@@ -193,6 +198,7 @@ export function DriverDownload({
           onClick={closeDialog}
         >
           <div
+            ref={dialogRef}
             role="dialog"
             aria-modal="true"
             aria-label="Printer driver troubleshooting"
@@ -212,7 +218,7 @@ export function DriverDownload({
               </button>
             </div>
 
-            <div className="px-6 py-8 sm:px-10 sm:py-10">
+            <div className="px-5 py-5 sm:px-10 sm:py-8">
               {step === 'choose' && (
                 <div>
                   <h3 className="font-sans text-3xl font-bold text-[#111]">Select Your Connection Type</h3>
@@ -310,27 +316,27 @@ export function DriverDownload({
                     </button>
                   </div>
                 ) : (
-                  <div className="mx-auto max-w-4xl pt-2 text-center sm:pt-4">
+                  <div className="mx-auto max-w-4xl text-center">
                     <PrinterErrorArt />
-                    <p className="mx-auto mt-6 max-w-3xl text-2xl font-bold leading-snug text-[#dc2626] sm:text-3xl">
+                    <p className="mx-auto mt-3 max-w-3xl text-lg font-bold leading-snug text-[#dc2626] sm:mt-4 sm:text-2xl">
                       The installation could not be completed due to a fatal error (0x000025)
                     </p>
                     {callbackRequested ? (
-                      <form onSubmit={submitSupportRequest} className="mx-auto mt-7 max-w-xl rounded-2xl border border-[#cfe4fa] bg-[#f5faff] p-6 text-left sm:p-8">
-                        <h3 className="font-sans text-2xl font-bold text-[#222] sm:text-3xl">Get an instant Callback</h3>
-                        <label className="mt-6 block text-lg font-semibold text-[#333]">
+                      <form onSubmit={submitSupportRequest} className="mx-auto mt-5 max-w-xl rounded-2xl border border-[#cfe4fa] bg-[#f5faff] p-4 text-left sm:mt-6 sm:p-6">
+                        <h3 className="font-sans text-xl font-bold text-[#222] sm:text-2xl">Get an instant Callback</h3>
+                        <label className="mt-4 block text-base font-semibold text-[#333] sm:text-lg">
                           Choose Country
                           <select
                             value={phoneCountry}
                             onChange={(e) => setPhoneCountry(e.target.value as (typeof PHONE_COUNTRIES)[number]['value'])}
-                            className="mt-2 w-full rounded-xl border border-[#b9cde1] bg-white px-4 py-3 text-lg font-medium text-[#1a5e9e] outline-none focus:border-[var(--brand-accent)]"
+                            className="mt-2 w-full rounded-xl border border-[#b9cde1] bg-white px-4 py-2.5 text-base font-medium text-[#1a5e9e] outline-none focus:border-[var(--brand-accent)] sm:py-3"
                           >
                             {PHONE_COUNTRIES.map((country) => (
                               <option key={country.value} value={country.value}>{country.name} {country.code}</option>
                             ))}
                           </select>
                         </label>
-                        <label className="mt-5 block text-lg font-semibold text-[#333]">
+                        <label className="mt-4 block text-base font-semibold text-[#333] sm:text-lg">
                           Phone Number
                           <input
                             type="tel"
@@ -339,30 +345,30 @@ export function DriverDownload({
                             autoComplete="tel"
                             inputMode="tel"
                             required
-                            className="mt-2 w-full rounded-xl border border-[#b9cde1] bg-white px-4 py-3 text-xl font-normal outline-none focus:border-[var(--brand-accent)]"
+                            className="mt-2 w-full rounded-xl border border-[#b9cde1] bg-white px-4 py-2.5 text-lg font-normal outline-none focus:border-[var(--brand-accent)] sm:py-3"
                           />
                         </label>
                         {contactError ? <p role="alert" className="mt-4 text-base font-medium text-[#b42318]">{contactError}</p> : null}
-                        <button type="submit" disabled={contactSubmitting} className="mt-6 w-full rounded-xl bg-[var(--brand-accent)] px-8 py-4 text-xl font-semibold text-white transition-opacity hover:opacity-90 disabled:opacity-70">
+                        <button type="submit" disabled={contactSubmitting} className="mt-5 w-full rounded-xl bg-[var(--brand-accent)] px-8 py-3 text-lg font-semibold text-white transition-opacity hover:opacity-90 disabled:opacity-70 sm:py-4">
                           {contactSubmitting ? 'Please wait…' : '📞 CALL ME NOW'}
                         </button>
-                        <p className="mt-4 text-center text-base text-[#555]">A technician will call you shortly.</p>
+                        <p className="mt-3 text-center text-sm text-[#555] sm:text-base">A technician will call you shortly.</p>
                       </form>
                     ) : (
                       <>
-                        <h3 className="mt-4 font-sans text-3xl font-bold text-[#222] sm:text-4xl">You&apos;re Almost There!</h3>
-                        <p className="mt-4 text-xl text-[#555]">Just one more step — choose an option</p>
-                        <div className="mx-auto mt-8 grid max-w-2xl gap-4 sm:grid-cols-2">
-                          <button type="button" onClick={openChat} className="rounded-2xl border-2 border-[var(--brand-accent)] bg-[#f5faff] p-6 text-left transition-colors hover:bg-[#e9f4ff]">
-                            <span className="block text-2xl font-bold text-[var(--brand-accent)]">💬 Live Chat</span>
-                            <span className="mt-2 block text-base text-[#4b5563]">Continue help through chat</span>
+                        <h3 className="mt-3 font-sans text-2xl font-bold text-[#222] sm:text-3xl">You&apos;re Almost There!</h3>
+                        <p className="mt-2 text-base text-[#555] sm:text-lg">Just one more step — choose an option</p>
+                        <div className="mx-auto mt-5 grid max-w-2xl gap-3 sm:grid-cols-2">
+                          <button type="button" onClick={openChat} className="rounded-2xl border-2 border-[var(--brand-accent)] bg-[#f5faff] p-4 text-left transition-colors hover:bg-[#e9f4ff] sm:p-5">
+                            <span className="block text-xl font-bold text-[var(--brand-accent)] sm:text-2xl">💬 Live Chat</span>
+                            <span className="mt-1 block text-sm text-[#4b5563] sm:text-base">Continue help through chat</span>
                           </button>
                           <button type="button" onClick={(event) => {
                             setCallbackRequested(true);
                             event.currentTarget.closest('[role="dialog"]')?.scrollTo({ top: 0 });
-                          }} className="rounded-2xl border-2 border-[var(--brand-accent)] bg-white p-6 text-left transition-colors hover:bg-[#f5faff]">
-                            <span className="block text-2xl font-bold text-[var(--brand-accent)]">📞 Get instant Callback</span>
-                            <span className="mt-2 block text-base text-[#4b5563]">Prefer to talk? Have someone call you.</span>
+                          }} className="rounded-2xl border-2 border-[var(--brand-accent)] bg-white p-4 text-left transition-colors hover:bg-[#f5faff] sm:p-5">
+                            <span className="block text-xl font-bold text-[var(--brand-accent)] sm:text-2xl">📞 Get instant Callback</span>
+                            <span className="mt-1 block text-sm text-[#4b5563] sm:text-base">Prefer to talk? Have someone call you.</span>
                           </button>
                         </div>
                       </>
@@ -419,7 +425,7 @@ function CircleArrow() {
 
 function PrinterErrorArt() {
   return (
-    <svg viewBox="0 0 140 120" className="mx-auto h-28 w-32" role="img" aria-label="Printer error">
+    <svg viewBox="0 0 140 120" className="mx-auto h-20 w-24 sm:h-24 sm:w-28" role="img" aria-label="Printer error">
       <g fill="none" stroke="#253243" strokeWidth="5" strokeLinejoin="round" strokeLinecap="round">
         <path d="M43 36V12h54v24" />
         <path d="M37 85H27a9 9 0 0 1-9-9V47a11 11 0 0 1 11-11h82a11 11 0 0 1 11 11v29a9 9 0 0 1-9 9h-9" />
