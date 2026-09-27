@@ -35,7 +35,7 @@ export default function BrandPage({ params }: { params: { brand: string } }) {
 
   const brandCodes = errorCodes.filter((e) => e.brand === brand.key);
   const footerBgColors: Record<string, string> = {
-    hp: '#000000',
+    hp: '#1a1a1a',
     canon: '#000000',
     brother: '#0d2ea1',
     epson: '#f3f7f8',
