@@ -1,0 +1,233 @@
+@import "tailwindcss" source(none);
+@source "../src";
+@import "tw-animate-css";
+
+.legacy-home { font-family: Inter, system-ui, sans-serif; }
+.legacy-home-heading { font-family: "Zilla Slab", Georgia, serif; }
+.legacy-issue-card { box-shadow: 0 1px 2px rgba(27, 58, 75, 0.04), 0 6px 20px rgba(27, 58, 75, 0.08); }
+
+@custom-variant dark (&:is(.dark *));
+
+/*
+ * Design system definition.
+ *
+ * The @theme inline block maps CSS custom properties to Tailwind utility
+ * classes (e.g. --color-primary -> bg-primary, text-primary).
+ *
+ * The :root and .dark blocks define the actual color values using oklch.
+ * All colors MUST use oklch format.
+ *
+ * To add a new semantic color:
+ * 1. Add the variable to :root (light value) and .dark (dark value)
+ * 2. Register it in @theme inline as --color-<name>: var(--<name>)
+ */
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --radius-3xl: calc(var(--radius) + 12px);
+  --radius-4xl: calc(var(--radius) + 16px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-ring-offset-background: var(--background);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-success: var(--success);
+  --color-support-navy: var(--support-navy);
+  --color-support-footer: var(--support-footer);
+  --color-support-footer-foreground: var(--support-footer-foreground);
+  --color-support-header: var(--support-header);
+  --color-support-header-foreground: var(--support-header-foreground);
+  --color-support-on-dark: var(--support-on-dark);
+  --color-brand-hp: var(--brand-hp);
+  --color-brand-canon: var(--brand-canon);
+  --color-brand-epson: var(--brand-epson);
+  --color-brand-brother: var(--brand-brother);
+  --color-brand-samsung: var(--brand-samsung);
+  --color-brand-xerox: var(--brand-xerox);
+  --color-brand-lexmark: var(--brand-lexmark);
+  --color-brand-ricoh: var(--brand-ricoh);
+  --color-brand-kyocera: var(--brand-kyocera);
+  --color-brand-pantum: var(--brand-pantum);
+  --font-sans: "Atkinson Hyperlegible", system-ui, sans-serif;
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
+:root {
+  --radius: 0.75rem;
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.22 0.03 255);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.22 0.03 255);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.22 0.03 255);
+  --primary: oklch(0.5 0.18 255);
+  --primary-foreground: oklch(0.99 0 0);
+  --secondary: oklch(0.96 0.02 250);
+  --secondary-foreground: oklch(0.3 0.08 255);
+  --muted: oklch(0.97 0.008 250);
+  --muted-foreground: oklch(0.45 0.03 255);
+  --accent: oklch(0.96 0.025 250);
+  --accent-foreground: oklch(0.35 0.12 255);
+  --success: oklch(0.6 0.15 150);
+  --support-navy: oklch(0.24 0.05 258);
+  --support-progress: oklch(0.5 0.18 255);
+  --support-footer: oklch(0.36 0.13 256);
+  --support-footer-foreground: oklch(0.99 0 0);
+  --support-header: var(--primary);
+  --support-header-foreground: var(--primary-foreground);
+  --support-on-dark: oklch(1 0 0);
+  --brand-hp: oklch(0.638531 0.140708 237.6052);
+  --brand-canon: oklch(0.584891 0.228709 27.2380);
+  --brand-epson: oklch(0.370823 0.173103 262.1219);
+  --brand-brother: oklch(0.371738 0.185828 264.8759);
+  --brand-samsung: oklch(0.373 0.186 264.9);
+  --brand-xerox: oklch(0.552 0.215 20.5);
+  --brand-lexmark: oklch(0.553 0.133 155.5);
+  --brand-ricoh: oklch(0.545 0.205 19.5);
+  --brand-kyocera: oklch(0.493 0.19 21.5);
+  --brand-pantum: oklch(0.35 0.09 260);
+  --shadow-soft: 0 8px 24px -10px color-mix(in oklab, var(--primary) 45%, transparent);
+  --destructive: oklch(0.577 0.245 27.325);
+  --destructive-foreground: oklch(0.984 0.003 247.858);
+  --border: oklch(0.929 0.013 255.508);
+  --input: oklch(0.929 0.013 255.508);
+  --ring: oklch(0.704 0.04 256.788);
+  --chart-1: oklch(0.646 0.222 41.116);
+  --chart-2: oklch(0.6 0.118 184.704);
+  --chart-3: oklch(0.398 0.07 227.392);
+  --chart-4: oklch(0.828 0.189 84.429);
+  --chart-5: oklch(0.769 0.188 70.08);
+  --sidebar: oklch(0.984 0.003 247.858);
+  --sidebar-foreground: oklch(0.129 0.042 264.695);
+  --sidebar-primary: oklch(0.208 0.042 265.755);
+  --sidebar-primary-foreground: oklch(0.984 0.003 247.858);
+  --sidebar-accent: oklch(0.968 0.007 247.896);
+  --sidebar-accent-foreground: oklch(0.208 0.042 265.755);
+  --sidebar-border: oklch(0.929 0.013 255.508);
+  --sidebar-ring: oklch(0.704 0.04 256.788);
+}
+
+.dark {
+  --success: oklch(0.7 0.15 150);
+  --brand-hp: oklch(0.7 0.14 245);
+  --brand-canon: oklch(0.68 0.2 27);
+  --brand-epson: oklch(0.7 0.12 262);
+  --brand-brother: oklch(0.7 0.13 265);
+  --background: oklch(0.129 0.042 264.695);
+  --foreground: oklch(0.984 0.003 247.858);
+  --card: oklch(0.208 0.042 265.755);
+  --card-foreground: oklch(0.984 0.003 247.858);
+  --popover: oklch(0.208 0.042 265.755);
+  --popover-foreground: oklch(0.984 0.003 247.858);
+  --primary: oklch(0.929 0.013 255.508);
+  --primary-foreground: oklch(0.208 0.042 265.755);
+  --secondary: oklch(0.279 0.041 260.031);
+  --secondary-foreground: oklch(0.984 0.003 247.858);
+  --muted: oklch(0.279 0.041 260.031);
+  --muted-foreground: oklch(0.704 0.04 256.788);
+  --accent: oklch(0.279 0.041 260.031);
+  --accent-foreground: oklch(0.984 0.003 247.858);
+  --destructive: oklch(0.704 0.191 22.216);
+  --destructive-foreground: oklch(0.984 0.003 247.858);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: oklch(0.551 0.027 264.364);
+  --chart-1: oklch(0.488 0.243 264.376);
+  --chart-2: oklch(0.696 0.17 162.48);
+  --chart-3: oklch(0.769 0.188 70.08);
+  --chart-4: oklch(0.627 0.265 303.9);
+  --chart-5: oklch(0.645 0.246 16.439);
+  --sidebar: oklch(0.208 0.042 265.755);
+  --sidebar-foreground: oklch(0.984 0.003 247.858);
+  --sidebar-primary: oklch(0.488 0.243 264.376);
+  --sidebar-primary-foreground: oklch(0.984 0.003 247.858);
+  --sidebar-accent: oklch(0.279 0.041 260.031);
+  --sidebar-accent-foreground: oklch(0.984 0.003 247.858);
+  --sidebar-border: oklch(1 0 0 / 10%);
+  --sidebar-ring: oklch(0.551 0.027 264.364);
+}
+
+/* Official website accents: HP #0096D6, Canon #E41920,
+   Epson #003399, Brother #0D2EA0. Scoped to model-page presentation. */
+.printer-brand-theme[data-printer-brand="hp"] { --primary: var(--brand-hp); }
+.printer-brand-theme[data-printer-brand="canon"] { --primary: var(--brand-canon); }
+.printer-brand-theme[data-printer-brand="epson"] { --primary: var(--brand-epson); }
+.printer-brand-theme[data-printer-brand="brother"] { --primary: var(--brand-brother); }
+.printer-brand-theme[data-printer-brand="samsung"] { --primary: var(--brand-samsung); }
+.printer-brand-theme[data-printer-brand="xerox"] { --primary: var(--brand-xerox); }
+.printer-brand-theme[data-printer-brand="lexmark"] { --primary: var(--brand-lexmark); }
+.printer-brand-theme[data-printer-brand="ricoh"] { --primary: var(--brand-ricoh); }
+.printer-brand-theme[data-printer-brand="kyocera"] { --primary: var(--brand-kyocera); }
+.printer-brand-theme[data-printer-brand="pantum"] { --primary: var(--brand-pantum); }
+
+.printer-brand-theme {
+  --primary-foreground: oklch(1 0 0);
+  --ring: var(--primary);
+  --accent: color-mix(in oklab, var(--primary) 8%, var(--background));
+  --accent-foreground: var(--primary);
+  --support-navy: oklch(0.251965 0 0);
+  --support-header: var(--background);
+  --support-header-foreground: var(--foreground);
+  --support-footer: oklch(0.964153 0 0);
+  --support-footer-foreground: oklch(0.251965 0 0);
+  --muted: oklch(0.975 0 0);
+  --muted-foreground: oklch(0.48 0 0);
+  --foreground: oklch(0.251965 0 0);
+  --card-foreground: var(--foreground);
+  --border: oklch(0.9 0 0);
+  --input: var(--border);
+  --shadow-soft: 0 8px 24px -10px color-mix(in oklab, var(--primary) 35%, transparent);
+}
+
+.dark .printer-brand-theme {
+  --foreground: oklch(0.96 0 0);
+  --muted: oklch(0.23 0 0);
+  --muted-foreground: oklch(0.76 0 0);
+  --border: oklch(0.38 0 0);
+  --support-footer: oklch(0.2 0 0);
+  --support-footer-foreground: var(--foreground);
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+    font-size: 18px;
+  }
+}
