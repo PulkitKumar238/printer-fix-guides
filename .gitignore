@@ -12,6 +12,7 @@ dist
 dist-ssr
 .output
 .netlify/
+.vercel/
 .next/
 next-env.d.ts
 *.tsbuildinfo
