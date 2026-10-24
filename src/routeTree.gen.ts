@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as GuideCallbackRouteImport } from './routes/guide.callback'
 import { Route as GuideModelRouteImport } from './routes/guide.model'
 import { Route as GuideStepsRouteImport } from './routes/guide.steps'
 import { Route as GuideSelectIssueRouteImport } from './routes/guide.select.$issue'
@@ -17,6 +18,11 @@ import { Route as GuideSelectIssueRouteImport } from './routes/guide.select.$iss
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GuideCallbackRoute = GuideCallbackRouteImport.update({
+  id: '/guide/callback',
+  path: '/guide/callback',
   getParentRoute: () => rootRouteImport,
 } as any)
 const GuideModelRoute = GuideModelRouteImport.update({
@@ -37,12 +43,14 @@ const GuideSelectIssueRoute = GuideSelectIssueRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/guide/callback': typeof GuideCallbackRoute
   '/guide/model': typeof GuideModelRoute
   '/guide/steps': typeof GuideStepsRoute
   '/guide/select/$issue': typeof GuideSelectIssueRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/guide/callback': typeof GuideCallbackRoute
   '/guide/model': typeof GuideModelRoute
   '/guide/steps': typeof GuideStepsRoute
   '/guide/select/$issue': typeof GuideSelectIssueRoute
@@ -50,21 +58,38 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/guide/callback': typeof GuideCallbackRoute
   '/guide/model': typeof GuideModelRoute
   '/guide/steps': typeof GuideStepsRoute
   '/guide/select/$issue': typeof GuideSelectIssueRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/guide/model' | '/guide/steps' | '/guide/select/$issue'
+  fullPaths:
+    | '/'
+    | '/guide/callback'
+    | '/guide/model'
+    | '/guide/steps'
+    | '/guide/select/$issue'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/guide/model' | '/guide/steps' | '/guide/select/$issue'
+  to:
+    | '/'
+    | '/guide/callback'
+    | '/guide/model'
+    | '/guide/steps'
+    | '/guide/select/$issue'
   id:
-    '__root__' | '/' | '/guide/model' | '/guide/steps' | '/guide/select/$issue'
+    | '__root__'
+    | '/'
+    | '/guide/callback'
+    | '/guide/model'
+    | '/guide/steps'
+    | '/guide/select/$issue'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  GuideCallbackRoute: typeof GuideCallbackRoute
   GuideModelRoute: typeof GuideModelRoute
   GuideStepsRoute: typeof GuideStepsRoute
   GuideSelectIssueRoute: typeof GuideSelectIssueRoute
@@ -77,6 +102,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/guide/callback': {
+      id: '/guide/callback'
+      path: '/guide/callback'
+      fullPath: '/guide/callback'
+      preLoaderRoute: typeof GuideCallbackRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/guide/model': {
@@ -105,6 +137,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  GuideCallbackRoute: GuideCallbackRoute,
   GuideModelRoute: GuideModelRoute,
   GuideStepsRoute: GuideStepsRoute,
   GuideSelectIssueRoute: GuideSelectIssueRoute,

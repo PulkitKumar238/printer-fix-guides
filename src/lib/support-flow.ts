@@ -1,6 +1,7 @@
 import type { FunnelSession } from "./funnel";
 
 export const PROCESS_DURATION_MS = 30_000;
+export const GUIDED_REVIEW_RESULT = "Guided review completed; no device scan performed";
 export const SUPPORT_REFERENCE_CODE = "0002X0";
 export const PROCESS_MESSAGES = [
   "Checking requirements...",

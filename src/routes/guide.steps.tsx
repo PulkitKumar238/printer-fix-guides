@@ -1,5 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { CircleX } from "lucide-react";
 import { BigButton, Choice, Summary } from "@/components/funnel/Shell";
 import { Assistance } from "@/components/funnel/Assistance";
@@ -24,7 +24,7 @@ export const Route = createFileRoute("/guide/steps")({
 const CONNECTIONS = ["Wi-Fi", "USB Cable", "Not Sure"];
 const DEVICES = ["Windows Computer", "Mac Computer", "Phone / Tablet", "Not Sure"];
 
-import { PROCESS_DURATION_MS, PROCESS_MESSAGES, retryPatch } from "@/lib/support-flow";
+import { GUIDED_REVIEW_RESULT, PROCESS_DURATION_MS, PROCESS_MESSAGES, retryPatch } from "@/lib/support-flow";
 export { VERIFIED_CORRUPTED_SYSTEM_FILES_ERROR } from "@/lib/support-flow";
 
 function StepsPage() {
@@ -32,6 +32,12 @@ function StepsPage() {
   const [step, setStep] = useState(0);
   const next = useCallback(() => setStep((s) => s + 1), []);
   const back = () => setStep((s) => Math.max(0, s - 1));
+
+  useEffect(() => {
+    if (session?.result === GUIDED_REVIEW_RESULT) {
+      setStep(isSetupIssue(session.issue) ? 3 : 2);
+    }
+  }, [session?.result, session?.issue]);
 
   if (!session) {
     return (
@@ -135,7 +141,7 @@ function Ask({ q, options, value, onPick }: { q: string; options: string[]; valu
  * then a completion status panel, then the Need a Hand? support options.
  */
 function GuidedProcess({ s, update }: { s: FunnelSession; update: U }) {
-  const [done, setDone] = useState(false);
+  const [done, setDone] = useState(s.result === GUIDED_REVIEW_RESULT);
   const nav = useNavigate();
   // Try Again: keep the issue, clear brand + model, return to brand selection.
   const tryAgain = () => {
@@ -154,7 +160,7 @@ function GuidedProcess({ s, update }: { s: FunnelSession; update: U }) {
           messages={PROCESS_MESSAGES}
           doneText="Complete"
           durationMs={PROCESS_DURATION_MS}
-          onDone={() => { update({ result: "Guided review completed; no device scan performed" }); setDone(true); }}
+          onDone={() => { update({ result: GUIDED_REVIEW_RESULT }); setDone(true); }}
         />
       </div>
     );
@@ -170,7 +176,7 @@ function GuidedProcess({ s, update }: { s: FunnelSession; update: U }) {
         <p className="mt-3 text-sm text-muted-foreground">Example error display — no printer scan was performed.</p>
       </div>
       {/* Need a Hand? heading + Live Chat / Request Call Back (Req 9) */}
-      <Assistance session={s} update={update} onTryAgain={tryAgain} />
+      <Assistance onTryAgain={tryAgain} />
     </div>
   );
 }

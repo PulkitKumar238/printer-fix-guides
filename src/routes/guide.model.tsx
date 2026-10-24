@@ -92,7 +92,7 @@ function ModelPage() {
     searchRef.current?.querySelector<HTMLInputElement>("input")?.focus({ preventScroll: true });
   };
   const fill = (value: string) => { setModel(value); setSelectionVersion((version) => version + 1); };
-  const choose = (value: string) => { update({ model: value }); nav({ to: "/guide/steps" }); };
+  const choose = (value: string) => { update({ model: value, result: undefined, callbackSent: false }); nav({ to: "/guide/steps" }); };
   const searchProps = { model, brands: brandFilter, selectionVersion, onChange: setModel, onSelect: fill, onSubmit: choose };
 
   return (

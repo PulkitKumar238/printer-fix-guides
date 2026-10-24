@@ -1,4 +1,5 @@
 import { useRef, useState } from "react";
+import { useNavigate } from "@tanstack/react-router";
 import { MessageCircle, Phone, CheckCircle2, RotateCcw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { BigButton } from "./Shell";
@@ -16,8 +17,8 @@ const PHONE_COUNTRIES = [
   { value: "au", name: "Australia", code: "+61" },
 ] as const;
 
-export function Assistance({ session, update, prominent = true, onTryAgain }: { session: FunnelSession; update: (p: Partial<FunnelSession>) => void; prominent?: boolean; onTryAgain?: () => void }) {
-  const [mode, setMode] = useState<"none" | "callback">("none");
+export function Assistance({ prominent = true, onTryAgain }: { prominent?: boolean; onTryAgain?: () => void }) {
+  const navigate = useNavigate();
   const [chatStatus, setChatStatus] = useState<"idle" | "loading" | "error">("idle");
 
   const startChat = async () => {
@@ -33,12 +34,11 @@ export function Assistance({ session, update, prominent = true, onTryAgain }: { 
       <p className="mt-1 text-lg text-muted-foreground">Your selected printer details are included below.</p>
       <div className={`mt-5 grid gap-4 ${onTryAgain ? "sm:grid-cols-3" : "sm:grid-cols-2"}`}>
         <OptionCard Icon={MessageCircle} title="Live Chat" desc="Chat with a specialist now." onClick={startChat} />
-        <OptionCard Icon={Phone} title="Request Call Back" desc="We'll call you with your details ready." onClick={() => setMode("callback")} />
+        <OptionCard Icon={Phone} title="Request Call Back" desc="We'll call you with your details ready." onClick={() => navigate({ to: "/guide/callback" })} />
         {onTryAgain && <OptionCard Icon={RotateCcw} title="Try Again" desc="Choose a different brand or model." onClick={onTryAgain} />}
       </div>
       {chatStatus === "loading" && <p className="mt-4 text-muted-foreground" role="status">Connecting to live chat…</p>}
       {chatStatus === "error" && <p className="mt-4 text-destructive" role="alert">Live chat couldn’t load. Please try again or check your connection.</p>}
-      {mode === "callback" && <CallbackForm session={session} update={update} />}
     </section>
   );
 }
@@ -53,7 +53,7 @@ function OptionCard({ Icon, title, desc, onClick }: { Icon: typeof Phone; title:
   );
 }
 
-function CallbackForm({ session, update }: { session: FunnelSession; update: (p: Partial<FunnelSession>) => void }) {
+export function CallbackForm({ session, update }: { session: FunnelSession; update: (p: Partial<FunnelSession>) => void }) {
   const [phone, setPhone] = useState("");
   const [country, setCountry] = useState<(typeof PHONE_COUNTRIES)[number]["value"]>("nz");
   const [consent, setConsent] = useState(false);
