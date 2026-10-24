@@ -56,7 +56,6 @@ function OptionCard({ Icon, title, desc, onClick }: { Icon: typeof Phone; title:
 export function CallbackForm({ session, update }: { session: FunnelSession; update: (p: Partial<FunnelSession>) => void }) {
   const [phone, setPhone] = useState("");
   const [country, setCountry] = useState<(typeof PHONE_COUNTRIES)[number]["value"]>("nz");
-  const [consent, setConsent] = useState(false);
   const [status, setStatus] = useState<"idle" | "sending" | "done" | "error">(session.callbackSent ? "done" : "idle");
   const [err, setErr] = useState("");
   const honey = useRef<HTMLInputElement>(null);
@@ -79,7 +78,6 @@ export function CallbackForm({ session, update }: { session: FunnelSession; upda
     if (status === "sending") return;
     if (honey.current?.value || Date.now() - started.current < 2000) return; // basic spam guard
     if (!isValidPhone(phone)) return setErr("Please enter a valid phone number.");
-    if (!consent) return setErr("Please tick the box to agree to a callback.");
     if (!CALLBACK_RECIPIENT_EMAIL) return setErr("Callback requests are not set up yet. Please use live chat or try again later.");
 
     setStatus("sending");
@@ -126,10 +124,6 @@ export function CallbackForm({ session, update }: { session: FunnelSession; upda
       <label className="block">
         <span className="text-lg font-semibold text-foreground">Phone Number <span className="text-destructive">*</span></span>
         <input type="tel" inputMode="tel" autoComplete="tel" required maxLength={20} value={phone} onChange={(e) => setPhone(e.target.value)} className="mt-2 h-16 w-full rounded-xl border-2 border-input bg-background px-4 text-xl focus:border-primary focus:outline-none" />
-      </label>
-      <label className="flex items-start gap-3 text-lg text-foreground">
-        <input type="checkbox" checked={consent} onChange={(e) => setConsent(e.target.checked)} className="mt-1 h-6 w-6 accent-[var(--primary)]" />
-        I agree to receive a phone call about my printer-assistance request.
       </label>
       {err && <p className="text-lg text-destructive" role="alert">{err}</p>}
       <BigButton type="submit" disabled={status === "sending"}>{status === "sending" ? "Sending…" : status === "error" ? "Try Again" : "Request My Callback"}</BigButton>
