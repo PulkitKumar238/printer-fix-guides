@@ -163,11 +163,11 @@ function GuidedProcess({ s, update }: { s: FunnelSession; update: U }) {
   return (
     <div>
       <div className="mb-5 rounded-xl border border-border bg-card p-5" aria-label="Sample error design preview">
-        <p className="mb-3 text-xs font-bold uppercase tracking-wide text-muted-foreground">Design preview · sample error, not detected</p>
         <div className="flex items-center gap-4">
           <CircleX className="h-8 w-8 shrink-0 text-destructive" aria-hidden />
           <p className="text-lg font-bold text-foreground sm:text-xl">Fatal System Error - <span className="text-destructive">0xC0000142</span> - Installation Aborted</p>
         </div>
+        <p className="mt-3 text-sm text-muted-foreground">Example error display — no printer scan was performed.</p>
       </div>
       {/* Need a Hand? heading + Live Chat / Request Call Back (Req 9) */}
       <Assistance session={s} update={update} onTryAgain={tryAgain} />
