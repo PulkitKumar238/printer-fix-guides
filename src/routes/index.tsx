@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { HomeFooter } from "@/components/funnel/HomeFooter";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -37,8 +38,8 @@ function IssueIcon({ name }: { name: (typeof issues)[number]["icon"] }) {
 
 function Index() {
   return (
-    <main className="legacy-home min-h-screen bg-white text-[#123b63]">
-      <section className="mx-auto w-full max-w-6xl px-5 py-14 sm:px-6 sm:py-20 lg:px-8">
+    <main className="legacy-home flex min-h-screen flex-col bg-white text-[#123b63]">
+      <section className="mx-auto w-full max-w-6xl flex-1 px-5 py-14 sm:px-6 sm:py-20 lg:px-8">
         <div className="mb-10 max-w-2xl">
           <h1 className="legacy-home-heading text-4xl font-bold sm:text-5xl">Choose your printer issue</h1>
           <p className="mt-4 text-xl text-[#48637a]">Select the topic that matches the problem you are experiencing.</p>
@@ -54,8 +55,7 @@ function Index() {
           ))}
         </div>
       </section>
-      <div className="h-2 bg-[#123b63]" aria-hidden="true" />
-      <footer className="py-5 text-center text-sm text-[#48637a]">Independent printer assistance. Not affiliated with any printer manufacturer.</footer>
+      <HomeFooter />
     </main>
   );
 }
