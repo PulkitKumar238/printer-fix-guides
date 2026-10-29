@@ -95,7 +95,7 @@ function StepsPage() {
         </div>
       </main>
 
-      <SupportFooter />
+      <SupportFooter brand={session.brand} />
     </div>
   );
 }

@@ -1,6 +1,6 @@
 /*
  * Shared full-width header / breadcrumb / footer chrome for the
- * /guide/model and /guide/steps pages only. Scoped here so no other
+ * /guide/model, /guide/steps, and /guide/callback pages only. Scoped here so no other
  * page (especially the homepage) is affected.
  */
 import type { ReactNode } from "react";
@@ -88,17 +88,24 @@ export function BrandBadge({ brand }: { brand?: string | undefined }) {
   );
 }
 
-export function SupportFooter() {
+export function SupportFooter({ brand }: { brand?: string }) {
+  const selectedBrand = brand && brand !== "other" ? brandName(brand) : "";
+  const brandPrefix = selectedBrand ? `${selectedBrand} ` : "";
+
   return (
     <footer className="w-full bg-support-footer text-support-footer-foreground">
       <div className="mx-auto w-full max-w-7xl px-6 py-12 sm:px-10">
         <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
           {FOOTER_COLUMNS.map((col) => (
             <div key={col.h}>
-              <p className="mb-4 text-lg font-bold">{col.h}</p>
+              <p className="mb-4 text-lg font-bold">
+                {col.h === "Printer Support" || col.h === "Printer Types" ? brandPrefix : ""}{col.h}
+              </p>
               <ul className="space-y-2">
                 {col.items.map((item) => (
-                  <li key={item} className="text-sm opacity-80">{item}</li>
+                  <li key={item} className="text-sm opacity-80">
+                    {col.h === "Printer Support" && (item === "Printer Identification" || item === "Printer Setup" || item === "Troubleshooting") ? brandPrefix : ""}{item}
+                  </li>
                 ))}
               </ul>
             </div>

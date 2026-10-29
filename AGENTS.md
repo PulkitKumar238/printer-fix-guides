@@ -10,10 +10,10 @@
 <!-- LOVABLE:END -->
 
 - Funnel state lives only in browser sessionStorage (src/lib/funnel.ts); callbacks post to formsubmit.co, no backend — owner chose not to store leads.
-- Scope manufacturer website themes to the model page and individual manufacturer model lists using data-printer-brand and semantic CSS tokens, so changing a brand never recolours unrelated funnel pages.
-- The printer model catalog lives in src/lib/printer-catalog.ts (client-side, curated real models across 10 brands); autocomplete suggests but never blocks submission — any non-empty model text must be accepted.
-- Full-width header/breadcrumb/footer chrome for /guide/model and /guide/steps is shared in src/components/funnel/SupportChrome.tsx; the brand-colored breadcrumb bar takes its color from BREADCRUMB_COLORS in the catalog module.
-- The model route owns a single model value and selection version shared by two ModelSearch instances; selection only fills, while submission alone navigates, preventing conflicting autocomplete state.
+- Scope manufacturer website themes to the model page using data-printer-brand and semantic CSS tokens, so changing a brand never recolours unrelated funnel pages.
+- The printer model catalog lives in src/lib/printer-catalog.ts (client-side, curated real models across 10 brands); the model page now has one free-text input with no suggestions, and any non-empty model text must be accepted.
+- Full-width header/breadcrumb/footer chrome for /guide/model, /guide/steps, and /guide/callback is shared in src/components/funnel/SupportChrome.tsx; brand-specific footer labels come from the selected brand, while the breadcrumb bar takes its color from BREADCRUMB_COLORS in the catalog module.
+- The model route owns a single model value passed to one ModelSearch instance; submission alone navigates to the steps page.
 - Shared flow rules and progress timing live in src/lib/support-flow.ts for independent testing; the timed sequence never supplies diagnostic evidence.
 - Manufacturer branding is rendered in SupportHeader, never duplicated below the menu, so the active model and steps pages share compact branding.
 - Brand selection writes the route issue and selected brand together in its click handler; avoid effect-driven issue writes that can overwrite an immediate selection.

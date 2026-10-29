@@ -41,7 +41,7 @@ function BrandPage() {
             aria-label={`${b.name} printers`}
             onClick={() => pick(b.id)}
             aria-pressed={brand === b.id}
-            className={`flex h-28 items-center justify-center rounded-2xl border-2 bg-card cursor-pointer transition-all focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/40 sm:h-32 ${b.id === "other" ? "col-span-2 sm:col-span-1" : ""} ${
+            className={`flex h-32 items-center justify-center rounded-2xl border-2 bg-card cursor-pointer transition-all focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/40 sm:h-36 ${b.id === "other" ? "col-span-2 sm:col-span-1" : ""} ${
               brand === b.id ? "border-primary ring-4 ring-primary/15" : "border-border hover:border-primary/50"
             }`}
           >
@@ -65,11 +65,11 @@ function BrandPage() {
 // Text wordmarks (no trademarked logo files) for brand recognition.
 function BrandMark({ id }: { id: BrandId }) {
   const styles: Record<BrandId, string> = {
-    hp: "font-bold italic text-4xl lowercase text-brand-hp",
-    canon: "font-black text-4xl tracking-tight text-brand-canon",
-    epson: "font-extrabold text-4xl tracking-wider text-brand-epson",
-    brother: "font-bold text-3xl lowercase tracking-wide text-brand-brother",
-    other: "font-semibold text-2xl text-foreground",
+    hp: "font-bold italic text-4xl lowercase text-brand-hp sm:text-[2.625rem]",
+    canon: "font-black text-4xl tracking-tight text-brand-canon sm:text-[2.625rem]",
+    epson: "font-extrabold text-4xl tracking-wider text-brand-epson sm:text-[2.625rem]",
+    brother: "font-bold text-3xl lowercase tracking-wide text-brand-brother sm:text-[2.125rem]",
+    other: "font-semibold text-2xl text-foreground sm:text-[1.75rem]",
   };
   const label = { hp: "hp", canon: "Canon", epson: "EPSON", brother: "brother", other: "Other Brand" }[id];
   return <span className={styles[id]}>{label}</span>;

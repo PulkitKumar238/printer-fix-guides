@@ -44,7 +44,7 @@ function CallbackPage() {
         </div>
       </main>
 
-      <SupportFooter />
+      <SupportFooter brand={session.brand} />
     </div>
   );
 }
